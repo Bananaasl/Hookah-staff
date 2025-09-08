@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.ArrayList;
 
 @Service
@@ -26,6 +25,8 @@ public class TobaccoService {
     }
 
     public Tobacco createTobacco(Tobacco tobacco) {
+        // Вес инвентаризации всегда равен весу пачки при создании
+        tobacco.setInventoryWeight(tobacco.getWeight());
         return tobaccoRepository.save(tobacco);
     }
 
@@ -54,7 +55,8 @@ public class TobaccoService {
             tobacco.setWeight(bulkTobaccoDto.getWeight());
             tobacco.setOrderDate(bulkTobaccoDto.getOrderDate());
             tobacco.setInventoryDate(bulkTobaccoDto.getInventoryDate());
-            tobacco.setInventoryWeight(bulkTobaccoDto.getInventoryWeight());
+            // Вес инвентаризации всегда равен весу пачки при создании
+            tobacco.setInventoryWeight(bulkTobaccoDto.getWeight());
             tobacco.setTaste(taste);
             
             createdTobaccos.add(tobaccoRepository.save(tobacco));
