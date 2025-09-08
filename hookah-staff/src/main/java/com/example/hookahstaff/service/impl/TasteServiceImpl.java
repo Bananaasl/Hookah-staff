@@ -1,4 +1,4 @@
-package com.example.hookahstaff.service;
+package com.example.hookahstaff.service.impl;
 
 import com.example.hookahstaff.entity.Taste;
 import com.example.hookahstaff.repository.TasteRepository;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TasteService {
+public class TasteServiceImpl {
 
     private final TasteRepository tasteRepository;
 

@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hookah Staff - Управление табаками</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #495057;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #6c757d;
+            font-weight: 400;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e9ecef;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .add-button-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .add-button {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
+        }
+
+        .add-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+        }
+
+        .add-form {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e9ecef;
+        }
+
+        .add-form h3 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #495057;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            background: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            color: #495057;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6c757d;
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+        }
+
+        .fortress-text {
+            color: #6c757d;
+            font-weight: 500;
+            margin-left: 8px;
+            font-size: 0.9rem;
+        }
+
+        .save-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+            background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+        }
+
+        .tobacco-list h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .tobacco-table {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e9ecef;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table-header h3 {
+            color: #495057;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.9rem;
+        }
+
+        .table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f3f4;
+            color: #495057;
+            font-size: 0.9rem;
+        }
+
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .fortress-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #ffffff;
+            display: inline-block;
+        }
+
+        .fortress-light {
+            background: #28a745;
+        }
+
+        .fortress-medium {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .fortress-strong {
+            background: #dc3545;
+        }
+
+        .price {
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .empty-state p:first-child {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .delete-button {
+            background: #dc3545;
+            color: #ffffff;
+            border: none;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .delete-button:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .app {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .table {
+                font-size: 0.8rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script>
+        // Интерфейсы для TypeScript
+        const Tobacco = {
+            id: null,
+            brand_name: '',
+            fortress: 1,
+            price: 0,
+            weight: 50,
+            orderDate: null,
+            inventoryDate: null,
+            inventoryWeight: 50,
+            taste: '',
+            tastes: []
+        };
+
+        const Taste = {
+            id: null,
+            name: '',
+            description: ''
+        };
+
+        // API URL
+        const API_BASE_URL = 'http://localhost:8080/api/tobacco';
+
+        // Основное приложение
+        class HookahStaffApp {
+            constructor() {
+                this.tobaccos = [];
+                this.showAddForm = false;
+                this.newTobacco = {
+                    brand_name: '',
+                    fortress: 1,
+                    price: 0,
+                    weight: 50,
+                    orderDate: new Date().toISOString().split('T')[0],
+                    inventoryDate: new Date().toISOString().split('T')[0],
+                    inventoryWeight: 50, // Будет обновляться при изменении weight
+                    taste: ''
+                };
+                this.bulkTastes = []; // Список вкусов для массового добавления
+                this.showBulkForm = false;
+                this.init();
+            }
+
+            async init() {
+                await this.loadTobaccos();
+                this.render();
+            }
+
+            async loadTobaccos() {
+                try {
+                    const response = await fetch(API_BASE_URL);
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.tobaccos = Array.isArray(data) ? data : [];
+                        console.log('Загружено табаков:', this.tobaccos.length);
+                    } else {
+                        console.error('Ошибка загрузки табаков:', response.statusText);
+                        this.tobaccos = [];
+                        this.showNotification('Ошибка загрузки данных', 'error');
+                    }
+                } catch (error) {
+                    console.error('Ошибка загрузки табаков:', error);
+                    this.tobaccos = [];
+                    this.showNotification('Ошибка подключения к серверу', 'error');
+                }
+            }
+
+            getFortressClass(fortress) {
+                if (fortress <= 2) return 'fortress-light';
+                if (fortress <= 4) return 'fortress-medium';
+                return 'fortress-strong';
+            }
+
+            getFortressText(fortress) {
+                if (fortress <= 2) return 'Легкий';
+                if (fortress <= 4) return 'Средний';
+                return 'Крепкий';
+            }
+
+            calculateUsagePercentage(tobacco) {
+                const orderWeight = tobacco.weight || 0;
+                const inventoryWeight = tobacco.inventoryWeight || 0;
+                
+                if (orderWeight === 0) return 0;
+                
+                const usedWeight = orderWeight - inventoryWeight;
+                const percentage = (usedWeight / orderWeight) * 100;
+                
+                return Math.max(0, Math.min(100, Math.round(percentage)));
+            }
+
+            getUsageColor(percentage) {
+                if (percentage <= 30) return '#28a745'; // Зеленый - мало использован
+                if (percentage <= 70) return '#ffc107'; // Желтый - средне использован
+                return '#dc3545'; // Красный - много использован
+            }
+
+            async handleBulkAddTobaccos() {
+                // Валидация формы
+                if (!this.newTobacco.brand_name || this.newTobacco.brand_name.trim() === '') {
+                    alert('Пожалуйста, введите название бренда');
+                    return;
+                }
+                
+                if (!this.newTobacco.price || this.newTobacco.price <= 0) {
+                    alert('Пожалуйста, введите корректную цену (больше 0)');
+                    return;
+                }
+                
+                if (!this.newTobacco.weight || this.newTobacco.weight <= 0) {
+                    alert('Пожалуйста, введите корректный вес (больше 0)');
+                    return;
+                }
+
+                if (this.bulkTastes.length === 0) {
+                    alert('Пожалуйста, введите хотя бы один вкус');
+                    return;
+                }
+
+                // Показываем индикатор загрузки
+                const saveButton = document.querySelector('.save-button');
+                const originalText = saveButton.textContent;
+                saveButton.textContent = 'Сохранение...';
+                saveButton.disabled = true;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/bulk`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            brand_name: this.newTobacco.brand_name.trim(),
+                            fortress: this.newTobacco.fortress,
+                            price: this.newTobacco.price,
+                            weight: this.newTobacco.weight,
+                            orderDate: this.newTobacco.orderDate,
+                            inventoryDate: this.newTobacco.inventoryDate,
+                            inventoryWeight: this.newTobacco.inventoryWeight,
+                            tastes: this.bulkTastes
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Сохраняем количество добавленных табаков перед очисткой
+                        const addedCount = this.bulkTastes.length;
+                        
+                        // Успешное сохранение
+                        await this.loadTobaccos();
+                        this.bulkTastes = [];
+                        this.showBulkForm = false;
+                        
+                        // Обновляем таблицу для отображения изменений
+                        this.updateTable();
+                        
+                        // Показываем уведомление об успехе
+                        this.showNotification(`Успешно добавлено ${addedCount} табаков!`, 'success');
+                    } else {
+                        const errorText = await response.text();
+                        console.error('Ошибка сервера:', errorText);
+                        alert('Ошибка при добавлении табаков: ' + (errorText || 'Неизвестная ошибка'));
+                    }
+                } catch (error) {
+                    console.error('Ошибка при добавлении табаков:', error);
+                    alert('Ошибка при добавлении табаков: ' + error.message);
+                } finally {
+                    // Восстанавливаем кнопку
+                    saveButton.textContent = originalText;
+                    saveButton.disabled = false;
+                }
+            }
+
+            async handleAddTobacco() {
+                // Валидация формы
+                if (!this.newTobacco.brand_name || this.newTobacco.brand_name.trim() === '') {
+                    alert('Пожалуйста, введите название бренда');
+                    return;
+                }
+                
+                if (!this.newTobacco.price || this.newTobacco.price <= 0) {
+                    alert('Пожалуйста, введите корректную цену (больше 0)');
+                    return;
+                }
+                
+                if (!this.newTobacco.weight || this.newTobacco.weight <= 0) {
+                    alert('Пожалуйста, введите корректный вес (больше 0)');
+                    return;
+                }
+
+                // Показываем индикатор загрузки
+                const saveButton = document.querySelector('.save-button');
+                const originalText = saveButton.textContent;
+                saveButton.textContent = 'Сохранение...';
+                saveButton.disabled = true;
+
+                try {
+                    const response = await fetch(API_BASE_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            brand_name: this.newTobacco.brand_name.trim(),
+                            fortress: this.newTobacco.fortress,
+                            price: this.newTobacco.price,
+                            weight: this.newTobacco.weight,
+                            orderDate: this.newTobacco.orderDate,
+                            inventoryDate: this.newTobacco.inventoryDate,
+                            inventoryWeight: this.newTobacco.inventoryWeight,
+                            taste: this.newTobacco.taste.trim()
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Успешное сохранение
+                        await this.loadTobaccos();
+                        this.newTobacco = { 
+                            brand_name: '', 
+                            fortress: 1, 
+                            price: 0, 
+                            weight: 50,
+                            orderDate: new Date().toISOString().split('T')[0],
+                            inventoryDate: new Date().toISOString().split('T')[0],
+                            inventoryWeight: 50,
+                            taste: ''
+                        };
+                        this.showAddForm = false;
+                        
+                        // Обновляем таблицу для отображения изменений
+                        this.updateTable();
+                        
+                        // Показываем уведомление об успехе
+                        this.showNotification('Табак успешно добавлен!', 'success');
+                    } else {
+                        const errorText = await response.text();
+                        console.error('Ошибка сервера:', errorText);
+                        alert('Ошибка при добавлении табака: ' + (errorText || 'Неизвестная ошибка'));
+                    }
+                } catch (error) {
+                    console.error('Ошибка при добавлении табака:', error);
+                    alert('Ошибка при добавлении табака: ' + error.message);
+                } finally {
+                    // Восстанавливаем кнопку
+                    saveButton.textContent = originalText;
+                    saveButton.disabled = false;
+                }
+            }
+
+            async handleDeleteTobacco(id) {
+                if (!confirm('Вы уверены, что хотите удалить этот табак?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        await this.loadTobaccos();
+                        
+                        // Обновляем таблицу для отображения изменений
+                        this.updateTable();
+                        
+                        this.showNotification('Табак успешно удален!', 'success');
+                    } else {
+                        alert('Ошибка при удалении табака');
+                    }
+                } catch (error) {
+                    console.error('Ошибка при удалении табака:', error);
+                    alert('Ошибка при удалении табака');
+                }
+            }
+
+            showNotification(message, type = 'info') {
+                // Создаем элемент уведомления
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.textContent = message;
+                
+                // Добавляем стили для уведомления
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 500;
+                    z-index: 1000;
+                    opacity: 0;
+                    transform: translateX(100%);
+                    transition: all 0.3s ease;
+                    max-width: 300px;
+                    word-wrap: break-word;
+                `;
+                
+                // Цвета для разных типов уведомлений
+                if (type === 'success') {
+                    notification.style.backgroundColor = '#28a745';
+                } else if (type === 'error') {
+                    notification.style.backgroundColor = '#dc3545';
+                } else {
+                    notification.style.backgroundColor = '#6c757d';
+                }
+                
+                // Добавляем в DOM
+                document.body.appendChild(notification);
+                
+                // Анимация появления
+                setTimeout(() => {
+                    notification.style.opacity = '1';
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+                
+                // Автоматическое скрытие через 3 секунды
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+
+            render() {
+                const app = document.getElementById('root');
+                app.innerHTML = `
+                    <div class="app">
+                        <div class="header">
+                            <h1>Hookah Staff</h1>
+                            <p>Управление табаками для кальянной</p>
+                        </div>
+
+                        <div class="stats">
+                            <div class="stat-card">
+                                <div class="stat-number">${this.tobaccos.length}</div>
+                                <div class="stat-label">Табаков в каталоге</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">
+                                    ${this.tobaccos.length > 0 ? Math.round(this.tobaccos.reduce((sum, t) => sum + (parseFloat(t.price) || 0), 0) / this.tobaccos.length) : 0}
+                                </div>
+                                <div class="stat-label">Средняя цена (₽)</div>
+                            </div>
+                        </div>
+
+                        <div class="add-button-container">
+                            <button class="add-button" onclick="app.toggleAddForm()">
+                                ${this.showAddForm ? 'Отмена' : 'Добавить табак'}
+                            </button>
+                            <button class="add-button" onclick="app.toggleBulkForm()" style="margin-left: 10px;">
+                                ${this.showBulkForm ? 'Отмена' : 'Массовое добавление'}
+                            </button>
+                        </div>
+
+                        ${this.showAddForm ? this.renderAddForm() : ''}
+                        ${this.showBulkForm ? this.renderBulkForm() : ''}
+
+                        <div class="tobacco-list">
+                            <div class="tobacco-table">
+                                <div class="table-header">
+                                    <h3>Каталог табаков</h3>
+                                </div>
+                                ${this.renderTobaccoTable()}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderAddForm() {
+                return `
+                    <div class="add-form">
+                        <h3>Добавить новый табак</h3>
+                        <div class="form-group">
+                            <label>Название бренда:</label>
+                            <input
+                                type="text"
+                                value="${this.newTobacco.brand_name}"
+                                onchange="app.updateNewTobacco('brand_name', this.value)"
+                                placeholder="Например: Al Fakher"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Крепость: ${this.newTobacco.fortress}/5</label>
+                            <input
+                                type="range"
+                                min="1"
+                                max="5"
+                                value="${this.newTobacco.fortress}"
+                                onchange="app.updateNewTobacco('fortress', parseInt(this.value))"
+                            />
+                            <span class="fortress-text">${this.getFortressText(this.newTobacco.fortress)}</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Цена за пачку (₽):</label>
+                            <input
+                                type="number"
+                                value="${this.newTobacco.price}"
+                                onchange="app.updateNewTobacco('price', parseFloat(this.value) || 0)"
+                                placeholder="1200"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Вес пачки (г):</label>
+                            <input
+                                type="number"
+                                value="${this.newTobacco.weight}"
+                                onchange="app.updateNewTobacco('weight', parseInt(this.value) || 50)"
+                                placeholder="50"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Вес на инвентаризации (г):</label>
+                            <input
+                                type="number"
+                                value="${this.newTobacco.inventoryWeight}"
+                                onchange="app.updateNewTobacco('inventoryWeight', parseInt(this.value) || 50)"
+                                placeholder="50"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Вкус:</label>
+                            <input
+                                type="text"
+                                value="${this.newTobacco.taste}"
+                                onchange="app.updateNewTobacco('taste', this.value)"
+                                placeholder="Например: Малина"
+                            />
+                        </div>
+                        <button class="save-button" onclick="app.handleAddTobacco()">
+                            Сохранить табак
+                        </button>
+                    </div>
+                `;
+            }
+
+            renderBulkForm() {
+                return `
+                    <div class="add-form">
+                        <h3>Массовое добавление табаков</h3>
+                        <div class="form-group">
+                            <label>Название бренда:</label>
+                            <input
+                                type="text"
+                                value="${this.newTobacco.brand_name}"
+                                onchange="app.updateNewTobacco('brand_name', this.value)"
+                                placeholder="Например: Darkside"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Крепость: ${this.newTobacco.fortress}/5</label>
+                            <input
+                                type="range"
+                                min="1"
+                                max="5"
+                                value="${this.newTobacco.fortress}"
+                                onchange="app.updateNewTobacco('fortress', parseInt(this.value))"
+                            />
+                            <span class="fortress-text">${this.getFortressText(this.newTobacco.fortress)}</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Цена за пачку (₽):</label>
+                            <input
+                                type="number"
+                                value="${this.newTobacco.price}"
+                                onchange="app.updateNewTobacco('price', parseFloat(this.value) || 0)"
+                                placeholder="1200"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Вес пачки (г):</label>
+                            <input
+                                type="number"
+                                value="${this.newTobacco.weight}"
+                                onchange="app.updateNewTobacco('weight', parseInt(this.value) || 50)"
+                                placeholder="50"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Вкусы (через запятую):</label>
+                            <textarea
+                                rows="3"
+                                placeholder="Малина, Смородина, Клубника"
+                                onchange="app.updateBulkTastes(this.value)"
+                                style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; resize: vertical;"
+                            >${this.bulkTastes.join(', ')}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Предварительный просмотр:</label>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px solid #e9ecef;">
+                                ${this.bulkTastes.length > 0 ? 
+                                    this.bulkTastes.map(taste => `
+                                        <div style="margin: 5px 0; padding: 5px; background: white; border-radius: 4px; border: 1px solid #dee2e6;">
+                                            <strong>${this.newTobacco.brand_name || 'Бренд'}</strong> - ${taste.trim()}
+                                            <br><small>Крепость: ${this.getFortressText(this.newTobacco.fortress)}, Цена: ${this.newTobacco.price || 0} ₽, Вес: ${this.newTobacco.weight || 50} г</small>
+                                        </div>
+                                    `).join('') : 
+                                    '<div style="color: #6c757d; font-style: italic;">Введите вкусы для предварительного просмотра</div>'
+                                }
+                            </div>
+                        </div>
+                        <button class="save-button" onclick="app.handleBulkAddTobaccos()">
+                            Добавить ${this.bulkTastes.length} табаков
+                        </button>
+                    </div>
+                `;
+            }
+
+            renderTobaccoTable() {
+                if (this.tobaccos.length === 0) {
+                    return `
+                        <div class="empty-state">
+                            <p>Табаки не найдены</p>
+                            <p>Добавьте первый табак в коллекцию</p>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Бренд</th>
+                                <th>Вкус</th>
+                                <th>Крепость</th>
+                                <th>Цена</th>
+                                <th>Вес</th>
+                                <th>Дата заказа</th>
+                                <th>Дата инвентаризации</th>
+                                <th>Вес на инвентаризации</th>
+                                <th>Использование</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${this.tobaccos.map(tobacco => {
+                                const usagePercentage = this.calculateUsagePercentage(tobacco);
+                                const usageColor = this.getUsageColor(usagePercentage);
+                                return `
+                                <tr>
+                                    <td>${tobacco.brand_name || 'Не указано'}</td>
+                                    <td>${tobacco.taste || 'Не указано'}</td>
+                                    <td>
+                                        <span class="fortress-badge ${this.getFortressClass(tobacco.fortress)}">
+                                            ${this.getFortressText(tobacco.fortress)} (${tobacco.fortress}/5)
+                                        </span>
+                                    </td>
+                                    <td class="price">${tobacco.price || 0} ₽</td>
+                                    <td>${tobacco.weight || 50} г</td>
+                                    <td>${tobacco.orderDate || 'Не указано'}</td>
+                                    <td>${tobacco.inventoryDate || 'Не указано'}</td>
+                                    <td>
+                                        <input 
+                                            type="number" 
+                                            value="${tobacco.inventoryWeight || tobacco.weight || 50}" 
+                                            min="0" 
+                                            max="${tobacco.weight || 50}"
+                                            style="width: 80px; padding: 4px; border: 1px solid #ced4da; border-radius: 4px;"
+                                            onchange="app.updateInventoryWeight(${tobacco.id}, this.value)"
+                                        /> г
+                                    </td>
+                                    <td>
+                                        <span style="color: ${usageColor}; font-weight: bold;">
+                                            ${usagePercentage}%
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="delete-button" onclick="app.handleDeleteTobacco(${tobacco.id})">
+                                            Удалить
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            toggleAddForm() {
+                this.showAddForm = !this.showAddForm;
+                if (this.showAddForm) {
+                    this.showBulkForm = false;
+                }
+                this.render();
+            }
+
+            toggleBulkForm() {
+                this.showBulkForm = !this.showBulkForm;
+                if (this.showBulkForm) {
+                    this.showAddForm = false;
+                }
+                this.render();
+            }
+
+            updateBulkTastes(tastesText) {
+                this.bulkTastes = tastesText
+                    .split(',')
+                    .map(taste => taste.trim())
+                    .filter(taste => taste.length > 0);
+                this.render();
+            }
+
+            updateNewTobacco(field, value) {
+                this.newTobacco[field] = value;
+                
+                // Если изменился вес пачки, автоматически обновляем вес инвентаризации
+                if (field === 'weight') {
+                    this.newTobacco.inventoryWeight = value;
+                }
+                
+                // Не перерендериваем всю страницу, обновляем только форму
+                this.updateForm();
+            }
+
+            updateForm() {
+                // Обновляем только форму, не всю страницу
+                const form = document.querySelector('.add-form');
+                if (form) {
+                    // Обновляем значения в полях формы
+                    const brandInput = form.querySelector('input[type="text"]');
+                    const fortressInput = form.querySelector('input[type="range"]');
+                    const priceInput = form.querySelector('input[placeholder="1200"]');
+                    const weightInput = form.querySelector('input[placeholder="50"]');
+                    const inventoryWeightInput = form.querySelector('input[placeholder="50"]:last-of-type');
+                    const fortressText = form.querySelector('.fortress-text');
+
+                    if (brandInput) brandInput.value = this.newTobacco.brand_name;
+                    if (fortressInput) fortressInput.value = this.newTobacco.fortress;
+                    if (priceInput) priceInput.value = this.newTobacco.price;
+                    if (weightInput) weightInput.value = this.newTobacco.weight;
+                    if (inventoryWeightInput) inventoryWeightInput.value = this.newTobacco.inventoryWeight;
+                    if (fortressText) fortressText.textContent = this.getFortressText(this.newTobacco.fortress);
+                }
+            }
+
+            async updateInventoryWeight(tobaccoId, newWeight) {
+                try {
+                    const tobacco = this.tobaccos.find(t => t.id === tobaccoId);
+                    if (!tobacco) return;
+
+                    const response = await fetch(`${API_BASE_URL}/${tobaccoId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            ...tobacco,
+                            inventoryWeight: parseInt(newWeight),
+                            inventoryDate: new Date().toISOString().split('T')[0]
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Обновляем локальные данные
+                        tobacco.inventoryWeight = parseInt(newWeight);
+                        tobacco.inventoryDate = new Date().toISOString().split('T')[0];
+                        
+                        // Обновляем только строку таблицы
+                        this.updateTableRow(tobaccoId);
+                        
+                        this.showNotification('Вес инвентаризации обновлен!', 'success');
+                    } else {
+                        alert('Ошибка при обновлении веса инвентаризации');
+                    }
+                } catch (error) {
+                    console.error('Ошибка при обновлении веса инвентаризации:', error);
+                    alert('Ошибка при обновлении веса инвентаризации');
+                }
+            }
+
+            updateTableRow(tobaccoId) {
+                const tobacco = this.tobaccos.find(t => t.id === tobaccoId);
+                if (!tobacco) return;
+
+                const usagePercentage = this.calculateUsagePercentage(tobacco);
+                const usageColor = this.getUsageColor(usagePercentage);
+
+                // Находим строку таблицы и обновляем только колонку использования
+                const table = document.querySelector('.table tbody');
+                if (table) {
+                    const rows = table.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const deleteButton = row.querySelector('.delete-button');
+                        if (deleteButton && deleteButton.onclick.toString().includes(tobaccoId)) {
+                            const usageCell = row.cells[7]; // Колонка "Использование"
+                            if (usageCell) {
+                                usageCell.innerHTML = `
+                                    <span style="color: ${usageColor}; font-weight: bold;">
+                                        ${usagePercentage}%
+                                    </span>
+                                `;
+                            }
+                        }
+                    });
+                }
+            }
+
+            updateTable() {
+                // Обновляем только таблицу и статистику
+                const tobaccoList = document.querySelector('.tobacco-list');
+                if (tobaccoList) {
+                    tobaccoList.innerHTML = `
+                        <div class="tobacco-table">
+                            <div class="table-header">
+                                <h3>Каталог табаков</h3>
+                            </div>
+                            ${this.renderTobaccoTable()}
+                        </div>
+                    `;
+                }
+
+                // Обновляем статистику
+                const stats = document.querySelector('.stats');
+                if (stats) {
+                    stats.innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-number">${this.tobaccos.length}</div>
+                            <div class="stat-label">Табаков в каталоге</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">
+                                ${this.tobaccos.length > 0 ? Math.round(this.tobaccos.reduce((sum, t) => sum + (parseFloat(t.price) || 0), 0) / this.tobaccos.length) : 0}
+                            </div>
+                            <div class="stat-label">Средняя цена (₽)</div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Инициализация приложения
+        const app = new HookahStaffApp();
+    </script>
+</body>
+</html>

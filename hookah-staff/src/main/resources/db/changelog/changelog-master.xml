@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    <preConditions>
+        <dbms type="postgresql"/>
+    </preConditions>
+
+
+    <include relativeToChangelogFile="true" file="2025/brand_table/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/taste_table/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/tobacco_table/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/brands_and_tastes_table/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/tobacco_and_taste_table/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/create_tobaccos_tastes_table/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/add_weight_to_tobacco/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/add_inventory_fields_to_tobacco/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/add_taste_field_to_tobacco/changelog.xml"/>
+
+
+</databaseChangeLog>

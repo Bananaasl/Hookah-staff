@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,11 +24,12 @@ public class Taste {
     @Column(name = "id")
     private Long id;
 
+    @Column
     private String name;
 
+    @Column
     private String description;
 
-    @Column
     @ManyToMany
     @JoinTable(
             name = "brands_tastes", // Имя промежуточной таблицы в БД
@@ -38,12 +38,22 @@ public class Taste {
     )
     private List<Brand> brands;
 
-    @Column
-    @ManyToMany
-    @JoinTable(
-            name = "tobaccos_tastes", // Имя промежуточной таблицы в БД
-            joinColumns = @JoinColumn(name = "tobaccos_id"),
-            inverseJoinColumns = @JoinColumn(name = "tastes_id")
-    )
-    private List<Tobacco> tobaccos;
+    // Временно отключаем связь с tobaccos для упрощения
+    // @ManyToMany(mappedBy = "tastes")
+    // private List<Tobacco> tobaccos;
+
+
+    public Taste(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    // Временные методы для решения проблемы с IDE
+    public void setBrands(List<Brand> brands) {
+        this.brands = brands;
+    }
+
+    public List<Brand> getBrands() {
+        return brands;
+    }
 }

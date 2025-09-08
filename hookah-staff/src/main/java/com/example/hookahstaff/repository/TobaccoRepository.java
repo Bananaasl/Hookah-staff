@@ -2,8 +2,8 @@ package com.example.hookahstaff.repository;
 
 import com.example.hookahstaff.entity.Tobacco;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.stereotype.Repository;
 
-@NoRepositoryBean
+@Repository
 public interface TobaccoRepository extends JpaRepository<Tobacco, Long> {
 }

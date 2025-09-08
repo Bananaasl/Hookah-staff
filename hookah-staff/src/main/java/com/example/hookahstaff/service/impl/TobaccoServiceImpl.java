@@ -1,18 +1,15 @@
-package com.example.hookahstaff.service;
+package com.example.hookahstaff.service.impl;
 
 import com.example.hookahstaff.entity.Tobacco;
 import com.example.hookahstaff.repository.TobaccoRepository;
-import com.example.hookahstaff.dto.BulkTobaccoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
-public class TobaccoService {
+public class TobaccoServiceImpl {
 
     private final TobaccoRepository tobaccoRepository;
 
@@ -41,25 +38,5 @@ public class TobaccoService {
             throw new RuntimeException("Tobacco not found with id: " + id);
         }
         tobaccoRepository.deleteById(id);
-    }
-
-    public List<Tobacco> createBulkTobaccos(BulkTobaccoDto bulkTobaccoDto) {
-        List<Tobacco> createdTobaccos = new ArrayList<>();
-        
-        for (String taste : bulkTobaccoDto.getTastes()) {
-            Tobacco tobacco = new Tobacco();
-            tobacco.setBrand_name(bulkTobaccoDto.getBrand_name());
-            tobacco.setFortress(bulkTobaccoDto.getFortress());
-            tobacco.setPrice(bulkTobaccoDto.getPrice());
-            tobacco.setWeight(bulkTobaccoDto.getWeight());
-            tobacco.setOrderDate(bulkTobaccoDto.getOrderDate());
-            tobacco.setInventoryDate(bulkTobaccoDto.getInventoryDate());
-            tobacco.setInventoryWeight(bulkTobaccoDto.getInventoryWeight());
-            tobacco.setTaste(taste);
-            
-            createdTobaccos.add(tobaccoRepository.save(tobacco));
-        }
-        
-        return createdTobaccos;
     }
 }
