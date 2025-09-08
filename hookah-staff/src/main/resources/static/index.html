@@ -414,18 +414,6 @@
         class HookahStaffApp {
             constructor() {
                 this.tobaccos = [];
-                this.newTobacco = {
-                    brand_name: '',
-                    fortress: 1,
-                    price: 0,
-                    weight: 50,
-                    orderDate: new Date().toISOString().split('T')[0],
-                    inventoryDate: new Date().toISOString().split('T')[0],
-                    inventoryWeight: 50, // По умолчанию равен weight
-                    taste: ''
-                };
-                this.bulkTastes = []; // Список вкусов для массового добавления
-                this.showBulkForm = false;
                 this.multiBrands = []; // Список брендов с вкусами для множественного добавления
                 this.showMultiBrandForm = false;
                 this.init();
@@ -500,80 +488,6 @@
                 return '#dc3545'; // Красный - много использован
             }
 
-            async handleBulkAddTobaccos() {
-                // Валидация формы
-                if (!this.newTobacco.brand_name || this.newTobacco.brand_name.trim() === '') {
-                    alert('Пожалуйста, введите название бренда');
-                    return;
-                }
-                
-                if (!this.newTobacco.price || this.newTobacco.price <= 0) {
-                    alert('Пожалуйста, введите корректную цену (больше 0)');
-                    return;
-                }
-                
-                if (!this.newTobacco.weight || this.newTobacco.weight <= 0) {
-                    alert('Пожалуйста, введите корректный вес (больше 0)');
-                    return;
-                }
-
-                if (this.bulkTastes.length === 0) {
-                    alert('Пожалуйста, введите хотя бы один вкус');
-                    return;
-                }
-
-                // Показываем индикатор загрузки
-                const saveButton = document.querySelector('.save-button');
-                const originalText = saveButton.textContent;
-                saveButton.textContent = 'Сохранение...';
-                saveButton.disabled = true;
-
-                try {
-                    const response = await fetch(`${API_BASE_URL}/bulk`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            brand_name: this.newTobacco.brand_name.trim(),
-                            fortress: this.newTobacco.fortress,
-                            price: this.newTobacco.price,
-                            weight: this.newTobacco.weight,
-                            orderDate: this.newTobacco.orderDate,
-                            inventoryDate: this.newTobacco.inventoryDate,
-                            // inventoryWeight не отправляем - сервер установит его равным weight
-                            tastes: this.bulkTastes
-                        })
-                    });
-
-                    if (response.ok) {
-                        // Сохраняем количество добавленных табаков перед очисткой
-                        const addedCount = this.bulkTastes.length;
-                        
-                        // Успешное сохранение
-                        await this.loadTobaccos();
-                        this.bulkTastes = [];
-                        this.showBulkForm = false;
-                        
-                        // Обновляем таблицу для отображения изменений
-                        this.updateTable();
-                        
-                        // Показываем уведомление об успехе
-                        this.showNotification(`Успешно добавлено ${addedCount} табаков!`, 'success');
-                    } else {
-                        const errorText = await response.text();
-                        console.error('Ошибка сервера:', errorText);
-                        alert('Ошибка при добавлении табаков: ' + (errorText || 'Неизвестная ошибка'));
-                    }
-                } catch (error) {
-                    console.error('Ошибка при добавлении табаков:', error);
-                    alert('Ошибка при добавлении табаков: ' + error.message);
-                } finally {
-                    // Восстанавливаем кнопку
-                    saveButton.textContent = originalText;
-                    saveButton.disabled = false;
-                }
-            }
 
             async handleMultiBrandAddTobaccos() {
                 // Валидация формы
@@ -762,15 +676,11 @@
                         </div>
 
                         <div class="add-button-container">
-                            <button class="add-button" onclick="app.toggleBulkForm()">
-                                ${this.showBulkForm ? 'Отмена' : 'Добавить табаки (один бренд)'}
-                            </button>
-                            <button class="add-button" onclick="app.toggleMultiBrandForm()" style="margin-left: 10px;">
-                                ${this.showMultiBrandForm ? 'Отмена' : 'Добавить табаки (несколько брендов)'}
+                            <button class="add-button" onclick="app.toggleMultiBrandForm()">
+                                ${this.showMultiBrandForm ? 'Отмена' : 'Добавить табаки'}
                             </button>
                         </div>
 
-                        ${this.showBulkForm ? this.renderBulkForm() : ''}
                         ${this.showMultiBrandForm ? this.renderMultiBrandForm() : ''}
 
                         <div class="tobacco-list">
@@ -786,82 +696,11 @@
             }
 
 
-            renderBulkForm() {
-                return `
-                    <div class="add-form">
-                        <h3>Добавить табаки</h3>
-                        <div class="form-group">
-                            <label>Название бренда:</label>
-                            <input
-                                type="text"
-                                value="${this.newTobacco.brand_name}"
-                                onchange="app.updateNewTobacco('brand_name', this.value)"
-                                placeholder="Например: Darkside"
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label>Крепость: ${this.newTobacco.fortress}/5</label>
-                            <input
-                                type="range"
-                                min="1"
-                                max="5"
-                                value="${this.newTobacco.fortress}"
-                                onchange="app.updateNewTobacco('fortress', parseInt(this.value))"
-                            />
-                            <span class="fortress-text">${this.getFortressText(this.newTobacco.fortress)}</span>
-                        </div>
-                        <div class="form-group">
-                            <label>Цена за пачку (₽):</label>
-                            <input
-                                type="number"
-                                value="${this.newTobacco.price}"
-                                onchange="app.updateNewTobacco('price', parseFloat(this.value) || 0)"
-                                placeholder="1200"
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label>Вес пачки (г):</label>
-                            <input
-                                type="number"
-                                value="${this.newTobacco.weight}"
-                                onchange="app.updateNewTobacco('weight', parseInt(this.value) || 50)"
-                                placeholder="50"
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label>Вкусы (через запятую):</label>
-                            <textarea
-                                rows="3"
-                                placeholder="Малина, Смородина, Клубника"
-                                onchange="app.updateBulkTastes(this.value)"
-                                style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; resize: vertical;"
-                            >${this.bulkTastes.join(', ')}</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Предварительный просмотр:</label>
-                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px solid #e9ecef;">
-                                ${this.bulkTastes.length > 0 ? 
-                                    this.bulkTastes.map(taste => `
-                                        <div style="margin: 5px 0; padding: 5px; background: white; border-radius: 4px; border: 1px solid #dee2e6;">
-                                            <strong>${this.newTobacco.brand_name || 'Бренд'}</strong> - ${taste.trim()}
-                                            <br><small>Крепость: ${this.getFortressText(this.newTobacco.fortress)}, Цена: ${this.newTobacco.price || 0} ₽, Вес: ${this.newTobacco.weight || 50} г</small>
-                                        </div>
-                                    `).join('') : 
-                                    '<div style="color: #6c757d; font-style: italic;">Введите вкусы для предварительного просмотра</div>'
-                                }
-                            </div>
-                        </div>
-                        <button class="save-button" onclick="app.handleBulkAddTobaccos()">
-                            Добавить ${this.bulkTastes.length} табаков
-                        </button>
-                    </div>
-                `;
-            }
 
             renderMultiBrandForm() {
                 return `
                     <div class="add-form">
-                        <h3>Добавить табаки (несколько брендов)</h3>
+                        <h3>Добавить табаки</h3>
                         <div class="brands-container">
                             ${this.multiBrands.map((brand, index) => `
                                 <div class="brand-form" style="border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #f8f9fa;">
@@ -1054,18 +893,10 @@
                 `;
             }
 
-            toggleBulkForm() {
-                this.showBulkForm = !this.showBulkForm;
-                if (this.showBulkForm) {
-                    this.showMultiBrandForm = false;
-                }
-                this.render();
-            }
 
             toggleMultiBrandForm() {
                 this.showMultiBrandForm = !this.showMultiBrandForm;
                 if (this.showMultiBrandForm) {
-                    this.showBulkForm = false;
                     // Инициализируем с одним брендом, если список пуст
                     if (this.multiBrands.length === 0) {
                         this.addNewBrand();
@@ -1074,13 +905,6 @@
                 this.render();
             }
 
-            updateBulkTastes(tastesText) {
-                this.bulkTastes = tastesText
-                    .split(',')
-                    .map(taste => taste.trim())
-                    .filter(taste => taste.length > 0);
-                this.render();
-            }
 
             addNewBrand() {
                 this.multiBrands.push({
@@ -1117,21 +941,6 @@
                 }
             }
 
-            updateNewTobacco(field, value) {
-                this.newTobacco[field] = value;
-                
-                // Если изменился вес пачки, автоматически обновляем вес инвентаризации
-                if (field === 'weight') {
-                    // Если текущий вес инвентаризации больше нового веса пачки, 
-                    // устанавливаем его равным новому весу пачки
-                    if (this.newTobacco.inventoryWeight > value) {
-                        this.newTobacco.inventoryWeight = value;
-                    }
-                }
-                
-                // Перерендериваем форму
-                this.render();
-            }
 
 
             async updateInventoryWeight(tobaccoId, newWeight) {
