@@ -3,6 +3,7 @@ package com.example.hookahstaff.rest.controller;
 import com.example.hookahstaff.entity.Tobacco;
 import com.example.hookahstaff.service.TobaccoService;
 import com.example.hookahstaff.dto.BulkTobaccoDto;
+import com.example.hookahstaff.dto.MultiBrandTobaccoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -94,7 +95,7 @@ public class TobaccoController {
     }
 
     /**
-     * Массовое создание табаков с разными вкусами
+     * Массовое создание табаков одного бренда с разными вкусами
      * 
      * @param bulkTobaccoDto DTO с данными для массового создания
      * @return список созданных табаков
@@ -102,6 +103,18 @@ public class TobaccoController {
     @PostMapping("/bulk")
     public ResponseEntity<List<Tobacco>> createBulkTobaccos(@RequestBody BulkTobaccoDto bulkTobaccoDto) {
         List<Tobacco> createdTobaccos = tobaccoService.createBulkTobaccos(bulkTobaccoDto);
+        return ResponseEntity.ok(createdTobaccos);
+    }
+
+    /**
+     * Массовое создание табаков нескольких брендов с разными вкусами
+     * 
+     * @param multiBrandDto DTO с данными для массового создания нескольких брендов
+     * @return список созданных табаков
+     */
+    @PostMapping("/multi-brand")
+    public ResponseEntity<List<Tobacco>> createMultiBrandTobaccos(@RequestBody MultiBrandTobaccoDto multiBrandDto) {
+        List<Tobacco> createdTobaccos = tobaccoService.createMultiBrandTobaccos(multiBrandDto);
         return ResponseEntity.ok(createdTobaccos);
     }
 }
