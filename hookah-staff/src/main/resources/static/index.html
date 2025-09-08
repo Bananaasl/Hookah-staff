@@ -349,7 +349,7 @@
                     weight: 50,
                     orderDate: new Date().toISOString().split('T')[0],
                     inventoryDate: new Date().toISOString().split('T')[0],
-                    inventoryWeight: 50, // Будет обновляться при изменении weight
+                    inventoryWeight: 50, // По умолчанию равен weight
                     taste: ''
                 };
                 this.bulkTastes = []; // Список вкусов для массового добавления
@@ -395,14 +395,29 @@
 
             calculateUsagePercentage(tobacco) {
                 const orderWeight = tobacco.weight || 0;
-                const inventoryWeight = tobacco.inventoryWeight || 0;
+                const inventoryWeightInGrams = this.getInventoryWeightInGrams(tobacco);
                 
                 if (orderWeight === 0) return 0;
                 
-                const usedWeight = orderWeight - inventoryWeight;
+                const usedWeight = orderWeight - inventoryWeightInGrams;
                 const percentage = (usedWeight / orderWeight) * 100;
                 
                 return Math.max(0, Math.min(100, Math.round(percentage)));
+            }
+
+            // Функция для получения веса инвентаризации в граммах
+            getInventoryWeightInGrams(tobacco) {
+                const inventoryWeight = tobacco.inventoryWeight || 0;
+                const orderWeight = tobacco.weight || 0;
+                
+                // Если inventoryWeight больше orderWeight, значит это процент
+                if (inventoryWeight > orderWeight && inventoryWeight <= 100) {
+                    // Это процент, конвертируем в граммы
+                    return Math.round((inventoryWeight / 100) * orderWeight);
+                }
+                
+                // Иначе это уже граммы
+                return inventoryWeight;
             }
 
             getUsageColor(percentage) {
@@ -537,7 +552,7 @@
                             weight: 50,
                             orderDate: new Date().toISOString().split('T')[0],
                             inventoryDate: new Date().toISOString().split('T')[0],
-                            inventoryWeight: 50,
+                            inventoryWeight: 50, // По умолчанию равен weight
                             taste: ''
                         };
                         this.showAddForm = false;
@@ -872,7 +887,7 @@
                                     <td>
                                         <input 
                                             type="number" 
-                                            value="${tobacco.inventoryWeight || tobacco.weight || 50}" 
+                                            value="${this.getInventoryWeightInGrams(tobacco)}" 
                                             min="0" 
                                             max="${tobacco.weight || 50}"
                                             style="width: 80px; padding: 4px; border: 1px solid #ced4da; border-radius: 4px;"
@@ -926,7 +941,11 @@
                 
                 // Если изменился вес пачки, автоматически обновляем вес инвентаризации
                 if (field === 'weight') {
-                    this.newTobacco.inventoryWeight = value;
+                    // Если текущий вес инвентаризации больше нового веса пачки, 
+                    // устанавливаем его равным новому весу пачки
+                    if (this.newTobacco.inventoryWeight > value) {
+                        this.newTobacco.inventoryWeight = value;
+                    }
                 }
                 
                 // Не перерендериваем всю страницу, обновляем только форму
@@ -959,6 +978,20 @@
                     const tobacco = this.tobaccos.find(t => t.id === tobaccoId);
                     if (!tobacco) return;
 
+                    const weightInGrams = parseInt(newWeight);
+                    const maxWeight = tobacco.weight || 50;
+                    
+                    // Валидация: вес инвентаризации не может быть больше исходного веса
+                    if (weightInGrams > maxWeight) {
+                        alert(`Вес инвентаризации не может быть больше ${maxWeight} г`);
+                        return;
+                    }
+                    
+                    if (weightInGrams < 0) {
+                        alert('Вес инвентаризации не может быть отрицательным');
+                        return;
+                    }
+
                     const response = await fetch(`${API_BASE_URL}/${tobaccoId}`, {
                         method: 'PUT',
                         headers: {
@@ -966,14 +999,14 @@
                         },
                         body: JSON.stringify({
                             ...tobacco,
-                            inventoryWeight: parseInt(newWeight),
+                            inventoryWeight: weightInGrams, // Сохраняем в граммах
                             inventoryDate: new Date().toISOString().split('T')[0]
                         })
                     });
 
                     if (response.ok) {
                         // Обновляем локальные данные
-                        tobacco.inventoryWeight = parseInt(newWeight);
+                        tobacco.inventoryWeight = weightInGrams;
                         tobacco.inventoryDate = new Date().toISOString().split('T')[0];
                         
                         // Обновляем только строку таблицы
@@ -996,14 +1029,30 @@
                 const usagePercentage = this.calculateUsagePercentage(tobacco);
                 const usageColor = this.getUsageColor(usagePercentage);
 
-                // Находим строку таблицы и обновляем только колонку использования
+                // Находим строку таблицы и обновляем колонки
                 const table = document.querySelector('.table tbody');
                 if (table) {
                     const rows = table.querySelectorAll('tr');
                     rows.forEach(row => {
                         const deleteButton = row.querySelector('.delete-button');
                         if (deleteButton && deleteButton.onclick.toString().includes(tobaccoId)) {
-                            const usageCell = row.cells[7]; // Колонка "Использование"
+                            // Обновляем колонку "Вес на инвентаризации" (индекс 7)
+                            const inventoryWeightCell = row.cells[7];
+                            if (inventoryWeightCell) {
+                                inventoryWeightCell.innerHTML = `
+                                    <input 
+                                        type="number" 
+                                        value="${this.getInventoryWeightInGrams(tobacco)}" 
+                                        min="0" 
+                                        max="${tobacco.weight || 50}"
+                                        style="width: 80px; padding: 4px; border: 1px solid #ced4da; border-radius: 4px;"
+                                        onchange="app.updateInventoryWeight(${tobacco.id}, this.value)"
+                                    /> г
+                                `;
+                            }
+                            
+                            // Обновляем колонку "Использование" (индекс 8)
+                            const usageCell = row.cells[8];
                             if (usageCell) {
                                 usageCell.innerHTML = `
                                     <span style="color: ${usageColor}; font-weight: bold;">
