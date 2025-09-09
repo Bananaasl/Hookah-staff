@@ -1,5 +1,6 @@
 package com.example.hookahstaff.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -91,5 +92,6 @@ public class Tobacco {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
+    @JsonIgnore
     private Delivery delivery;
 }

@@ -958,6 +958,32 @@
                 }
             }
 
+            async createNewDeliveryWithForm() {
+                try {
+                    const response = await fetch('http://localhost:8080/api/delivery/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `createdBy=${this.currentUser.username}`
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.currentDelivery = data;
+                        this.showMultiBrandForm = true;
+                        this.showNotification('Новый привоз создан! Теперь добавьте табаки.', 'success');
+                        this.render();
+                    } else {
+                        const errorText = await response.text();
+                        this.showNotification(errorText, 'error');
+                    }
+                } catch (error) {
+                    console.error('Ошибка создания привоза:', error);
+                    this.showNotification('Ошибка создания привоза', 'error');
+                }
+            }
+
             async finalizeDelivery() {
                 if (!this.currentDelivery) {
                     this.showNotification('Нет активного привоза для завершения', 'error');
@@ -1077,6 +1103,12 @@
 
 
             async handleMultiBrandAddTobaccos() {
+                // Проверяем, есть ли активный привоз
+                if (!this.currentDelivery) {
+                    this.showNotification('Сначала создайте привоз', 'error');
+                    return;
+                }
+
                 // Валидация формы
                 if (this.multiBrands.length === 0) {
                     alert('Пожалуйста, добавьте хотя бы один бренд');
@@ -1120,6 +1152,7 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
+                            deliveryId: this.currentDelivery.id,
                             brands: this.multiBrands.map(brand => ({
                                 brandName: brand.brandName.trim(),
                                 fortress: brand.fortress,
@@ -1139,13 +1172,17 @@
                         // Успешное сохранение
                         await this.loadTobaccos();
                         this.multiBrands = [];
-                        this.showMultiBrandForm = false;
+                        // НЕ закрываем форму для кальянного мастера, чтобы можно было добавить еще табаки
+                        const isHookahMaster = this.currentUser && this.currentUser.role === 'HOOKAH_MASTER';
+                        if (!isHookahMaster) {
+                            this.showMultiBrandForm = false;
+                        }
                         
                         // Обновляем таблицу для отображения изменений
                         this.updateTable();
                         
                         // Показываем уведомление об успехе
-                        this.showNotification(`Успешно добавлено ${addedCount} табаков!`, 'success');
+                        this.showNotification(`Успешно добавлено ${addedCount} табаков в привоз!`, 'success');
                     } else {
                         const errorText = await response.text();
                         console.error('Ошибка сервера:', errorText);
@@ -1420,6 +1457,8 @@
             }
 
             renderCurrentTab() {
+                const isHookahMaster = this.currentUser && this.currentUser.role === 'HOOKAH_MASTER';
+                
                 return `
                     <div class="stats">
                         <div class="stat-card">
@@ -1438,6 +1477,44 @@
                         </div>
                     </div>
 
+                    ${isHookahMaster ? this.renderHookahMasterControls() : this.renderSeniorMasterControls()}
+
+                    ${this.showMultiBrandForm ? this.renderMultiBrandForm() : ''}
+
+                    <div class="tobacco-list">
+                        <div class="tobacco-table">
+                            <div class="table-header">
+                                <h3>Текущий привоз</h3>
+                            </div>
+                            ${this.renderTobaccoTable()}
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderHookahMasterControls() {
+                return `
+                    <div class="delivery-controls" style="margin-bottom: 30px; text-align: center;">
+                        ${!this.currentDelivery ? `
+                            <button class="add-button" onclick="app.createNewDeliveryWithForm()">
+                                Создать новый привоз
+                            </button>
+                        ` : `
+                            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                                <button class="add-button" onclick="app.toggleMultiBrandForm()">
+                                    ${this.showMultiBrandForm ? 'Отмена' : 'Добавить еще табаки'}
+                                </button>
+                                <button class="add-button" onclick="app.finalizeDelivery()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                                    Зафиксировать привоз
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                `;
+            }
+
+            renderSeniorMasterControls() {
+                return `
                     <div class="delivery-controls" style="margin-bottom: 30px; text-align: center;">
                         ${!this.currentDelivery ? `
                             <button class="add-button" onclick="app.createNewDelivery()">
@@ -1454,17 +1531,6 @@
                         <button class="add-button" onclick="app.toggleMultiBrandForm()">
                             ${this.showMultiBrandForm ? 'Отмена' : 'Добавить табаки'}
                         </button>
-                    </div>
-
-                    ${this.showMultiBrandForm ? this.renderMultiBrandForm() : ''}
-
-                    <div class="tobacco-list">
-                        <div class="tobacco-table">
-                            <div class="table-header">
-                                <h3>Текущий привоз</h3>
-                            </div>
-                            ${this.renderTobaccoTable()}
-                        </div>
                     </div>
                 `;
             }
@@ -1617,7 +1683,10 @@
                         </div>
                         
                         <button class="save-button" onclick="app.handleMultiBrandAddTobaccos()">
-                            Добавить ${this.multiBrands.reduce((total, brand) => total + brand.tastes.length, 0)} табаков
+                            ${this.currentUser && this.currentUser.role === 'HOOKAH_MASTER' ? 
+                                `Добавить ${this.multiBrands.reduce((total, brand) => total + brand.tastes.length, 0)} табаков в привоз` : 
+                                `Добавить ${this.multiBrands.reduce((total, brand) => total + brand.tastes.length, 0)} табаков`
+                            }
                         </button>
                     </div>
                 `;

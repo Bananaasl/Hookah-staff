@@ -1,5 +1,6 @@
 package com.example.hookahstaff.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +25,7 @@ public class Delivery {
     private LocalDateTime finalizedAt;
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Tobacco> tobaccos;
 
     // Конструкторы

@@ -1,7 +1,9 @@
 package com.example.hookahstaff.service.impl;
 
 import com.example.hookahstaff.entity.Tobacco;
+import com.example.hookahstaff.entity.Delivery;
 import com.example.hookahstaff.repository.TobaccoRepository;
+import com.example.hookahstaff.repository.DeliveryRepository;
 import com.example.hookahstaff.service.TobaccoService;
 import com.example.hookahstaff.dto.BulkTobaccoDto;
 import com.example.hookahstaff.dto.MultiBrandTobaccoDto;
@@ -30,6 +32,11 @@ public class TobaccoServiceImpl implements TobaccoService {
      * Репозиторий для работы с табаками
      */
     private final TobaccoRepository tobaccoRepository;
+
+    /**
+     * Репозиторий для работы с привозами
+     */
+    private final DeliveryRepository deliveryRepository;
 
     /**
      * Получить все табаки
@@ -155,6 +162,13 @@ public class TobaccoServiceImpl implements TobaccoService {
     public List<Tobacco> createMultiBrandTobaccos(MultiBrandTobaccoDto multiBrandDto) {
         List<Tobacco> allCreatedTobaccos = new ArrayList<>();
         
+        // Получаем привоз, если указан deliveryId
+        Delivery delivery = null;
+        if (multiBrandDto.getDeliveryId() != null) {
+            delivery = deliveryRepository.findById(multiBrandDto.getDeliveryId())
+                    .orElseThrow(() -> new RuntimeException("Delivery not found with id: " + multiBrandDto.getDeliveryId()));
+        }
+        
         for (BrandWithTastesDto brandDto : multiBrandDto.getBrands()) {
             for (String taste : brandDto.getTastes()) {
                 Tobacco tobacco = new Tobacco();
@@ -167,6 +181,7 @@ public class TobaccoServiceImpl implements TobaccoService {
                 // Вес инвентаризации всегда равен весу пачки при создании
                 tobacco.setInventoryWeight(brandDto.getWeight());
                 tobacco.setTaste(taste);
+                tobacco.setDelivery(delivery);
                 
                 allCreatedTobaccos.add(tobaccoRepository.save(tobacco));
             }

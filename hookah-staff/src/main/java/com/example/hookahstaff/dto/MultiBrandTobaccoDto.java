@@ -24,6 +24,11 @@ import java.util.List;
 public class MultiBrandTobaccoDto {
     
     /**
+     * ID привоза для привязки табаков
+     */
+    private Long deliveryId;
+    
+    /**
      * Список брендов с их вкусами для массового создания
      */
     private List<BrandWithTastesDto> brands;
