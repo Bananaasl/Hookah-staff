@@ -1,5 +1,8 @@
 package com.example.hookahstaff;
 
+import com.example.hookahstaff.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -15,7 +18,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2025-01-01
  */
 @SpringBootApplication
-public class HookahStaffApplication {
+public class HookahStaffApplication implements CommandLineRunner {
+
+    @Autowired
+    private AuthService authService;
 
     /**
      * Точка входа в приложение
@@ -24,5 +30,11 @@ public class HookahStaffApplication {
      */
     public static void main(String[] args) {
         SpringApplication.run(HookahStaffApplication.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        // Инициализируем пользователей по умолчанию
+        authService.initializeDefaultUsers();
     }
 }

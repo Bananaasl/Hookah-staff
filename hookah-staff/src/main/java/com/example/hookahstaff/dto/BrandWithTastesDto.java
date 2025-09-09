@@ -60,3 +60,4 @@ public class BrandWithTastesDto {
      */
     private List<String> tastes;
 }
+

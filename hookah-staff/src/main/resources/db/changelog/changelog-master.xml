@@ -8,7 +8,6 @@
     </preConditions>
 
     <include relativeToChangelogFile="true" file="2025/tobacco_table/changelog.xml"/>
-
-
+    <include relativeToChangelogFile="true" file="2025/auth_and_delivery_tables/changelog.xml"/>
 
 </databaseChangeLog>

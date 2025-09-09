@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="create-tobaccos-tastes-table-1" author="system">
+        <createTable tableName="tobaccos_tastes">
+            <column name="tobaccos_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tastes_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addPrimaryKey tableName="tobaccos_tastes" columnNames="tobaccos_id, tastes_id"/>
+        
+        <addForeignKeyConstraint 
+            baseTableName="tobaccos_tastes" 
+            baseColumnNames="tobaccos_id" 
+            constraintName="fk_tobaccos_tastes_tobacco" 
+            referencedTableName="tobacco" 
+            referencedColumnNames="id"/>
+            
+        <addForeignKeyConstraint 
+            baseTableName="tobaccos_tastes" 
+            baseColumnNames="tastes_id" 
+            constraintName="fk_tobaccos_tastes_taste" 
+            referencedTableName="taste" 
+            referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

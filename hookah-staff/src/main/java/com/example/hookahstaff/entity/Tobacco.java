@@ -85,4 +85,11 @@ public class Tobacco {
      */
     @Column(name = "taste")
     private String taste;
+
+    /**
+     * Связь с привозом
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "delivery_id")
+    private Delivery delivery;
 }

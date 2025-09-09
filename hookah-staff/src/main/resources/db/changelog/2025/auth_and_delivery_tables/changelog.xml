@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="create-users-table" author="hookah-staff">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-deliveries-table" author="hookah-staff">
+        <createTable tableName="deliveries">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="delivery_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_finalized" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="finalized_at" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-delivery-id-to-tobacco" author="hookah-staff">
+        <addColumn tableName="tobacco">
+            <column name="delivery_id" type="BIGINT"/>
+        </addColumn>
+        
+        <addForeignKeyConstraint
+                baseTableName="tobacco"
+                baseColumnNames="delivery_id"
+                constraintName="fk_tobacco_delivery"
+                referencedTableName="deliveries"
+                referencedColumnNames="id"
+                onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="insert-default-users" author="hookah-staff">
+        <insert tableName="users">
+            <column name="username" value="master"/>
+            <column name="password" value="master123"/>
+            <column name="role" value="HOOKAH_MASTER"/>
+            <column name="created_at" valueDate="CURRENT_TIMESTAMP"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+        
+        <insert tableName="users">
+            <column name="username" value="senior"/>
+            <column name="password" value="senior123"/>
+            <column name="role" value="SENIOR_HOOKAH_MASTER"/>
+            <column name="created_at" valueDate="CURRENT_TIMESTAMP"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

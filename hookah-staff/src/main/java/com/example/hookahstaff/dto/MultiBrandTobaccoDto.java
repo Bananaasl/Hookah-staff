@@ -28,3 +28,4 @@ public class MultiBrandTobaccoDto {
      */
     private List<BrandWithTastesDto> brands;
 }
+

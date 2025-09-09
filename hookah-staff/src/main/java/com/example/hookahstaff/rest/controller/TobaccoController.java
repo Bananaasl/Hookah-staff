@@ -45,6 +45,17 @@ public class TobaccoController {
     }
 
     /**
+     * Получить текущие табаки (незавершенного привоза)
+     * 
+     * @return список текущих табаков
+     */
+    @GetMapping("/current")
+    public ResponseEntity<List<Tobacco>> getCurrentTobaccos() {
+        List<Tobacco> tobaccos = tobaccoService.getCurrentTobaccos();
+        return ResponseEntity.ok(tobaccos);
+    }
+
+    /**
      * Получить табак по идентификатору
      * 
      * @param id идентификатор табака

@@ -42,6 +42,16 @@ public class TobaccoServiceImpl implements TobaccoService {
     }
 
     /**
+     * Получить текущие табаки (незавершенного привоза)
+     * 
+     * @return список текущих табаков
+     */
+    @Override
+    public List<Tobacco> getCurrentTobaccos() {
+        return tobaccoRepository.findCurrentTobaccos();
+    }
+
+    /**
      * Получить табак по идентификатору
      * 
      * @param id идентификатор табака

@@ -26,26 +26,96 @@
         }
 
         .header {
-            text-align: center;
-            padding: 40px 0;
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border-radius: 16px;
             margin-bottom: 30px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid #e9ecef;
+            overflow: hidden;
         }
 
-        .header h1 {
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px 40px;
+            min-height: 80px;
+        }
+
+        .header-center {
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-center h1 {
             font-size: 2.5rem;
             font-weight: 700;
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin: 0 0 8px 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .header p {
+        .header-center p {
             font-size: 1.1rem;
             color: #6c757d;
             font-weight: 400;
+            margin: 0;
+        }
+
+        .header-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-info {
+            text-align: right;
+        }
+
+        .profile-role {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .profile-username {
+            font-weight: 600;
+            color: #495057;
+            font-size: 1rem;
+        }
+
+        .logout-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+        }
+
+        .logout-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+        }
+
+        .logout-button svg {
+            transition: transform 0.2s ease;
+        }
+
+        .logout-button:hover svg {
+            transform: translateX(-2px);
         }
 
         .stats {
@@ -343,8 +413,49 @@
                 padding: 10px;
             }
             
-            .header h1 {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .header-center h1 {
                 font-size: 2rem;
+            }
+
+            .header-profile {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+
+            .profile-info {
+                text-align: center;
+            }
+
+            .logout-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .login-container {
+                min-height: 50vh;
+                padding: 10px;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+                border-radius: 16px;
+            }
+
+            .login-icon {
+                width: 60px;
+                height: 60px;
+            }
+
+            .login-header h2 {
+                font-size: 1.5rem;
             }
             
             .stats {
@@ -382,6 +493,297 @@
                 padding: 4px 1px;
             }
         }
+
+        /* Стили для вкладок */
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #6c757d;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            color: #495057;
+            background: #f8f9fa;
+        }
+
+        .tab-button.active {
+            color: #495057;
+            border-bottom-color: #6c757d;
+            background: #f8f9fa;
+        }
+
+        /* Стили для карточек привозов */
+        .delivery-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .delivery-card {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .delivery-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-color: #6c757d;
+        }
+
+        .delivery-date {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .delivery-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .delivery-info div {
+            margin-bottom: 5px;
+        }
+
+        /* Стили для модального окна */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #495057;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #f8f9fa;
+            color: #495057;
+        }
+
+        /* Стили для истории */
+        .history-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Стили для формы авторизации */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid #e9ecef;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border-radius: 50%;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .login-header h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 8px 0;
+        }
+
+        .login-header p {
+            color: #6c757d;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .login-form {
+            margin-bottom: 30px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6c757d;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #adb5bd;
+        }
+
+        .login-button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+        }
+
+        .login-button svg {
+            transition: transform 0.2s ease;
+        }
+
+        .login-button:hover svg {
+            transform: translateX(2px);
+        }
+
+        .login-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .info-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .info-header svg {
+            color: #6c757d;
+        }
+
+        .info-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .user-role {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .role-name {
+            font-weight: 500;
+            color: #495057;
+            font-size: 0.9rem;
+        }
+
+        .role-credentials {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #6c757d;
+            border: 1px solid #e9ecef;
+        }
     </style>
 </head>
 <body>
@@ -416,17 +818,37 @@
                 this.tobaccos = [];
                 this.multiBrands = []; // Список брендов с вкусами для множественного добавления
                 this.showMultiBrandForm = false;
+                this.currentUser = null;
+                this.currentDelivery = null;
+                this.finalizedDeliveries = [];
+                this.activeTab = 'current'; // 'current' или 'history'
+                this.showDeliveryModal = false;
+                this.selectedDelivery = null;
                 this.init();
             }
 
             async init() {
+                // Проверяем, есть ли сохраненный токен
+                const savedToken = localStorage.getItem('authToken');
+                if (savedToken) {
+                    // Здесь можно добавить проверку токена на сервере
+                    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                    await this.loadData();
+                } else {
+                    this.render();
+                }
+            }
+
+            async loadData() {
                 await this.loadTobaccos();
+                await this.loadCurrentDelivery();
+                await this.loadFinalizedDeliveries();
                 this.render();
             }
 
             async loadTobaccos() {
                 try {
-                    const response = await fetch(API_BASE_URL);
+                    const response = await fetch(`${API_BASE_URL}/current`);
                     if (response.ok) {
                         const data = await response.json();
                         this.tobaccos = Array.isArray(data) ? data : [];
@@ -441,6 +863,171 @@
                     this.tobaccos = [];
                     this.showNotification('Ошибка подключения к серверу', 'error');
                 }
+            }
+
+            async loadCurrentDelivery() {
+                try {
+                    const response = await fetch('http://localhost:8080/api/delivery/current');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.currentDelivery = data;
+                    } else {
+                        this.currentDelivery = null;
+                    }
+                } catch (error) {
+                    console.error('Ошибка загрузки текущего привоза:', error);
+                    this.currentDelivery = null;
+                }
+            }
+
+            async loadFinalizedDeliveries() {
+                try {
+                    const response = await fetch('http://localhost:8080/api/delivery/finalized');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.finalizedDeliveries = Array.isArray(data) ? data : [];
+                    } else {
+                        this.finalizedDeliveries = [];
+                    }
+                } catch (error) {
+                    console.error('Ошибка загрузки завершенных привозов:', error);
+                    this.finalizedDeliveries = [];
+                }
+            }
+
+            async login(username, password) {
+                try {
+                    const response = await fetch('http://localhost:8080/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.currentUser = data;
+                        localStorage.setItem('authToken', data.token);
+                        localStorage.setItem('currentUser', JSON.stringify(data));
+                        await this.loadData();
+                        this.showNotification(`Добро пожаловать, ${data.username}!`, 'success');
+                    } else {
+                        const errorText = await response.text();
+                        this.showNotification(errorText, 'error');
+                    }
+                } catch (error) {
+                    console.error('Ошибка авторизации:', error);
+                    this.showNotification('Ошибка подключения к серверу', 'error');
+                }
+            }
+
+            logout() {
+                this.currentUser = null;
+                this.tobaccos = [];
+                this.currentDelivery = null;
+                this.finalizedDeliveries = [];
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('currentUser');
+                this.render();
+                this.showNotification('Вы вышли из системы', 'info');
+            }
+
+            async createNewDelivery() {
+                try {
+                    const response = await fetch('http://localhost:8080/api/delivery/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `createdBy=${this.currentUser.username}`
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.currentDelivery = data;
+                        this.showNotification('Новый привоз создан!', 'success');
+                        this.render();
+                    } else {
+                        const errorText = await response.text();
+                        this.showNotification(errorText, 'error');
+                    }
+                } catch (error) {
+                    console.error('Ошибка создания привоза:', error);
+                    this.showNotification('Ошибка создания привоза', 'error');
+                }
+            }
+
+            async finalizeDelivery() {
+                if (!this.currentDelivery) {
+                    this.showNotification('Нет активного привоза для завершения', 'error');
+                    return;
+                }
+
+                if (!confirm('Вы уверены, что хотите завершить этот привоз? После завершения его нельзя будет изменить.')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`http://localhost:8080/api/delivery/${this.currentDelivery.id}/finalize`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `finalizedBy=${this.currentUser.username}`
+                    });
+
+                    if (response.ok) {
+                        this.showNotification('Привоз успешно завершен!', 'success');
+                        await this.loadData();
+                    } else {
+                        const errorText = await response.text();
+                        this.showNotification(errorText, 'error');
+                    }
+                } catch (error) {
+                    console.error('Ошибка завершения привоза:', error);
+                    this.showNotification('Ошибка завершения привоза', 'error');
+                }
+            }
+
+            async showDeliveryDetails(deliveryId) {
+                try {
+                    const response = await fetch(`http://localhost:8080/api/delivery/${deliveryId}/tobaccos`);
+                    if (response.ok) {
+                        const tobaccos = await response.json();
+                        this.selectedDelivery = { id: deliveryId, tobaccos };
+                        this.showDeliveryModal = true;
+                        this.render();
+                    } else {
+                        this.showNotification('Ошибка загрузки деталей привоза', 'error');
+                    }
+                } catch (error) {
+                    console.error('Ошибка загрузки деталей привоза:', error);
+                    this.showNotification('Ошибка загрузки деталей привоза', 'error');
+                }
+            }
+
+            closeDeliveryModal() {
+                this.showDeliveryModal = false;
+                this.selectedDelivery = null;
+                this.render();
+            }
+
+            switchTab(tab) {
+                this.activeTab = tab;
+                this.render();
+            }
+
+            handleLogin() {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                if (!username || !password) {
+                    this.showNotification('Пожалуйста, заполните все поля', 'error');
+                    return;
+                }
+                
+                this.login(username, password);
             }
 
             getFortressClass(fortress) {
@@ -655,42 +1242,258 @@
 
             render() {
                 const app = document.getElementById('root');
+                
+                if (!this.currentUser) {
+                    app.innerHTML = this.renderLoginForm();
+                    return;
+                }
+
                 app.innerHTML = `
                     <div class="app">
                         <div class="header">
-                            <h1>Hookah Staff</h1>
-                            <p>Управление табаками для кальянной</p>
-                        </div>
-
-                        <div class="stats">
-                            <div class="stat-card">
-                                <div class="stat-number">${this.tobaccos.length}</div>
-                                <div class="stat-label">Табаков в каталоге</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number">
-                                    ${this.tobaccos.length > 0 ? Math.round(this.tobaccos.reduce((sum, t) => sum + (parseFloat(t.price) || 0), 0) / this.tobaccos.length) : 0}
+                            <div class="header-content">
+                                <div class="header-center">
+                                    <h1>Hookah Staff</h1>
+                                    <p>Управление табаками для кальянной</p>
                                 </div>
-                                <div class="stat-label">Средняя цена (₽)</div>
+                                <div class="header-profile">
+                                    <div class="profile-info">
+                                        <div class="profile-role">${this.currentUser.roleDisplayName}</div>
+                                        <div class="profile-username">${this.currentUser.username}</div>
+                                    </div>
+                                    <button class="logout-button" onclick="app.logout()">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M16 17v-3H9v-4h7V7l5 5-5 5zM14 2a2 2 0 0 1 2 2v2h-2V4H5v16h9v-2h2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9z"/>
+                                        </svg>
+                                        Выйти
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="add-button-container">
-                            <button class="add-button" onclick="app.toggleMultiBrandForm()">
-                                ${this.showMultiBrandForm ? 'Отмена' : 'Добавить табаки'}
+                        <div class="tabs">
+                            <button class="tab-button ${this.activeTab === 'current' ? 'active' : ''}" onclick="app.switchTab('current')">
+                                Текущий привоз
+                            </button>
+                            <button class="tab-button ${this.activeTab === 'history' ? 'active' : ''}" onclick="app.switchTab('history')">
+                                Прошлые привозы
                             </button>
                         </div>
 
-                        ${this.showMultiBrandForm ? this.renderMultiBrandForm() : ''}
+                        ${this.activeTab === 'current' ? this.renderCurrentTab() : this.renderHistoryTab()}
+                    </div>
+                    
+                    ${this.showDeliveryModal ? this.renderDeliveryModal() : ''}
+                `;
+            }
 
-                        <div class="tobacco-list">
+            renderDeliveryModal() {
+                if (!this.selectedDelivery) return '';
+
+                return `
+                    <div class="modal-overlay" onclick="app.closeDeliveryModal()">
+                        <div class="modal-content" onclick="event.stopPropagation()">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Детали привоза</h3>
+                                <button class="modal-close" onclick="app.closeDeliveryModal()">&times;</button>
+                            </div>
+                            
                             <div class="tobacco-table">
                                 <div class="table-header">
-                                    <h3>Каталог табаков</h3>
+                                    <h3>Табаки в привозе</h3>
                                 </div>
-                                ${this.renderTobaccoTable()}
+                                ${this.renderDeliveryTobaccoTable()}
                             </div>
                         </div>
+                    </div>
+                `;
+            }
+
+            renderDeliveryTobaccoTable() {
+                if (!this.selectedDelivery || !this.selectedDelivery.tobaccos || this.selectedDelivery.tobaccos.length === 0) {
+                    return `
+                        <div class="empty-state">
+                            <p>Табаки не найдены</p>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Бренд</th>
+                                    <th>Вкус</th>
+                                    <th>Крепость</th>
+                                    <th>Цена</th>
+                                    <th>Вес</th>
+                                    <th>Дата заказа</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            ${this.selectedDelivery.tobaccos.map(tobacco => `
+                                <tr>
+                                    <td>${tobacco.brand_name || 'Не указано'}</td>
+                                    <td>${tobacco.taste || 'Не указано'}</td>
+                                    <td>
+                                        <span class="fortress-badge ${this.getFortressClass(tobacco.fortress)}">
+                                            ${this.getFortressText(tobacco.fortress)} (${tobacco.fortress}/5)
+                                        </span>
+                                    </td>
+                                    <td class="price">${tobacco.price || 0} ₽</td>
+                                    <td>${tobacco.weight || 50} г</td>
+                                    <td>${tobacco.orderDate || 'Не указано'}</td>
+                                </tr>
+                            `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            renderLoginForm() {
+                return `
+                    <div class="app">
+                        <div class="header">
+                            <div class="header-content">
+                                <div class="header-center">
+                                    <h1>Hookah Staff</h1>
+                                    <p>Управление табаками для кальянной</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="login-container">
+                            <div class="login-card">
+                                <div class="login-header">
+                                    <div class="login-icon">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                        </svg>
+                                    </div>
+                                    <h2>Вход в систему</h2>
+                                    <p>Войдите в свой аккаунт для доступа к системе</p>
+                                </div>
+                                
+                                <div class="login-form">
+                                    <div class="form-group">
+                                        <label>Имя пользователя</label>
+                                        <input type="text" id="username" placeholder="Введите имя пользователя" class="form-input">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Пароль</label>
+                                        <input type="password" id="password" placeholder="Введите пароль" class="form-input">
+                                    </div>
+                                    
+                                    <button onclick="app.handleLogin()" class="login-button">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/>
+                                        </svg>
+                                        Войти в систему
+                                    </button>
+                                </div>
+                                
+                                <div class="login-info">
+                                    <div class="info-header">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                                        </svg>
+                                        Тестовые пользователи
+                                    </div>
+                                    <div class="info-content">
+                                        <div class="user-role">
+                                            <span class="role-name">Кальянный мастер:</span>
+                                            <span class="role-credentials">master / master123</span>
+                                        </div>
+                                        <div class="user-role">
+                                            <span class="role-name">Старший мастер:</span>
+                                            <span class="role-credentials">senior / senior123</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderCurrentTab() {
+                return `
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-number">${this.tobaccos.length}</div>
+                            <div class="stat-label">Табаков в текущем привозе</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">
+                                ${this.tobaccos.length > 0 ? Math.round(this.tobaccos.reduce((sum, t) => sum + (parseFloat(t.price) || 0), 0) / this.tobaccos.length) : 0}
+                            </div>
+                            <div class="stat-label">Средняя цена (₽)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${this.currentDelivery ? 'Активен' : 'Нет'}</div>
+                            <div class="stat-label">Статус привоза</div>
+                        </div>
+                    </div>
+
+                    <div class="delivery-controls" style="margin-bottom: 30px; text-align: center;">
+                        ${!this.currentDelivery ? `
+                            <button class="add-button" onclick="app.createNewDelivery()">
+                                Создать новый привоз
+                            </button>
+                        ` : `
+                            <button class="add-button" onclick="app.finalizeDelivery()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                                Зафиксировать привоз
+                            </button>
+                        `}
+                    </div>
+
+                    <div class="add-button-container">
+                        <button class="add-button" onclick="app.toggleMultiBrandForm()">
+                            ${this.showMultiBrandForm ? 'Отмена' : 'Добавить табаки'}
+                        </button>
+                    </div>
+
+                    ${this.showMultiBrandForm ? this.renderMultiBrandForm() : ''}
+
+                    <div class="tobacco-list">
+                        <div class="tobacco-table">
+                            <div class="table-header">
+                                <h3>Текущий привоз</h3>
+                            </div>
+                            ${this.renderTobaccoTable()}
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderHistoryTab() {
+                return `
+                    <div class="history-container">
+                        <h2 style="text-align: center; margin-bottom: 30px; color: #495057;">История привозов</h2>
+                        
+                        ${this.finalizedDeliveries.length === 0 ? `
+                            <div class="empty-state">
+                                <p>Нет завершенных привозов</p>
+                                <p>Завершите первый привоз, чтобы увидеть его здесь</p>
+                            </div>
+                        ` : `
+                            <div class="delivery-cards">
+                                ${this.finalizedDeliveries.map(delivery => `
+                                    <div class="delivery-card" onclick="app.showDeliveryDetails(${delivery.id})">
+                                        <div class="delivery-date">
+                                            ${new Date(delivery.deliveryDate).toLocaleDateString('ru-RU')}
+                                        </div>
+                                        <div class="delivery-info">
+                                            <div>Создан: ${delivery.createdBy}</div>
+                                            <div>Завершен: ${new Date(delivery.finalizedAt).toLocaleDateString('ru-RU')}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
                     </div>
                 `;
             }
@@ -825,10 +1628,13 @@
                     return `
                         <div class="empty-state">
                             <p>Табаки не найдены</p>
-                            <p>Добавьте первый табак в коллекцию</p>
+                            <p>Добавьте первый табак в привоз</p>
                         </div>
                     `;
                 }
+
+                // Определяем, показывать ли поля инвентаризации
+                const showInventoryFields = this.currentUser && this.currentUser.role === 'SENIOR_HOOKAH_MASTER';
 
                 return `
                     <div class="table-container">
@@ -841,9 +1647,11 @@
                                     <th>Цена</th>
                                     <th>Вес</th>
                                     <th>Дата заказа</th>
-                                    <th>Дата инвентаризации</th>
-                                    <th>Вес на инвентаризации</th>
-                                    <th>Использование</th>
+                                    ${showInventoryFields ? `
+                                        <th>Дата инвентаризации</th>
+                                        <th>Вес на инвентаризации</th>
+                                        <th>Использование</th>
+                                    ` : ''}
                                     <th>Действия</th>
                                 </tr>
                             </thead>
@@ -863,22 +1671,24 @@
                                     <td class="price">${tobacco.price || 0} ₽</td>
                                     <td>${tobacco.weight || 50} г</td>
                                     <td>${tobacco.orderDate || 'Не указано'}</td>
-                                    <td>${tobacco.inventoryDate || 'Не указано'}</td>
-                                    <td>
-                                        <input 
-                                            type="number" 
-                                            value="${this.getInventoryWeightInGrams(tobacco)}" 
-                                            min="0" 
-                                            max="${tobacco.weight || 50}"
-                                            style="width: 100%; max-width: 80px; padding: 4px; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9rem;"
-                                            onchange="app.updateInventoryWeight(${tobacco.id}, this.value)"
-                                        /> г
-                                    </td>
-                                    <td>
-                                        <span style="color: ${usageColor}; font-weight: bold;">
-                                            ${usagePercentage}%
-                                        </span>
-                                    </td>
+                                    ${showInventoryFields ? `
+                                        <td>${tobacco.inventoryDate || 'Не указано'}</td>
+                                        <td>
+                                            <input 
+                                                type="number" 
+                                                value="${this.getInventoryWeightInGrams(tobacco)}" 
+                                                min="0" 
+                                                max="${tobacco.weight || 50}"
+                                                style="width: 100%; max-width: 80px; padding: 4px; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9rem;"
+                                                onchange="app.updateInventoryWeight(${tobacco.id}, this.value)"
+                                            /> г
+                                        </td>
+                                        <td>
+                                            <span style="color: ${usageColor}; font-weight: bold;">
+                                                ${usagePercentage}%
+                                            </span>
+                                        </td>
+                                    ` : ''}
                                     <td>
                                         <button class="delete-button" onclick="app.handleDeleteTobacco(${tobacco.id})">
                                             Удалить

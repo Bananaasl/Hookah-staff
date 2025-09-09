@@ -27,6 +27,13 @@ public interface TobaccoService {
     List<Tobacco> getAllTobaccos();
 
     /**
+     * Получить текущие табаки (незавершенного привоза)
+     * 
+     * @return список текущих табаков
+     */
+    List<Tobacco> getCurrentTobaccos();
+
+    /**
      * Получить табак по идентификатору
      * 
      * @param id идентификатор табака
