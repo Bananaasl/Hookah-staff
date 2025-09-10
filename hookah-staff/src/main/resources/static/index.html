@@ -229,6 +229,47 @@
             font-size: 0.9rem;
         }
 
+        /* Стили для рекомендаций */
+        .suggestions-container {
+            margin-top: 8px;
+        }
+
+        .suggestions-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .suggestions-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .suggestion-chip {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 1px solid #bbdefb;
+            border-radius: 16px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            color: #1976d2;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .suggestion-chip:hover {
+            background: linear-gradient(135deg, #1976d2 0%, #7b1fa2 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+        }
+
+        .suggestion-chip:active {
+            transform: translateY(0);
+        }
+
         .save-button {
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: #ffffff;
@@ -824,6 +865,13 @@
                 this.activeTab = 'current'; // 'current' или 'history'
                 this.showDeliveryModal = false;
                 this.selectedDelivery = null;
+                
+                // Данные для рекомендаций
+                this.brandSuggestions = ['Darkside', 'Trofimoff', 'Bonche', 'Satyr', 'Black Burn', 'Starline', 'Mast Have'];
+                this.tasteSuggestions = ['Малина', 'Смородина', 'Супернова', 'Груша', 'Липа', 'Бергамот', 'Клубника', 'Апельсин', 'Мята', 'Лимон', 'Киви', 'Персик', 'Ананас', 'Кокос', 'Ваниль'];
+                this.weightSuggestions = [100, 125, 200];
+                this.priceSuggestions = [720, 900, 1200];
+                
                 this.init();
             }
 
@@ -1100,6 +1148,53 @@
                 if (fortress <= 2) return 'Легкий';
                 if (fortress <= 4) return 'Средний';
                 return 'Крепкий';
+            }
+
+            // Функции для работы с рекомендациями
+            selectBrandSuggestion(brandIndex, brandName) {
+                this.updateBrand(brandIndex, 'brandName', brandName);
+            }
+
+            selectTasteSuggestion(brandIndex, taste) {
+                const currentTastes = this.multiBrands[brandIndex].tastes;
+                if (!currentTastes.includes(taste)) {
+                    currentTastes.push(taste);
+                    this.updateBrandTastes(brandIndex, currentTastes.join(', '));
+                }
+            }
+
+            selectWeightSuggestion(brandIndex, weight) {
+                this.updateBrand(brandIndex, 'weight', weight);
+            }
+
+            selectPriceSuggestion(brandIndex, price) {
+                this.updateBrand(brandIndex, 'price', price);
+            }
+
+            renderSuggestions(suggestions, type, brandIndex) {
+                const typeLabels = {
+                    'brand': 'бренды',
+                    'taste': 'вкусы',
+                    'weight': 'веса',
+                    'price': 'цены'
+                };
+                
+                return `
+                    <div class="suggestions-container">
+                        <div class="suggestions-label">Популярные ${typeLabels[type]}:</div>
+                        <div class="suggestions-chips">
+                            ${suggestions.map(suggestion => {
+                                const value = (type === 'weight' || type === 'price') ? suggestion : `'${suggestion}'`;
+                                const displayValue = type === 'price' ? `${suggestion} ₽` : suggestion;
+                                return `
+                                    <div class="suggestion-chip" onclick="app.select${type.charAt(0).toUpperCase() + type.slice(1)}Suggestion(${brandIndex}, ${value})">
+                                        ${displayValue}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
             }
 
             calculateUsagePercentage(tobacco) {
@@ -1635,6 +1730,7 @@
                                             onchange="app.updateBrand(${index}, 'brandName', this.value)"
                                             placeholder="Например: Darkside"
                                         />
+                                        ${this.renderSuggestions(this.brandSuggestions, 'brand', index)}
                                     </div>
                                     
                                     <div class="form-group">
@@ -1657,6 +1753,7 @@
                                             onchange="app.updateBrand(${index}, 'price', parseFloat(this.value) || 0)"
                                             placeholder="1200"
                                         />
+                                        ${this.renderSuggestions(this.priceSuggestions, 'price', index)}
                                     </div>
                                     
                                     <div class="form-group">
@@ -1667,6 +1764,7 @@
                                             onchange="app.updateBrand(${index}, 'weight', parseInt(this.value) || 50)"
                                             placeholder="50"
                                         />
+                                        ${this.renderSuggestions(this.weightSuggestions, 'weight', index)}
                                     </div>
                                     
                                     <div class="form-group">
@@ -1677,6 +1775,7 @@
                                             onchange="app.updateBrandTastes(${index}, this.value)"
                                             style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; resize: vertical;"
                                         >${brand.tastes.join(', ')}</textarea>
+                                        ${this.renderSuggestions(this.tasteSuggestions, 'taste', index)}
                                     </div>
                                     
                                     <div class="form-group">
