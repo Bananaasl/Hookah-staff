@@ -63,5 +63,22 @@ public class DeliveryController {
         List<Tobacco> tobaccos = deliveryService.getTobaccosByDelivery(deliveryId);
         return ResponseEntity.ok(tobaccos);
     }
+
+    @DeleteMapping("/{deliveryId}/cancel")
+    public ResponseEntity<?> cancelDelivery(@PathVariable Long deliveryId) {
+        try {
+            deliveryService.cancelDelivery(deliveryId);
+            return ResponseEntity.ok("Привоз успешно отменен");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{deliveryId}/cost")
+    public ResponseEntity<Double> getDeliveryCost(@PathVariable Long deliveryId) {
+        Double cost = deliveryService.calculateDeliveryCost(deliveryId);
+        return ResponseEntity.ok(cost);
+    }
 }
+
 

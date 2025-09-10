@@ -1016,12 +1016,46 @@
                 }
             }
 
+            async cancelDelivery() {
+                if (!this.currentDelivery) {
+                    this.showNotification('Нет активного привоза для отмены', 'error');
+                    return;
+                }
+
+                if (!confirm('Вы уверены, что хотите отменить этот привоз? Все добавленные табаки будут удалены.')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`http://localhost:8080/api/delivery/${this.currentDelivery.id}/cancel`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        this.showNotification('Привоз успешно отменен!', 'success');
+                        await this.loadData();
+                    } else {
+                        const errorText = await response.text();
+                        this.showNotification(errorText, 'error');
+                    }
+                } catch (error) {
+                    console.error('Ошибка отмены привоза:', error);
+                    this.showNotification('Ошибка отмены привоза', 'error');
+                }
+            }
+
             async showDeliveryDetails(deliveryId) {
                 try {
-                    const response = await fetch(`http://localhost:8080/api/delivery/${deliveryId}/tobaccos`);
-                    if (response.ok) {
-                        const tobaccos = await response.json();
-                        this.selectedDelivery = { id: deliveryId, tobaccos };
+                    // Загружаем табаки и стоимость привоза параллельно
+                    const [tobaccosResponse, costResponse] = await Promise.all([
+                        fetch(`http://localhost:8080/api/delivery/${deliveryId}/tobaccos`),
+                        fetch(`http://localhost:8080/api/delivery/${deliveryId}/cost`)
+                    ]);
+
+                    if (tobaccosResponse.ok && costResponse.ok) {
+                        const tobaccos = await tobaccosResponse.json();
+                        const cost = await costResponse.json();
+                        this.selectedDelivery = { id: deliveryId, tobaccos, cost };
                         this.showDeliveryModal = true;
                         this.render();
                     } else {
@@ -1172,14 +1206,11 @@
                         // Успешное сохранение
                         await this.loadTobaccos();
                         this.multiBrands = [];
-                        // НЕ закрываем форму для кальянного мастера, чтобы можно было добавить еще табаки
-                        const isHookahMaster = this.currentUser && this.currentUser.role === 'HOOKAH_MASTER';
-                        if (!isHookahMaster) {
-                            this.showMultiBrandForm = false;
-                        }
+                        // Закрываем форму после добавления табаков
+                        this.showMultiBrandForm = false;
                         
-                        // Обновляем таблицу для отображения изменений
-                        this.updateTable();
+                        // Обновляем интерфейс
+                        this.render();
                         
                         // Показываем уведомление об успехе
                         this.showNotification(`Успешно добавлено ${addedCount} табаков в привоз!`, 'success');
@@ -1335,6 +1366,11 @@
                                 <button class="modal-close" onclick="app.closeDeliveryModal()">&times;</button>
                             </div>
                             
+                            <div class="delivery-cost-info" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; margin-bottom: 20px; border-radius: 12px; text-align: center; border: 1px solid #dee2e6;">
+                                <h4 style="color: #495057; margin: 0 0 10px 0; font-size: 1.2rem;">Общая стоимость привоза</h4>
+                                <div style="font-size: 2rem; font-weight: 700; color: #28a745;">${Math.round(this.selectedDelivery.cost || 0)} ₽</div>
+                            </div>
+                            
                             <div class="tobacco-table">
                                 <div class="table-header">
                                     <h3>Табаки в привозе</h3>
@@ -1467,9 +1503,9 @@
                         </div>
                         <div class="stat-card">
                             <div class="stat-number">
-                                ${this.tobaccos.length > 0 ? Math.round(this.tobaccos.reduce((sum, t) => sum + (parseFloat(t.price) || 0), 0) / this.tobaccos.length) : 0}
+                                ${this.tobaccos.length > 0 ? Math.round(this.tobaccos.reduce((sum, t) => sum + (parseFloat(t.price) || 0), 0)) : 0}
                             </div>
-                            <div class="stat-label">Средняя цена (₽)</div>
+                            <div class="stat-label">Стоимость привоза (₽)</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number">${this.currentDelivery ? 'Активен' : 'Нет'}</div>
@@ -1502,10 +1538,13 @@
                         ` : `
                             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                                 <button class="add-button" onclick="app.toggleMultiBrandForm()">
-                                    ${this.showMultiBrandForm ? 'Отмена' : 'Добавить еще табаки'}
+                                    ${this.showMultiBrandForm ? 'Отмена' : 'Добавить табаки'}
                                 </button>
                                 <button class="add-button" onclick="app.finalizeDelivery()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
                                     Зафиксировать привоз
+                                </button>
+                                <button class="add-button" onclick="app.cancelDelivery()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                                    Отменить привоз
                                 </button>
                             </div>
                         `}
@@ -1521,9 +1560,14 @@
                                 Создать новый привоз
                             </button>
                         ` : `
-                            <button class="add-button" onclick="app.finalizeDelivery()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
-                                Зафиксировать привоз
-                            </button>
+                            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                                <button class="add-button" onclick="app.finalizeDelivery()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                                    Зафиксировать привоз
+                                </button>
+                                <button class="add-button" onclick="app.cancelDelivery()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                                    Отменить привоз
+                                </button>
+                            </div>
                         `}
                     </div>
 
@@ -1938,9 +1982,9 @@
                         </div>
                         <div class="stat-card">
                             <div class="stat-number">
-                                ${this.tobaccos.length > 0 ? Math.round(this.tobaccos.reduce((sum, t) => sum + (parseFloat(t.price) || 0), 0) / this.tobaccos.length) : 0}
+                                ${this.tobaccos.length > 0 ? Math.round(this.tobaccos.reduce((sum, t) => sum + (parseFloat(t.price) || 0), 0)) : 0}
                             </div>
-                            <div class="stat-label">Средняя цена (₽)</div>
+                            <div class="stat-label">Стоимость привоза (₽)</div>
                         </div>
                     `;
                 }

@@ -71,4 +71,28 @@ public class DeliveryService {
     public List<Tobacco> getTobaccosByDelivery(Long deliveryId) {
         return tobaccoRepository.findByDeliveryId(deliveryId);
     }
+
+    @Transactional
+    public void cancelDelivery(Long deliveryId) {
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new RuntimeException("Привоз не найден"));
+
+        if (delivery.getIsFinalized()) {
+            throw new RuntimeException("Нельзя отменить завершенный привоз");
+        }
+
+        // Удаляем все табаки из этого привоза
+        List<Tobacco> tobaccos = tobaccoRepository.findByDeliveryId(deliveryId);
+        tobaccoRepository.deleteAll(tobaccos);
+
+        // Удаляем сам привоз
+        deliveryRepository.delete(delivery);
+    }
+
+    public Double calculateDeliveryCost(Long deliveryId) {
+        List<Tobacco> tobaccos = tobaccoRepository.findByDeliveryId(deliveryId);
+        return tobaccos.stream()
+                .mapToDouble(tobacco -> tobacco.getPrice().doubleValue())
+                .sum();
+    }
 }
