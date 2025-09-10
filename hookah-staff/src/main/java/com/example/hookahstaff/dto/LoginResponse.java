@@ -50,3 +50,4 @@ public class LoginResponse {
         this.roleDisplayName = roleDisplayName;
     }
 }
+
