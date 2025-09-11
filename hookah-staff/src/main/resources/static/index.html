@@ -867,10 +867,16 @@
                 this.selectedDelivery = null;
                 
                 // Данные для рекомендаций
-                this.brandSuggestions = ['Darkside', 'Trofimoff', 'Bonche', 'Satyr', 'Black Burn', 'Starline', 'Mast Have'];
+                this.brandSuggestions = ['Overdos', 'Deus', 'НАШ', 'Darkside Sabotage', 'JENT', 'JENT CIGAR', 'Sapphire Crown', 'Хулиган', 'Догма', 'Muassel', 'BLISS', 'DUFT', 'КОБРА', 'Afzal', 'Сарма', 'Сарма 360', 'SEBERO CLASSIC', 'SEBERO BLACK', 'Spectrum', 'NАШ Cigar', 'Северный', 'Kraken', 'Palitra', 'CHABACO', 'Darkside', 'Trofimoff', 'Bonche', 'Satyr', 'Black Burn', 'Star line', 'Mast Have'];
                 this.tasteSuggestions = ['Малина', 'Смородина', 'Супернова', 'Груша', 'Липа', 'Бергамот', 'Клубника', 'Апельсин', 'Мята', 'Лимон', 'Киви', 'Персик', 'Ананас', 'Кокос', 'Ваниль'];
-                this.weightSuggestions = [100, 125, 200];
-                this.priceSuggestions = [720, 900, 1200];
+                this.priceSuggestions = [720, 1200, 2000];
+                
+                // Маппинг цен на веса
+                this.priceToWeightMapping = {
+                    720: 100,
+                    1200: 125,
+                    2000: 200
+                };
                 
                 this.init();
             }
@@ -1157,10 +1163,9 @@
 
             selectTasteSuggestion(brandIndex, taste) {
                 const currentTastes = this.multiBrands[brandIndex].tastes;
-                if (!currentTastes.includes(taste)) {
-                    currentTastes.push(taste);
-                    this.updateBrandTastes(brandIndex, currentTastes.join(', '));
-                }
+                // Добавляем вкус каждый раз при нажатии (убираем проверку на дубликаты)
+                currentTastes.push(taste);
+                this.updateBrandTastes(brandIndex, currentTastes.join(', '));
             }
 
             selectWeightSuggestion(brandIndex, weight) {
@@ -1169,22 +1174,31 @@
 
             selectPriceSuggestion(brandIndex, price) {
                 this.updateBrand(brandIndex, 'price', price);
+                // Автоматически устанавливаем вес в зависимости от цены
+                const weight = this.priceToWeightMapping[price];
+                if (weight) {
+                    this.updateBrand(brandIndex, 'weight', weight);
+                }
             }
 
             renderSuggestions(suggestions, type, brandIndex) {
                 const typeLabels = {
                     'brand': 'бренды',
                     'taste': 'вкусы',
-                    'weight': 'веса',
                     'price': 'цены'
                 };
+                
+                // Не показываем рекомендации по весу, так как вес устанавливается автоматически
+                if (type === 'weight') {
+                    return '';
+                }
                 
                 return `
                     <div class="suggestions-container">
                         <div class="suggestions-label">Популярные ${typeLabels[type]}:</div>
                         <div class="suggestions-chips">
                             ${suggestions.map(suggestion => {
-                                const value = (type === 'weight' || type === 'price') ? suggestion : `'${suggestion}'`;
+                                const value = type === 'price' ? suggestion : `'${suggestion}'`;
                                 const displayValue = type === 'price' ? `${suggestion} ₽` : suggestion;
                                 return `
                                     <div class="suggestion-chip" onclick="app.select${type.charAt(0).toUpperCase() + type.slice(1)}Suggestion(${brandIndex}, ${value})">
@@ -1763,8 +1777,10 @@
                                             value="${brand.weight}"
                                             onchange="app.updateBrand(${index}, 'weight', parseInt(this.value) || 50)"
                                             placeholder="50"
+                                            readonly
+                                            style="background-color: #f8f9fa; color: #6c757d;"
                                         />
-                                        ${this.renderSuggestions(this.weightSuggestions, 'weight', index)}
+                                        <small style="color: #6c757d; font-size: 0.8rem;">Вес автоматически устанавливается при выборе цены</small>
                                     </div>
                                     
                                     <div class="form-group">
@@ -1775,6 +1791,9 @@
                                             onchange="app.updateBrandTastes(${index}, this.value)"
                                             style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; resize: vertical;"
                                         >${brand.tastes.join(', ')}</textarea>
+                                        <small style="color: #6c757d; font-size: 0.8rem; display: block; margin-top: 5px;">
+                                            💡 Можно нажимать на один вкус несколько раз для добавления нескольких пачек
+                                        </small>
                                         ${this.renderSuggestions(this.tasteSuggestions, 'taste', index)}
                                     </div>
                                     
@@ -1782,12 +1801,21 @@
                                         <label>Предварительный просмотр:</label>
                                         <div style="background: #ffffff; padding: 10px; border-radius: 6px; border: 1px solid #e9ecef;">
                                             ${brand.tastes.length > 0 ? 
-                                                brand.tastes.map(taste => `
-                                                    <div style="margin: 5px 0; padding: 5px; background: #f8f9fa; border-radius: 4px; border: 1px solid #dee2e6;">
-                                                        <strong>${brand.brandName || 'Бренд'}</strong> - ${taste.trim()}
-                                                        <br><small>Крепость: ${this.getFortressText(brand.fortress)}, Цена: ${brand.price || 0} ₽, Вес: ${brand.weight || 50} г</small>
-                                                    </div>
-                                                `).join('') : 
+                                                (() => {
+                                                    const tasteCounts = this.getTasteCounts(brand.tastes);
+                                                    return Object.entries(tasteCounts).map(([taste, count]) => `
+                                                        <div style="margin: 5px 0; padding: 5px; background: #f8f9fa; border-radius: 4px; border: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center;">
+                                                            <div>
+                                                                <strong>${brand.brandName || 'Бренд'}</strong> - ${taste.trim()} ${count > 1 ? `(${count} шт.)` : ''}
+                                                                <br><small>Крепость: ${this.getFortressText(brand.fortress)}, Цена: ${brand.price || 0} ₽, Вес: ${brand.weight || 50} г</small>
+                                                            </div>
+                                                            <button type="button" onclick="app.removeTasteSuggestion(${index}, '${taste}')" 
+                                                                    style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.7rem; cursor: pointer; margin-left: 10px;">
+                                                                ×
+                                                            </button>
+                                                        </div>
+                                                    `).join('');
+                                                })() : 
                                                 '<div style="color: #6c757d; font-style: italic;">Введите вкусы для предварительного просмотра</div>'
                                             }
                                         </div>
@@ -1811,12 +1839,21 @@
                                         brand.tastes.length > 0 ? `
                                             <div style="margin-bottom: 15px;">
                                                 <h5 style="margin: 0 0 10px 0; color: #495057;">${brand.brandName || `Бренд ${brandIndex + 1}`}</h5>
-                                                ${brand.tastes.map(taste => `
-                                                    <div style="margin: 5px 0; padding: 8px; background: white; border-radius: 4px; border: 1px solid #dee2e6;">
-                                                        <strong>${taste.trim()}</strong>
-                                                        <br><small>Крепость: ${this.getFortressText(brand.fortress)}, Цена: ${brand.price || 0} ₽, Вес: ${brand.weight || 50} г</small>
-                                                    </div>
-                                                `).join('')}
+                                                ${(() => {
+                                                    const tasteCounts = this.getTasteCounts(brand.tastes);
+                                                    return Object.entries(tasteCounts).map(([taste, count]) => `
+                                                        <div style="margin: 5px 0; padding: 8px; background: white; border-radius: 4px; border: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center;">
+                                                            <div>
+                                                                <strong>${taste.trim()}</strong> ${count > 1 ? `(${count} шт.)` : ''}
+                                                                <br><small>Крепость: ${this.getFortressText(brand.fortress)}, Цена: ${brand.price || 0} ₽, Вес: ${brand.weight || 50} г</small>
+                                                            </div>
+                                                            <button type="button" onclick="app.removeTasteSuggestion(${brandIndex}, '${taste}')" 
+                                                                    style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.7rem; cursor: pointer; margin-left: 10px;">
+                                                                ×
+                                                            </button>
+                                                        </div>
+                                                    `).join('');
+                                                })()}
                                             </div>
                                         ` : ''
                                     ).join('') : 
@@ -1932,8 +1969,8 @@
                 this.multiBrands.push({
                     brandName: '',
                     fortress: 1,
-                    price: 0,
-                    weight: 50,
+                    price: 720, // Устанавливаем цену по умолчанию
+                    weight: 100, // Устанавливаем вес по умолчанию (соответствует цене 720₽)
                     orderDate: new Date().toISOString().split('T')[0],
                     inventoryDate: new Date().toISOString().split('T')[0],
                     tastes: []
@@ -1949,6 +1986,15 @@
             updateBrand(index, field, value) {
                 if (this.multiBrands[index]) {
                     this.multiBrands[index][field] = value;
+                    
+                    // Если изменилась цена, автоматически обновляем вес
+                    if (field === 'price') {
+                        const weight = this.priceToWeightMapping[value];
+                        if (weight) {
+                            this.multiBrands[index].weight = weight;
+                        }
+                    }
+                    
                     this.render();
                 }
             }
@@ -1960,6 +2006,25 @@
                         .map(taste => taste.trim())
                         .filter(taste => taste.length > 0);
                     this.render();
+                }
+            }
+
+            // Функция для подсчета количества каждого вкуса
+            getTasteCounts(tastes) {
+                const counts = {};
+                tastes.forEach(taste => {
+                    counts[taste] = (counts[taste] || 0) + 1;
+                });
+                return counts;
+            }
+
+            // Функция для удаления одного экземпляра вкуса
+            removeTasteSuggestion(brandIndex, taste) {
+                const currentTastes = this.multiBrands[brandIndex].tastes;
+                const index = currentTastes.indexOf(taste);
+                if (index > -1) {
+                    currentTastes.splice(index, 1);
+                    this.updateBrandTastes(brandIndex, currentTastes.join(', '));
                 }
             }
 
