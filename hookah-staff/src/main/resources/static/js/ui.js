@@ -510,11 +510,22 @@ class UIRenderer {
             return '';
         }
         
+        // Для цен получаем динамические рекомендации на основе выбранного бренда
+        let suggestionsToShow = suggestions;
+        if (type === 'price' && app.multiBrands[brandIndex] && app.multiBrands[brandIndex].brandName) {
+            const brandName = app.multiBrands[brandIndex].brandName;
+            const brandMapping = app.brandPriceWeightMapping[brandName];
+            if (brandMapping) {
+                // Показываем цены конкретно для этого бренда
+                suggestionsToShow = brandMapping.map(entry => entry.price);
+            }
+        }
+        
         return `
             <div class="suggestions-container">
                 <div class="suggestions-label">Популярные ${typeLabels[type]}:</div>
                 <div class="suggestions-chips">
-                    ${suggestions.map(suggestion => {
+                    ${suggestionsToShow.map(suggestion => {
                         const value = type === 'price' ? suggestion : `'${suggestion}'`;
                         const displayValue = type === 'price' ? `${suggestion} ₽` : suggestion;
                         return `

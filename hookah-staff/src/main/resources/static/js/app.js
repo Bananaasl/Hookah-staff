@@ -14,9 +14,59 @@ class HookahStaffApp {
         // Данные для рекомендаций
         this.brandSuggestions = ['Overdos', 'Deus', 'НАШ', 'Darkside Sabotage', 'JENT', 'JENT CIGAR', 'Sapphire Crown', 'Хулиган', 'Догма', 'Muassel', 'BLISS', 'DUFT', 'КОБРА', 'Afzal', 'Сарма', 'Сарма 360', 'SEBERO CLASSIC', 'SEBERO BLACK', 'Spectrum', 'NАШ Cigar', 'Северный', 'Kraken', 'Palitra', 'CHABACO', 'Darkside', 'Trofimoff', 'Bonche', 'Satyr', 'Black Burn', 'Star line', 'Mast Have'];
         this.tasteSuggestions = ['Малина', 'Смородина', 'Супернова', 'Груша', 'Липа', 'Бергамот', 'Клубника', 'Апельсин', 'Мята', 'Лимон', 'Киви', 'Персик', 'Ананас', 'Кокос', 'Ваниль'];
+        
+        // Маппинг цен и весов для конкретных брендов
+        this.brandPriceWeightMapping = {
+            'CHABACO': [
+                { price: 205, weight: 40 },
+                { price: 950, weight: 200 }
+            ],
+            'Trofimoff': [
+                { price: 900, weight: 125 }
+            ],
+            'SEBERO': [
+                { price: 730, weight: 100 },
+                { price: 200, weight: 25 }
+            ],
+            'Сарма': [
+                { price: 1350, weight: 200 },
+                { price: 700, weight: 100 },
+                { price: 290, weight: 40 },
+                { price: 190, weight: 25 }
+            ],
+            'Северный': [
+                { price: 1300, weight: 200 },
+                { price: 680, weight: 100 },
+                { price: 285, weight: 40 }
+            ],
+            'Bonche': [
+                { price: 1060, weight: 60 },
+                { price: 1900, weight: 120 }
+            ],
+            'BlackBurn': [
+                { price: 715, weight: 100 },
+                { price: 1400, weight: 200 }
+            ],
+            'Overdose': [
+                { price: 810, weight: 100 },
+                { price: 1600, weight: 200 }
+            ],
+            'Sapphire Crown': [
+                { price: 700, weight: 100 },
+                { price: 1340, weight: 200 },
+                { price: 200, weight: 25 }
+            ],
+            'NАШ': [
+                { price: 210, weight: 40 },
+                { price: 705, weight: 100 },
+                { price: 1350, weight: 200 }
+            ]
+        };
+        
+        // Общие рекомендации цен (для брендов без специфических цен)
         this.priceSuggestions = [720, 1200, 2000];
         
-        // Маппинг цен на веса
+        // Общий маппинг цен на веса (для брендов без специфических цен)
         this.priceToWeightMapping = {
             720: 100,
             1200: 125,
@@ -129,9 +179,22 @@ class HookahStaffApp {
             
             // Если изменилась цена, автоматически обновляем вес
             if (field === 'price') {
-                const weight = this.priceToWeightMapping[value];
-                if (weight) {
-                    this.multiBrands[index].weight = weight;
+                const brand = this.multiBrands[index];
+                if (brand.brandName) {
+                    const brandMapping = this.brandPriceWeightMapping[brand.brandName];
+                    if (brandMapping) {
+                        // Ищем соответствующую запись для данного бренда и цены
+                        const matchingEntry = brandMapping.find(entry => entry.price === value);
+                        if (matchingEntry) {
+                            this.multiBrands[index].weight = matchingEntry.weight;
+                        }
+                    } else {
+                        // Используем общий маппинг для брендов без специфических цен
+                        const weight = this.priceToWeightMapping[value];
+                        if (weight) {
+                            this.multiBrands[index].weight = weight;
+                        }
+                    }
                 }
             }
             
@@ -406,10 +469,23 @@ class HookahStaffApp {
 
     selectPriceSuggestion(brandIndex, price) {
         this.updateBrand(brandIndex, 'price', price);
-        // Автоматически устанавливаем вес в зависимости от цены
-        const weight = this.priceToWeightMapping[price];
-        if (weight) {
-            this.updateBrand(brandIndex, 'weight', weight);
+        // Автоматически устанавливаем вес в зависимости от цены и бренда
+        const brand = this.multiBrands[brandIndex];
+        if (brand && brand.brandName) {
+            const brandMapping = this.brandPriceWeightMapping[brand.brandName];
+            if (brandMapping) {
+                // Ищем соответствующую запись для данного бренда и цены
+                const matchingEntry = brandMapping.find(entry => entry.price === price);
+                if (matchingEntry) {
+                    this.updateBrand(brandIndex, 'weight', matchingEntry.weight);
+                }
+            } else {
+                // Используем общий маппинг для брендов без специфических цен
+                const weight = this.priceToWeightMapping[price];
+                if (weight) {
+                    this.updateBrand(brandIndex, 'weight', weight);
+                }
+            }
         }
     }
 
