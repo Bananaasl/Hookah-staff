@@ -244,3 +244,4 @@ class ApiService {
 
 // Создаем глобальный экземпляр API сервиса
 const apiService = new ApiService();
+

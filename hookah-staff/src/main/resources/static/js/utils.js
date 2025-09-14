@@ -298,3 +298,4 @@ class Utils {
 
 // Создаем глобальный экземпляр утилит
 const utils = new Utils();
+

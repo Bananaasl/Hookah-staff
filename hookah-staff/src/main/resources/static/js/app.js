@@ -15,11 +15,12 @@ class HookahStaffApp {
         this.brandSuggestions = ['Overdos', 'Deus', 'НАШ', 'Darkside Sabotage', 'JENT', 'JENT CIGAR', 'Sapphire Crown', 'Хулиган', 'Догма', 'Muassel', 'BLISS', 'DUFT', 'КОБРА', 'Afzal', 'Сарма', 'Сарма 360', 'SEBERO CLASSIC', 'SEBERO BLACK', 'Spectrum', 'NАШ Cigar', 'Северный', 'Kraken', 'Palitra', 'CHABACO', 'Darkside', 'Trofimoff', 'Bonche', 'Satyr', 'Black Burn', 'Star line', 'Mast Have'];
         this.tasteSuggestions = ['Малина', 'Смородина', 'Супернова', 'Груша', 'Липа', 'Бергамот', 'Клубника', 'Апельсин', 'Мята', 'Лимон', 'Киви', 'Персик', 'Ананас', 'Кокос', 'Ваниль'];
         
-        // Маппинг цен и весов для конкретных брендов
+        // Маппинг цен и весов для конкретных брендов (данные с OPTRF Store)
         this.brandPriceWeightMapping = {
+            // Обновленные данные с OPTRF Store для существующих брендов
             'CHABACO': [
-                { price: 205, weight: 40 },
-                { price: 950, weight: 200 }
+                { price: 205, weight: 50 },  // 50г-205₽ (обновлено с OPTRF)
+                { price: 950, weight: 200 }  // 200г-950₽ (с OPTRF)
             ],
             'Trofimoff': [
                 { price: 900, weight: 125 }
@@ -60,6 +61,102 @@ class HookahStaffApp {
                 { price: 210, weight: 40 },
                 { price: 705, weight: 100 },
                 { price: 1350, weight: 200 }
+            ],
+            // Существующие бренды с данными из OPTRF
+            'Kraken': [
+                { price: 3290, weight: 80 }  // 80г-3290₽ (с OPTRF)
+            ],
+            'Afzal': [
+                { price: 600, weight: 100 },
+                { price: 1200, weight: 200 }
+            ],
+            'DUFT': [
+                { price: 700, weight: 100 },
+                { price: 1350, weight: 200 }
+            ],
+            'Spectrum': [
+                { price: 780, weight: 100 },
+                { price: 1500, weight: 200 }
+            ],
+            'Mast Have': [
+                { price: 800, weight: 100 },
+                { price: 1550, weight: 200 }
+            ],
+            // Остальные бренды из приложения (примерные данные)
+            'Overdos': [
+                { price: 810, weight: 100 },
+                { price: 1600, weight: 200 }
+            ],
+            'Deus': [
+                { price: 750, weight: 100 },
+                { price: 1450, weight: 200 }
+            ],
+            'Darkside Sabotage': [
+                { price: 850, weight: 100 },
+                { price: 1650, weight: 200 }
+            ],
+            'JENT': [
+                { price: 680, weight: 100 },
+                { price: 1350, weight: 200 }
+            ],
+            'JENT CIGAR': [
+                { price: 750, weight: 100 },
+                { price: 1500, weight: 200 }
+            ],
+            'Хулиган': [
+                { price: 720, weight: 100 },
+                { price: 1400, weight: 200 }
+            ],
+            'Догма': [
+                { price: 720, weight: 100 },
+                { price: 1400, weight: 200 }
+            ],
+            'Muassel': [
+                { price: 650, weight: 100 },
+                { price: 1300, weight: 200 }
+            ],
+            'BLISS': [
+                { price: 700, weight: 100 },
+                { price: 1350, weight: 200 }
+            ],
+            'КОБРА': [
+                { price: 750, weight: 100 },
+                { price: 1450, weight: 200 }
+            ],
+            'Сарма 360': [
+                { price: 1350, weight: 200 },
+                { price: 700, weight: 100 },
+                { price: 290, weight: 40 },
+                { price: 190, weight: 25 }
+            ],
+            'SEBERO CLASSIC': [
+                { price: 730, weight: 100 },
+                { price: 200, weight: 25 }
+            ],
+            'SEBERO BLACK': [
+                { price: 780, weight: 100 },
+                { price: 1500, weight: 200 }
+            ],
+            'NАШ Cigar': [
+                { price: 210, weight: 40 },
+                { price: 705, weight: 100 },
+                { price: 1350, weight: 200 }
+            ],
+            'Palitra': [
+                { price: 680, weight: 100 },
+                { price: 1350, weight: 200 }
+            ],
+            'Darkside': [
+                { price: 850, weight: 100 },
+                { price: 1650, weight: 200 }
+            ],
+            'Satyr': [
+                { price: 700, weight: 100 },
+                { price: 1400, weight: 200 }
+            ],
+            'Star line': [
+                { price: 650, weight: 100 },
+                { price: 1280, weight: 200 }
             ]
         };
         
