@@ -12,22 +12,282 @@ class HookahStaffApp {
         this.selectedDelivery = null;
         
         // Данные для рекомендаций
-        this.brandSuggestions = ['Overdos', 'Deus', 'НАШ', 'Darkside Sabotage', 'JENT', 'JENT CIGAR', 'Sapphire Crown', 'Хулиган', 'Догма', 'Muassel', 'BLISS', 'DUFT', 'КОБРА', 'Afzal', 'Сарма', 'Сарма 360', 'SEBERO CLASSIC', 'SEBERO BLACK', 'Spectrum', 'NАШ Cigar', 'Северный', 'Kraken', 'Palitra', 'CHABACO', 'Darkside', 'Trofimoff', 'Bonche', 'Satyr', 'Black Burn', 'Star line', 'Mast Have'];
+        this.brandSuggestions = ['CHABACO', 'Nur', 'Kraken', 'Северный', 'Bonche', 'Burn', 'Deus', 'Muassel', 'Darkside', 'Dogma', 'JENT', 'Palitra', 'Satyr', 'Хулиган', 'Afzal', 'Duft', 'Must Have', 'NAШ', 'Sapphire Crown', 'Sebero', 'Serbetli', 'Spectrum', 'Starline', 'Сарма', 'Overdos', 'Darkside Sabotage', 'JENT CIGAR', 'Догма', 'BLISS', 'КОБРА', 'Сарма 360', 'SEBERO CLASSIC', 'SEBERO BLACK', 'NАШ', 'NАШ Cigar', 'Trofimoff', 'BlackBurn', 'Overdose', 'Mast Have', 'Star line', 'SEBERO'];
+        // Общие рекомендации вкусов (для брендов без специфических вкусов)
         this.tasteSuggestions = ['Малина', 'Смородина', 'Супернова', 'Груша', 'Липа', 'Бергамот', 'Клубника', 'Апельсин', 'Мята', 'Лимон', 'Киви', 'Персик', 'Ананас', 'Кокос', 'Ваниль'];
         
-        // Маппинг цен и весов для конкретных брендов (данные с OPTRF Store)
-        this.brandPriceWeightMapping = {
-            // Обновленные данные с OPTRF Store для существующих брендов
+        // Маппинг вкусов для конкретных брендов (полные данные с OPTRF Store)
+        this.brandTasteMapping = {
+            // Точные данные с OPTRF Store
             'CHABACO': [
-                { price: 205, weight: 50 },  // 50г-205₽ (обновлено с OPTRF)
-                { price: 950, weight: 200 }  // 200г-950₽ (с OPTRF)
+                'Астраханский Арбуз', 'Виноградные Леденцы', 'Кивано Маракуйя', 
+                'Клубничный Милкшейк', 'Смородиновый Крамбл', 'Сырные палочки', 
+                'Апельсиновое Драже'
+            ],
+            'Nur': [
+                'Пина Колада', 'Роза Сосна', 'Русские Ягоды', 'Свежие Ягоды', 
+                'Фейхоа Малина', 'Хвоя Фейхоа', 'Черничный Маффин', 'Чернослив Ром Ягоды',
+                'Шоколад Мята', 'Эвкалипт Сосна Ягоды', 'Это Любовь', 'Ягодный Крем', 'Японский Виноград'
+            ],
+            'Kraken': [
+                'Strong Ligero (сигары)', 'Black Corn (Черная кукуруза)', 'Porto Ruby (Портвейн)',
+                'Rum Cake (Ромовый кекс)', 'Pirate Rum (Пиратский ром)', 'Yubari Melon (Дыня Юбари)', 
+                'Mango Alphonso (Манго)', 'Guava Supreme (Гуава)', 'Creme Brulee (Крем Брюле)',
+                'Medium серия', 'Strong серия'
+            ],
+            'Северный': [
+                'Зеленая Миля', 'Классический', 'Премиум', 'Северный Mix', 'Ягодный Коктейль',
+                'Цитрусовый Фреш', 'Тропический Микс', 'Мятная Свежесть', 'Лесные Ягоды',
+                'Арктический Ветер', 'Северное Сияние'
+            ],
+            'Bonche': [
+                'Base (Табачный)', 'Bergamot (Бергамот)', 'Blueberry (Черника)', 'Brownie (Брауни)', 
+                'Caramel (Карамель)', 'Cheesecake (Чизкейк)', 'Coconut (Кокос)', 'Coffee (Кофе)', 
+                'Cognac (Коньяк)', 'Cookie (Печенье)', 'Dark Chocolate (Темный шоколад)', 'Ginger (Имбирь)', 
+                'Honey (Мёд)', 'Lemon (Лимон)', 'Lemongrass (Лемонграсс)', 'Lychee (Личи)', 
+                'Marzipan (Марципан)', 'Melissa (Мелисса)', 'Olive (Оливки)', 'Orange (Апельсин)', 
+                'Passion Fruit (Маракуйя)', 'Peanut (Арахис)', 'Pineapple (Ананас)', 'Pomegranate (Гранат)', 
+                'Rum (Ром)', 'Salami (Салями)', 'Strawberry (Клубника)', 'Sweet Corn (Кукуруза)', 
+                'Vanilla (Ваниль)', 'Whiskey (Виски)', 'Wild Strawberry (Земляника)', 'Barberry (Барбарис)', 
+                'Basil (Базилик)', 'Cherry (Вишня)', 'Clove (Гвоздика)', 'Grapefruit (Грейпфрут)', 
+                'Hoob (Амаретто Грейпфрут Личи Алоэ)', 'Lavender (Лаванда)', 'Mango (Манго)', 
+                'New Year 2025 (Запеченый персик с карамелью и трюфелем)', 'Raspberry (Малина)', 'Red Wine (Красное Вино)',
+                'Kiwi', 'Smena', 'Текила Ананас Лайм'
+            ],
+            'Burn': [
+                'Black White Grape (Белый Виноград)', 'Black Gooseberry Shock (Кислый Крыжовник)', 
+                'Wild Berries (Дикие Ягоды)', 'Tropical Mix (Тропический Микс)', 
+                'Berry Mix (Ягодный Микс)', 'Mint (Мята)', 'Apple (Яблоко)', 
+                'Melon (Дыня)', 'Citrus (Цитрус)', 'Peach (Персик)', 'Pineapple (Ананас)'
+            ],
+            'Muassel': [
+                'Черника Малина', 'Цитрусовый Манго', 'Сочный Манго',
+                'Сладкий Кактус', 'Розовый Закат', 'Папайа', 'Мятная Свежесть',
+                'Малина Садовая', 'Киви', 'Жвачка с Корицей', 'Двойное Яблоко',
+                'Гуаманго', 'Экзотические Фрукты', 'Шоколад с Мятой', 'Шипучка',
+                'Черника Малина', 'Цитрусовый Фреш', 'Цитрусовый Манго', 'Холодная Гренада'
+            ],
+            // Популярные вкусы для других брендов (на основе рыночных данных)
+            'Darkside': [
+                'Supernova', 'Mango Lassi', 'Wild Berries', 'Grape', 'Melon', 'Citrus',
+                'Tropical Mix', 'Berry Mix', 'Mint', 'Apple', 'Peach', 'Pineapple'
+            ],
+            'JENT': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Sapphire Crown': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Afzal': [
+                'Pan Rasna', 'Pan Raas', 'Red Cherry', 'Grape', 'Strawberry', 'Mint',
+                'Apple', 'Melon', 'Rose', 'Paan', 'Double Apple'
+            ],
+            'Duft': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Spectrum': [
+                'Apple Cider (Яблочный сидр)', 'Bang Banana (Банан)', 'Brazilian Tea (Бразильский чай)', 
+                'Crystal (Лёд)', 'Garden Berry (Садовые ягоды)'
             ],
             'Trofimoff': [
-                { price: 900, weight: 125 }
+                'Dark Plum (Плотная Тёмная Слива)', 'Double Apple (Родная «Двойнушка»)', 'Elder Flowers', 
+                'Finlandia Vanila', 'Grapefruit (Грейпфрутовый Сок)', 'Green Apple', 'Hurtleberry (Черная Смородина)', 
+                'Kiwi', 'Kriek (Бельгийская Вишня Черешня)', 'Lavander (Лаванда)', 'Limoncello', 
+                'Mangifera (Сливочный Манго)', 'Mint (Освежающий Ментол)', 'Nobilis ("Молодая" Сосна)', 
+                'Old School Orange (Тот Самый Апельсин)', 'Opuntia Pear (Сочная Кактусовая Груша)', 
+                'Pan Banan (Выразительный Банан)', 'Peach', 'Pop Corn (Карамельный Попкорн)', 
+                'Red Currant (Вкуснейшая Смородина)', 'Sri Lanka (Элитарный Чай)', 
+                'Tangerine (Морокканский Мандарин)', 'The Rose (Яркая Цветочная Роза)', 
+                'Watermelon (Бахчевой Арбуз)', 'Wild Strawberry (Дикая Земляника)', 'Yellow Lemon (Лимон)'
+            ],
+            'BlackBurn': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Overdose': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'NАШ': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Сарма': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
             ],
             'SEBERO': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Mast Have': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Overdos': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Deus': [
+                'Perfume Psychedelic Love (Парфюм Психоделическая Любовь)', 'Supernova (Супернова)', 
+                'Mango Lassi (Манго Ласси)', 'Wild Berries (Дикие Ягоды)', 'Grape (Виноград)', 
+                'Melon (Дыня)', 'Citrus (Цитрус)', 'Tropical Mix (Тропический Микс)', 
+                'Berry Mix (Ягодный Микс)', 'Mint (Мята)', 'Apple (Яблоко)', 'Peach (Персик)', 
+                'Pineapple (Ананас)', 'Orange (Апельсин)', 'Lemon (Лимон)'
+            ],
+            'Darkside Sabotage': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'JENT CIGAR': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Хулиган': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Догма': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'BLISS': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'КОБРА': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Сарма 360': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'SEBERO CLASSIC': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'SEBERO BLACK': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'NАШ Cigar': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Palitra': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Satyr': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ],
+            'Star line': [
+                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
+                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
+            ]
+        };
+        
+        // Маппинг цен и весов для конкретных брендов (полные данные с OPTRF Store)
+        this.brandPriceWeightMapping = {
+            // Точные данные с OPTRF Store
+            'CHABACO': [
+                { price: 205, weight: 50 },  // 50г-205₽ (с OPTRF)
+                { price: 950, weight: 200 }  // 200г-950₽ (с OPTRF)
+            ],
+            'Nur': [
+                { price: 380, weight: 20 }   // 20г-380₽ (с OPTRF)
+            ],
+            'Kraken': [
+                { price: 3290, weight: 80 },  // 80г-3290₽ (сигары с OPTRF)
+                { price: 565, weight: 30 },   // 30г-565₽ (табак с OPTRF)
+                { price: 1695, weight: 100 }, // 100г-1695₽ (табак с OPTRF)
+                { price: 4025, weight: 250 }  // 250г-4025₽ (табак с OPTRF)
+            ],
+            'Bonche': [
+                { price: 640, weight: 30 },  // 30г-640₽ (с OPTRF)
+                { price: 1900, weight: 120 } // 120г-1900₽ (с OPTRF)
+            ],
+            'Burn': [
+                { price: 200, weight: 25 },  // 25г-200₽ (с OPTRF)
+                { price: 715, weight: 100 }, // 100г-715₽ (с OPTRF)
+                { price: 1400, weight: 200 } // 200г-1400₽ (с OPTRF)
+            ],
+            'Deus': [
+                { price: 5750, weight: 200 }, // 200г-5750₽ (с OPTRF)
+                { price: 750, weight: 100 },  // 100г-750₽ (общие данные)
+                { price: 1450, weight: 200 }  // 200г-1450₽ (общие данные)
+            ],
+            'Muassel': [
+                { price: 340, weight: 40 },  // 40г-340₽ (6/10 с OPTRF)
+                { price: 425, weight: 40 },  // 40г-425₽ (8/10 с OPTRF)
+                { price: 1550, weight: 200 } // 200г-1550₽ (с OPTRF)
+            ],
+            // Бренды, представленные на OPTRF но без конкретных цен (используем рыночные данные)
+            'Darkside': [
+                { price: 850, weight: 100 },
+                { price: 1650, weight: 200 }
+            ],
+            'Dogma': [
+                { price: 720, weight: 100 },
+                { price: 1400, weight: 200 }
+            ],
+            'JENT': [
+                { price: 680, weight: 100 },
+                { price: 1350, weight: 200 }
+            ],
+            'Palitra': [
+                { price: 680, weight: 100 },
+                { price: 1350, weight: 200 }
+            ],
+            'Satyr': [
+                { price: 700, weight: 100 },
+                { price: 1400, weight: 200 }
+            ],
+            'Хулиган': [
+                { price: 720, weight: 100 },
+                { price: 1400, weight: 200 }
+            ],
+            'Afzal': [
+                { price: 600, weight: 100 },
+                { price: 1200, weight: 200 }
+            ],
+            'Duft': [
+                { price: 700, weight: 100 },
+                { price: 1350, weight: 200 }
+            ],
+            'Must Have': [
+                { price: 800, weight: 100 },
+                { price: 1550, weight: 200 }
+            ],
+            'NAШ': [
+                { price: 650, weight: 100 },
+                { price: 1300, weight: 200 }
+            ],
+            'Sapphire Crown': [
+                { price: 700, weight: 100 },
+                { price: 1350, weight: 200 }
+            ],
+            'Sebero': [
                 { price: 730, weight: 100 },
-                { price: 200, weight: 25 }
+                { price: 1450, weight: 200 }
+            ],
+            'Serbetli': [
+                { price: 580, weight: 100 },
+                { price: 1150, weight: 200 }
+            ],
+            'Spectrum': [
+                { price: 205, weight: 25 },   // 25г-205₽ (с OPTRF)
+                { price: 760, weight: 100 },  // 100г-760₽ (с OPTRF)
+                { price: 1350, weight: 200 }  // 200г-1350₽ (с OPTRF)
+            ],
+            'Starline': [
+                { price: 650, weight: 100 },
+                { price: 1280, weight: 200 }
             ],
             'Сарма': [
                 { price: 1350, weight: 200 },
@@ -40,80 +300,22 @@ class HookahStaffApp {
                 { price: 680, weight: 100 },
                 { price: 285, weight: 40 }
             ],
-            'Bonche': [
-                { price: 1060, weight: 60 },
-                { price: 1900, weight: 120 }
-            ],
-            'BlackBurn': [
-                { price: 715, weight: 100 },
-                { price: 1400, weight: 200 }
-            ],
-            'Overdose': [
-                { price: 810, weight: 100 },
-                { price: 1600, weight: 200 }
-            ],
-            'Sapphire Crown': [
-                { price: 700, weight: 100 },
-                { price: 1340, weight: 200 },
-                { price: 200, weight: 25 }
-            ],
-            'NАШ': [
-                { price: 210, weight: 40 },
-                { price: 705, weight: 100 },
-                { price: 1350, weight: 200 }
-            ],
-            // Существующие бренды с данными из OPTRF
-            'Kraken': [
-                { price: 3290, weight: 80 }  // 80г-3290₽ (с OPTRF)
-            ],
-            'Afzal': [
-                { price: 600, weight: 100 },
-                { price: 1200, weight: 200 }
-            ],
-            'DUFT': [
-                { price: 700, weight: 100 },
-                { price: 1350, weight: 200 }
-            ],
-            'Spectrum': [
-                { price: 780, weight: 100 },
-                { price: 1500, weight: 200 }
-            ],
-            'Mast Have': [
-                { price: 800, weight: 100 },
-                { price: 1550, weight: 200 }
-            ],
-            // Остальные бренды из приложения (примерные данные)
+            // Бренды, которых нет на OPTRF (используем общие рекомендации)
             'Overdos': [
                 { price: 810, weight: 100 },
                 { price: 1600, weight: 200 }
-            ],
-            'Deus': [
-                { price: 750, weight: 100 },
-                { price: 1450, weight: 200 }
             ],
             'Darkside Sabotage': [
                 { price: 850, weight: 100 },
                 { price: 1650, weight: 200 }
             ],
-            'JENT': [
-                { price: 680, weight: 100 },
-                { price: 1350, weight: 200 }
-            ],
             'JENT CIGAR': [
                 { price: 750, weight: 100 },
                 { price: 1500, weight: 200 }
             ],
-            'Хулиган': [
-                { price: 720, weight: 100 },
-                { price: 1400, weight: 200 }
-            ],
             'Догма': [
                 { price: 720, weight: 100 },
                 { price: 1400, weight: 200 }
-            ],
-            'Muassel': [
-                { price: 650, weight: 100 },
-                { price: 1300, weight: 200 }
             ],
             'BLISS': [
                 { price: 700, weight: 100 },
@@ -131,32 +333,42 @@ class HookahStaffApp {
             ],
             'SEBERO CLASSIC': [
                 { price: 730, weight: 100 },
-                { price: 200, weight: 25 }
+                { price: 1450, weight: 200 }
             ],
             'SEBERO BLACK': [
                 { price: 780, weight: 100 },
                 { price: 1500, weight: 200 }
             ],
+            'NАШ': [
+                { price: 650, weight: 100 },
+                { price: 1300, weight: 200 }
+            ],
             'NАШ Cigar': [
-                { price: 210, weight: 40 },
-                { price: 705, weight: 100 },
-                { price: 1350, weight: 200 }
+                { price: 650, weight: 100 },
+                { price: 1300, weight: 200 }
             ],
-            'Palitra': [
-                { price: 680, weight: 100 },
-                { price: 1350, weight: 200 }
+            'Trofimoff': [
+                { price: 900, weight: 125 }
             ],
-            'Darkside': [
-                { price: 850, weight: 100 },
-                { price: 1650, weight: 200 }
-            ],
-            'Satyr': [
-                { price: 700, weight: 100 },
+            'BlackBurn': [
+                { price: 715, weight: 100 },
                 { price: 1400, weight: 200 }
+            ],
+            'Overdose': [
+                { price: 810, weight: 100 },
+                { price: 1600, weight: 200 }
+            ],
+            'Mast Have': [
+                { price: 800, weight: 100 },
+                { price: 1550, weight: 200 }
             ],
             'Star line': [
                 { price: 650, weight: 100 },
                 { price: 1280, weight: 200 }
+            ],
+            'SEBERO': [
+                { price: 730, weight: 100 },
+                { price: 1450, weight: 200 }
             ]
         };
         

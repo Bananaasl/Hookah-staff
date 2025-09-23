@@ -510,14 +510,23 @@ class UIRenderer {
             return '';
         }
         
-        // Для цен получаем динамические рекомендации на основе выбранного бренда
+        // Для цен и вкусов получаем динамические рекомендации на основе выбранного бренда
         let suggestionsToShow = suggestions;
-        if (type === 'price' && app.multiBrands[brandIndex] && app.multiBrands[brandIndex].brandName) {
+        if ((type === 'price' || type === 'taste') && app.multiBrands[brandIndex] && app.multiBrands[brandIndex].brandName) {
             const brandName = app.multiBrands[brandIndex].brandName;
-            const brandMapping = app.brandPriceWeightMapping[brandName];
-            if (brandMapping) {
-                // Показываем цены конкретно для этого бренда
-                suggestionsToShow = brandMapping.map(entry => entry.price);
+            
+            if (type === 'price') {
+                const brandMapping = app.brandPriceWeightMapping[brandName];
+                if (brandMapping) {
+                    // Показываем цены конкретно для этого бренда
+                    suggestionsToShow = brandMapping.map(entry => entry.price);
+                }
+            } else if (type === 'taste') {
+                const brandTasteMapping = app.brandTasteMapping[brandName];
+                if (brandTasteMapping) {
+                    // Показываем вкусы конкретно для этого бренда
+                    suggestionsToShow = brandTasteMapping;
+                }
             }
         }
         
