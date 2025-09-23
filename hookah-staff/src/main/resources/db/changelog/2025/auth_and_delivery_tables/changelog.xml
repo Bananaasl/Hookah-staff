@@ -68,14 +68,6 @@
             <column name="created_at" valueDate="CURRENT_TIMESTAMP"/>
             <column name="is_active" valueBoolean="true"/>
         </insert>
-        
-        <insert tableName="users">
-            <column name="username" value="senior"/>
-            <column name="password" value="senior123"/>
-            <column name="role" value="SENIOR_HOOKAH_MASTER"/>
-            <column name="created_at" valueDate="CURRENT_TIMESTAMP"/>
-            <column name="is_active" valueBoolean="true"/>
-        </insert>
     </changeSet>
 
 </databaseChangeLog>

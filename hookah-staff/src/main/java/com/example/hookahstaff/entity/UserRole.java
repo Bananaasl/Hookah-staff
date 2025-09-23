@@ -1,8 +1,7 @@
 package com.example.hookahstaff.entity;
 
 public enum UserRole {
-    HOOKAH_MASTER("Кальянный мастер"),
-    SENIOR_HOOKAH_MASTER("Старший кальянный мастер");
+    HOOKAH_MASTER("Кальянный мастер");
 
     private final String displayName;
 

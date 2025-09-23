@@ -41,11 +41,6 @@ public class AuthService {
             User master = new User("master", "master123", UserRole.HOOKAH_MASTER);
             userRepository.save(master);
         }
-
-        if (!userRepository.existsByUsername("senior")) {
-            User senior = new User("senior", "senior123", UserRole.SENIOR_HOOKAH_MASTER);
-            userRepository.save(senior);
-        }
     }
 }
 

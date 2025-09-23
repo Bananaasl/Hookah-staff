@@ -58,10 +58,6 @@ class UIRenderer {
                                     <span class="role-name">Кальянный мастер:</span>
                                     <span class="role-credentials">master / master123</span>
                                 </div>
-                                <div class="user-role">
-                                    <span class="role-name">Старший мастер:</span>
-                                    <span class="role-credentials">senior / senior123</span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -72,8 +68,6 @@ class UIRenderer {
 
     // Рендеринг текущей вкладки
     renderCurrentTab(app) {
-        const isHookahMaster = app.currentUser && app.currentUser.role === 'HOOKAH_MASTER';
-        
         return `
             <div class="stats">
                 <div class="stat-card">
@@ -92,7 +86,7 @@ class UIRenderer {
                 </div>
             </div>
 
-            ${isHookahMaster ? this.renderHookahMasterControls(app) : this.renderSeniorMasterControls(app)}
+            ${this.renderHookahMasterControls(app)}
 
             ${app.showMultiBrandForm ? this.renderMultiBrandForm(app) : ''}
 
@@ -162,33 +156,6 @@ class UIRenderer {
         `;
     }
 
-    // Рендеринг контролов для старшего мастера
-    renderSeniorMasterControls(app) {
-        return `
-            <div class="delivery-controls" style="margin-bottom: 30px; text-align: center;">
-                ${!app.currentDelivery ? `
-                    <button class="add-button" onclick="app.createNewDelivery()">
-                        Создать новый привоз
-                    </button>
-                ` : `
-                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                        <button class="add-button" onclick="app.finalizeDelivery()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
-                            Зафиксировать привоз
-                        </button>
-                        <button class="add-button" onclick="app.cancelDelivery()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
-                            Отменить привоз
-                        </button>
-                    </div>
-                `}
-            </div>
-
-            <div class="add-button-container">
-                <button class="add-button" onclick="app.toggleMultiBrandForm()">
-                    ${app.showMultiBrandForm ? 'Отмена' : 'Добавить табаки'}
-                </button>
-            </div>
-        `;
-    }
 
     // Рендеринг формы множественного добавления табаков
     renderMultiBrandForm(app) {
@@ -335,10 +302,7 @@ class UIRenderer {
                 </div>
                 
                 <button class="save-button" onclick="app.handleMultiBrandAddTobaccos()">
-                    ${app.currentUser && app.currentUser.role === 'HOOKAH_MASTER' ? 
-                        `Добавить ${app.multiBrands.reduce((total, brand) => total + brand.tastes.length, 0)} табаков в привоз` : 
-                        `Добавить ${app.multiBrands.reduce((total, brand) => total + brand.tastes.length, 0)} табаков`
-                    }
+                    Добавить ${app.multiBrands.reduce((total, brand) => total + brand.tastes.length, 0)} табаков в привоз
                 </button>
             </div>
         `;
@@ -355,8 +319,8 @@ class UIRenderer {
             `;
         }
 
-        // Определяем, показывать ли поля инвентаризации
-        const showInventoryFields = app.currentUser && app.currentUser.role === 'SENIOR_HOOKAH_MASTER';
+        // Поля инвентаризации больше не показываются
+        const showInventoryFields = false;
 
         return `
             <div class="table-container">

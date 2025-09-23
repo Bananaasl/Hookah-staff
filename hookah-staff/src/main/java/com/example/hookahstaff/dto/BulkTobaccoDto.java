@@ -66,3 +66,4 @@ public class BulkTobaccoDto {
      */
     private List<String> tastes;
 }
+
