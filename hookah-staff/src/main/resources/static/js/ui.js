@@ -131,6 +131,58 @@ class UIRenderer {
         `;
     }
 
+    // Рендеринг вкладки "Оценка полки"
+    renderShelfRatingTab(app) {
+        return `
+            <div class="tobacco-list">
+                <div class="tobacco-table">
+                    <div class="table-header">
+                        <h3>Оценка полки - Все табаки</h3>
+                    </div>
+                    ${app.shelfRatingTobaccos.length === 0 ? `
+                        <div class="empty-state">
+                            <p>Нет данных</p>
+                            <p>Добавьте и завершите привоз, чтобы увидеть оценку полки</p>
+                        </div>
+                    ` : `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Бренд</th>
+                                    <th>Вкус</th>
+                                    <th>Оценка актуальности</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${app.shelfRatingTobaccos.map(tobacco => `
+                                    <tr>
+                                        <td>${tobacco.brand_name}</td>
+                                        <td>${tobacco.taste}</td>
+                                        <td>
+                                            <span style="font-weight: 600; color: ${this.getRelevanceColor(tobacco.relevanceScore)};">
+                                                ${tobacco.relevanceScore || '1.0'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
+    // Получить цвет для оценки актуальности
+    getRelevanceColor(score) {
+        const scoreValue = parseFloat(score) || 1.0;
+        if (scoreValue >= 4.5) return '#28a745'; // Зеленый
+        if (scoreValue >= 3.5) return '#20c997'; // Сине-зеленый
+        if (scoreValue >= 2.5) return '#ffc107'; // Желтый
+        if (scoreValue >= 1.5) return '#fd7e14'; // Оранжевый
+        return '#dc3545'; // Красный
+    }
+
     // Рендеринг контролов для кальянного мастера
     renderHookahMasterControls(app) {
         return `

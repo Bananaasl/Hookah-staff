@@ -7,7 +7,8 @@ class HookahStaffApp {
         this.currentUser = null;
         this.currentDelivery = null;
         this.finalizedDeliveries = [];
-        this.activeTab = 'current'; // 'current' или 'history'
+        this.shelfRatingTobaccos = []; // Табаки для оценки полки
+        this.activeTab = 'current'; // 'current', 'history' или 'shelf-rating'
         this.showDeliveryModal = false;
         this.selectedDelivery = null;
         
@@ -401,6 +402,7 @@ class HookahStaffApp {
         await this.loadTobaccos();
         await this.loadCurrentDelivery();
         await this.loadFinalizedDeliveries();
+        await this.loadShelfRating();
         this.render();
     }
 
@@ -423,6 +425,16 @@ class HookahStaffApp {
     async loadFinalizedDeliveries() {
         const result = await apiService.loadFinalizedDeliveries();
         this.finalizedDeliveries = result.data;
+    }
+
+    async loadShelfRating() {
+        const result = await apiService.loadShelfRating();
+        if (result.success) {
+            this.shelfRatingTobaccos = result.data;
+            console.log('Загружено табаков для оценки полки:', this.shelfRatingTobaccos.length);
+        } else {
+            this.shelfRatingTobaccos = [];
+        }
     }
 
     logout() {
@@ -840,9 +852,14 @@ class HookahStaffApp {
                     <button class="tab-button ${this.activeTab === 'history' ? 'active' : ''}" onclick="app.switchTab('history')">
                         Прошлые привозы
                     </button>
+                    <button class="tab-button ${this.activeTab === 'shelf-rating' ? 'active' : ''}" onclick="app.switchTab('shelf-rating')">
+                        Оценка полки
+                    </button>
                 </div>
 
-                ${this.activeTab === 'current' ? uiRenderer.renderCurrentTab(this) : uiRenderer.renderHistoryTab(this)}
+                ${this.activeTab === 'current' ? uiRenderer.renderCurrentTab(this) : 
+                  this.activeTab === 'history' ? uiRenderer.renderHistoryTab(this) :
+                  uiRenderer.renderShelfRatingTab(this)}
             </div>
             
             ${this.showDeliveryModal ? uiRenderer.renderDeliveryModal(this) : ''}

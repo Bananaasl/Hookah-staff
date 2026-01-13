@@ -9,5 +9,7 @@
 
     <include relativeToChangelogFile="true" file="2025/tobacco_table/changelog.xml"/>
     <include relativeToChangelogFile="true" file="2025/auth_and_delivery_tables/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/add_is_primary_addition_and_relevance_score/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/migrate_to_new_structure/changelog.xml"/>
 
 </databaseChangeLog>

@@ -56,6 +56,17 @@ public class TobaccoController {
     }
 
     /**
+     * Получить все табаки для оценки полки (отсортированные по бренду и актуальности)
+     * 
+     * @return список всех табаков, отсортированный по бренду и актуальности (по убыванию)
+     */
+    @GetMapping("/shelf-rating")
+    public ResponseEntity<List<Tobacco>> getShelfRating() {
+        List<Tobacco> tobaccos = tobaccoService.getAllTobaccosSortedByBrandAndRelevance();
+        return ResponseEntity.ok(tobaccos);
+    }
+
+    /**
      * Получить табак по идентификатору
      * 
      * @param id идентификатор табака

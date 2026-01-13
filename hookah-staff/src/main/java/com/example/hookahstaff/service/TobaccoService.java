@@ -79,4 +79,11 @@ public interface TobaccoService {
      * @return список созданных табаков
      */
     List<Tobacco> createMultiBrandTobaccos(MultiBrandTobaccoDto multiBrandDto);
+
+    /**
+     * Получить все табаки, отсортированные по бренду и актуальности
+     * 
+     * @return список всех табаков, отсортированный по бренду (по алфавиту) и актуальности (по убыванию)
+     */
+    List<Tobacco> getAllTobaccosSortedByBrandAndRelevance();
 }

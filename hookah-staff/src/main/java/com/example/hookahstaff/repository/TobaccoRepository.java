@@ -20,9 +20,25 @@ import java.util.List;
 @Repository
 public interface TobaccoRepository extends JpaRepository<Tobacco, Long> {
     
-    @Query("SELECT t FROM Tobacco t WHERE t.delivery.id = :deliveryId")
-    List<Tobacco> findByDeliveryId(Long deliveryId);
+    /**
+     * Найти все табаки с указанным брендом и вкусом
+     * 
+     * @param brandName название бренда
+     * @param taste вкус табака
+     * @return список табаков с указанным брендом и вкусом
+     */
+    @Query("SELECT t FROM Tobacco t WHERE t.brand_name = :brandName AND t.taste = :taste")
+    List<Tobacco> findByBrandNameAndTaste(String brandName, String taste);
     
-    @Query("SELECT t FROM Tobacco t WHERE t.delivery IS NULL OR t.delivery.isFinalized = false")
-    List<Tobacco> findCurrentTobaccos();
+    /**
+     * Найти уникальный табак по бренду, вкусу, весу и цене
+     * 
+     * @param brandName название бренда
+     * @param taste вкус табака
+     * @param weight вес пачки
+     * @param price цена
+     * @return табак с указанными параметрами или null
+     */
+    @Query("SELECT t FROM Tobacco t WHERE t.brand_name = :brandName AND t.taste = :taste AND t.weight = :weight AND t.price = :price")
+    Tobacco findByBrandNameAndTasteAndWeightAndPrice(String brandName, String taste, Integer weight, java.math.BigDecimal price);
 }

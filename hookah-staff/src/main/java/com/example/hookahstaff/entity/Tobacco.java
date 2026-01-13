@@ -1,6 +1,7 @@
 package com.example.hookahstaff.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Сущность табака для кальянной
@@ -26,6 +28,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Tobacco {
 
     /**
@@ -88,10 +91,23 @@ public class Tobacco {
     private String taste;
 
     /**
-     * Связь с привозом
+     * Флаг первичного добавления табака
+     * true - табак добавлен впервые (по умолчанию)
+     * false - табак с таким же брендом и вкусом уже существует
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_id")
-    @JsonIgnore
-    private Delivery delivery;
+    @Column(name = "is_primary_addition", nullable = false)
+    private Boolean isPrimaryAddition = true;
+
+    /**
+     * Оценка актуальности табака от 1.0 до 5.0
+     * Используется для определения популярности и частоты заказа
+     */
+    @Column(name = "relevance_score", nullable = false, precision = 3, scale = 1)
+    private BigDecimal relevanceScore = BigDecimal.valueOf(1.0);
+
+    /**
+     * Дата последнего обновления актуальности
+     */
+    @Column(name = "last_relevance_update")
+    private LocalDateTime lastRelevanceUpdate;
 }

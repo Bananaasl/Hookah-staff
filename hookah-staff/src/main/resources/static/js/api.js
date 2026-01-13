@@ -79,6 +79,23 @@ class ApiService {
         }
     }
 
+    // Загрузка данных для оценки полки
+    async loadShelfRating() {
+        try {
+            const response = await fetch(`${this.API_BASE_URL}/shelf-rating`);
+            if (response.ok) {
+                const data = await response.json();
+                return { success: true, data: Array.isArray(data) ? data : [] };
+            } else {
+                console.error('Ошибка загрузки оценки полки:', response.statusText);
+                return { success: false, error: response.statusText };
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки оценки полки:', error);
+            return { success: false, error: 'Ошибка подключения к серверу' };
+        }
+    }
+
     // Создание нового привоза
     async createNewDelivery(createdBy) {
         try {

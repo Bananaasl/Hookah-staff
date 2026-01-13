@@ -26,7 +26,7 @@ public class Delivery {
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Tobacco> tobaccos;
+    private List<DeliveryTobacco> deliveryTobaccos;
 
     // Конструкторы
     public Delivery() {}
@@ -78,11 +78,11 @@ public class Delivery {
         this.finalizedAt = finalizedAt;
     }
 
-    public List<Tobacco> getTobaccos() {
-        return tobaccos;
+    public List<DeliveryTobacco> getDeliveryTobaccos() {
+        return deliveryTobaccos;
     }
 
-    public void setTobaccos(List<Tobacco> tobaccos) {
-        this.tobaccos = tobaccos;
+    public void setDeliveryTobaccos(List<DeliveryTobacco> deliveryTobaccos) {
+        this.deliveryTobaccos = deliveryTobaccos;
     }
 }
