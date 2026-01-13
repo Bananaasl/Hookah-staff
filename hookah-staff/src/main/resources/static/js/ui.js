@@ -274,7 +274,15 @@ class UIRenderer {
                                 <small style="color: #6c757d; font-size: 0.8rem; display: block; margin-top: 5px;">
                                     💡 Можно нажимать на один вкус несколько раз для добавления нескольких пачек
                                 </small>
-                                ${this.renderSuggestions(app.tasteSuggestions, 'taste', index)}
+                                ${(() => {
+                                    // Получаем доступные вкусы для выбранного веса
+                                    const availableTastes = brand.weight ? app.getAvailableTastes(brand.brandName, brand.weight) : [];
+                                    if (availableTastes.length > 0) {
+                                        return this.renderTasteSuggestions(availableTastes, index);
+                                    } else {
+                                        return this.renderSuggestions(app.tasteSuggestions, 'taste', index);
+                                    }
+                                })()}
                             </div>
                             
                             <div class="form-group">
@@ -299,6 +307,32 @@ class UIRenderer {
                                         '<div style="color: #6c757d; font-style: italic;">Введите вкусы для предварительного просмотра</div>'
                                     }
                                 </div>
+                            </div>
+                            
+                            ${brand.priceCategories && brand.priceCategories.length > 0 ? `
+                                <div class="form-group">
+                                    <label>Сохраненные ценовые категории:</label>
+                                    <div style="background: #e7f3ff; padding: 10px; border-radius: 6px; border: 1px solid #b3d9ff;">
+                                        ${brand.priceCategories.map((cat, catIndex) => `
+                                            <div style="margin-bottom: 10px; padding: 8px; background: white; border-radius: 4px; border: 1px solid #b3d9ff;">
+                                                <strong>Категория ${catIndex + 1}:</strong> ${cat.price}₽ / ${cat.weight}г (${cat.tastes.length} вкусов)
+                                                <div style="margin-top: 5px; font-size: 0.85rem; color: #495057;">
+                                                    ${cat.tastes.join(', ')}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            <div style="margin-top: 15px;">
+                                <button type="button" onclick="app.addPriceCategory(${index})" 
+                                        style="background: #17a2b8; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 0.9rem;">
+                                    + Добавить другую цену/вес для этого бренда
+                                </button>
+                                <small style="color: #6c757d; font-size: 0.75rem; display: block; margin-top: 5px;">
+                                    Позволяет добавить вкусы по другой цене для того же бренда
+                                </small>
                             </div>
                         </div>
                     `).join('')}
@@ -458,6 +492,30 @@ class UIRenderer {
         `;
     }
 
+    // Рендеринг рекомендаций вкусов (упрощенный)
+    renderTasteSuggestions(tastes, brandIndex) {
+        if (!tastes || tastes.length === 0) {
+            return '';
+        }
+        
+        return `
+            <div class="suggestions-container">
+                <div class="suggestions-label">Доступные вкусы:</div>
+                <div class="suggestions-chips">
+                    ${tastes.map((taste, tasteIndex) => {
+                        // Используем data-атрибут для безопасной передачи названия вкуса
+                        const safeTaste = taste.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                        return `
+                        <div class="suggestion-chip" data-taste="${safeTaste}" onclick="app.selectTasteSuggestionFromElement(this, ${brandIndex})">
+                            ${taste}
+                        </div>
+                    `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+
     // Рендеринг рекомендаций
     renderSuggestions(suggestions, type, brandIndex) {
         const typeLabels = {
@@ -485,8 +543,15 @@ class UIRenderer {
             } else if (type === 'taste') {
                 const brandTasteMapping = app.brandTasteMapping[brandName];
                 if (brandTasteMapping) {
-                    // Показываем вкусы конкретно для этого бренда
-                    suggestionsToShow = brandTasteMapping;
+                    // Если у бренда структура с весами (как у CHABACCO), нужно передать вес
+                    // Эта логика уже обрабатывается выше в вызывающем коде
+                    if (typeof brandTasteMapping === 'object' && !Array.isArray(brandTasteMapping)) {
+                        // Не используем здесь, используем getAvailableTastes
+                        suggestionsToShow = [];
+                    } else {
+                        // Показываем вкусы конкретно для этого бренда
+                        suggestionsToShow = brandTasteMapping;
+                    }
                 }
             }
         }

@@ -13,18 +13,85 @@ class HookahStaffApp {
         this.selectedDelivery = null;
         
         // Данные для рекомендаций
-        this.brandSuggestions = ['CHABACO', 'Nur', 'Kraken', 'Северный', 'Bonche', 'Burn', 'Deus', 'Muassel', 'Darkside', 'Dogma', 'JENT', 'Palitra', 'Satyr', 'Хулиган', 'Afzal', 'Duft', 'Must Have', 'NAШ', 'Sapphire Crown', 'Sebero', 'Serbetli', 'Spectrum', 'Starline', 'Сарма', 'Overdos', 'Darkside Sabotage', 'JENT CIGAR', 'Догма', 'BLISS', 'КОБРА', 'Сарма 360', 'SEBERO CLASSIC', 'SEBERO BLACK', 'NАШ', 'NАШ Cigar', 'Trofimoff', 'BlackBurn', 'Overdose', 'Mast Have', 'Star line', 'SEBERO'];
+        this.brandSuggestions = ['CHABACCO', 'Nur', 'Kraken', 'Северный', 'Bonche', 'Burn', 'Deus', 'Muassel', 'Darkside', 'Dogma', 'JENT', 'Palitra', 'Satyr', 'Хулиган', 'Afzal', 'Duft', 'Must Have', 'NAШ', 'Sapphire Crown', 'Sebero', 'Serbetli', 'Spectrum', 'Starline', 'Сарма', 'Overdos', 'Darkside Sabotage', 'JENT CIGAR', 'Догма', 'BLISS', 'КОБРА', 'Сарма 360', 'SEBERO CLASSIC', 'SEBERO BLACK', 'NАШ', 'NАШ Cigar', 'Trofimoff', 'BlackBurn', 'Overdose', 'Mast Have', 'Star line', 'SEBERO'];
         // Общие рекомендации вкусов (для брендов без специфических вкусов)
         this.tasteSuggestions = ['Малина', 'Смородина', 'Супернова', 'Груша', 'Липа', 'Бергамот', 'Клубника', 'Апельсин', 'Мята', 'Лимон', 'Киви', 'Персик', 'Ананас', 'Кокос', 'Ваниль'];
         
-        // Маппинг вкусов для конкретных брендов (полные данные с OPTRF Store)
+        // Маппинг вкусов для конкретных брендов (данные с oshisha.cc)
         this.brandTasteMapping = {
-            // Точные данные с OPTRF Store
-            'CHABACO': [
-                'Астраханский Арбуз', 'Виноградные Леденцы', 'Кивано Маракуйя', 
-                'Клубничный Милкшейк', 'Смородиновый Крамбл', 'Сырные палочки', 
-                'Апельсиновое Драже'
-            ],
+            // Данные с oshisha.cc/catalog/chabacco/
+            'CHABACCO': {
+                40: [ // 40г - 220₽
+                    'Orange Cream (Апельсин-Сливки)', 'Wild Cherry (Дикая Вишня)', 'Cola (Кола)', 
+                    'Grenadine drops (Гренадиновые Леденцы)', 'Kiwano-passion fruit (Кивано Маракуйя)', 
+                    'Northern Berries (Северные Ягоды)', 'Blueberry mint (Черника с Мятой)', 
+                    'Orange Dragee (Апельсиновые Драже)', 'Jasmine Tea (Жасминовый Чай)', 
+                    'Jasmine mochi (Жасминовые Моти)', 'Banana Milkshake (Банановый Милкшейк)', 
+                    'Pistachio Ice Cream (Фисташковое Мороженое)', 'Sour jelly (Кислые Желейные Конфеты)', 
+                    'Energy Drink & Kiwi (Энергетик с Киви)', 'Cherry Cola (Вишневая Кола)', 
+                    'Cranberries in powdered sugar (Клюква в Сахарной Пудре)', 'Ice (Лёд)', 
+                    'Ice Bonbon (Ледяные Бонбоны)', 'Raspberry Rafaella (Малиновая Рафаэлла)', 
+                    'Pomelo (Помело)', 'Mango Yogurt (Манговый Йогурт)', 
+                    'Lemon Jelly Slices (Лимонные Желейные Дольки)', 'Black Currant Crumble (Черносмородиновый Крамбл)', 
+                    'Ice Grape (Ледяной Виноград)', 'Gummy Bears (Мармеладные Мишки)', 
+                    'Fruit ice (Фруктовый Лёд)', 'Watermelon Astrakhan (Астраханский Арбуз)', 
+                    'Royal lemonade (Королевский Лимонад)', 'Grapefruit (Грейпфрут)', 
+                    'Raspberry blackberry (Малина Ежевика)', 'Raspberry (Малина)', 
+                    'Tangerine Strawberry Lychee (Мандарин Клубника Личи)', 'Sour Cowberry (Кислая Брусника)', 
+                    'Pineapple (Ананас)', 'Ice Mango (Ледяное Манго)', 'Watermelon Gum (Арбузная Жвачка)', 
+                    'Strawberry Mojito (Клубничный Мохито)', 'Cactus Freestyle (Кактус Фристайл)', 
+                    'Wild strawberry (Дикая Клубника)', 'Frosty Mint (Морозная Мята)', 
+                    'Passion Fruit (Маракуйя)', 'Chinese Melon (Китайская Дыня)', 
+                    'Lemon-Lime (Лимон Лайм)', 'Green Apple (Зеленое Яблоко)', 
+                    'Elderberry (Бузина)', 'Double Apple (Двойное Яблоко)', 'Cherry (Вишня)', 
+                    'Fruictella (Фруктелла)', 'Skittles (Скиттлс)', 'Asian Mix (Азиатский Микс)'
+                ],
+                200: [ // 200г - 990₽
+                    'Orange Cream (Апельсин-Сливки)', 'Wild Cherry (Дикая Вишня)', 'Cola (Кола)', 
+                    'Northern Berries (Северные Ягоды)', 'Orange Dragee (Апельсиновые Драже)',
+                    'Raspberry (Малина)', 'Pistachio Ice Cream (Фисташковое Мороженое)', 
+                    'Energy Drink & Kiwi (Энергетик с Киви)', 'Mango Yogurt (Манговый Йогурт)',
+                    'Lemon Jelly Slices (Лимонные Желейные Дольки)', 'Watermelon Astrakhan (Астраханский Арбуз)', 
+                    'Jasmine mochi (Жасминовые Моти)', 'Grapefruit (Грейпфрут)',
+                    'Cheese sticks (Сырные Палочки)', 'Poppy Roll (Маковый Рулет)', 
+                    'Kiwi apple gooseberry (Киви Яблоко Крыжовник)', 'Cappuccino Marshmallow (Капучино Маршмеллоу)',
+                    'Ice mango (Ледяное Манго)', 'Sour jelly (Кислое Желе)', 'Peach-lime (Персик-Лайм)', 
+                    'Mango chamomile (Манго Ромашка)', 'White wine (Белое Вино)',
+                    'Watermelon Gum (Арбузная Жвачка)', 'Pomelo (Помело)', 'Passion fruit (Маракуйя)', 
+                    'Frosty mint (Морозная Мята)', 'Double Apple (Двойное Яблоко)',
+                    'Crème de coco (Крем де Коко)', 'Cherry (Вишня)', 'LE Martini Fiero (ЛЕ Мартини Фиеро)', 
+                    'Ginger Ale (Имбирный Эль)', 'Kiwano passion fruit (Кивано Маракуйя)',
+                    'Grape Drops (Виноградные Леденцы)', 'Strawberry Milkshake (Клубничный Милкшейк)', 
+                    'Black Currant Crumble (Черносмородиновый Крамбл)',
+                    'Banana Milkshake (Банановый Милкшейк)', 'Ice (Лёд)', 'Fruictella (Фруктелла)', 
+                    'Cactus Freestyle (Кактус Фристайл)', 'Gummy bears (Мармеладные Мишки)',
+                    'Skittle (Скиттлс)', 'Raspberry rafaella (Малиновая Рафаэлла)', 
+                    'Peach apricot (Персик Абрикос)', 'Wild strawberry (Дикая Клубника)',
+                    'Raspberry blackberry (Малина Ежевика)', 'Green apple (Зеленое Яблоко)', 
+                    'Pear drops (Грушевые Леденцы)', 'Sour cowberry (Кислая Брусника)',
+                    'Creamy energy drink (Сливочный Энергетик)', 'Pineapple (Ананас)', 
+                    'Chocolate Stout (Шоколадный Стаут)', 'LE Pan Raas STRONG (Пан Раас Крепкий LE)',
+                    'LE Pan Raas MEDIUM (Пан Раас Средний LE)', 'Virgin negroni (Виргинский Негрони)', 
+                    'Royal lemonade (Королевский Лимонад)', 'Bumble bee (Шмель)',
+                    'Bali sunrise (Балийский Рассвет)', 'Strawberry mojito (Клубничный Мохито)', 
+                    'Tropic Love (Тропическая Любовь)', 'Pink jam STRONG (Розовое Варенье Крепкое)',
+                    'Tangerine Strawberry Lychee (Мандарин Клубника Личи)', 'Passion fruit STRONG (Маракуйя Крепкая)', 
+                    'Northern berries STRONG (Северные Ягоды Крепкие)',
+                    'Blueberry mint STRONG (Черника с Мятой Крепкая)', 'Pink jam (Розовое Варенье)', 
+                    'Ice bonbon (Ледяные Бонбоны)', 'Honey berries (Медовые Ягоды)',
+                    'Green soda (Зеленая Газировка)', 'Fruit meringue (Фруктовый Меренг)', 
+                    'Fruit ice (Фруктовый Лёд)', 'Cranberries in powdered sugar (Клюква в Сахарной Пудре)',
+                    'Rum lady muff (Ромовая Леди Мафф)', 'Pomegranate (Гранат)', 'Milk oolong (Молочный Улун)', 
+                    'Lemon lime (Лимон Лайм)', 'Jasmine tea (Жасминовый Чай)',
+                    'Ice grape (Ледяной Виноград)', 'Grenadine drops (Гренадиновые Леденцы)', 
+                    'Elderberry (Бузина)', 'Chinese melon (Китайская Дыня)',
+                    'Cherry cola (Вишневая Кола)', 'Blueberry mint (Черника с Мятой)', 
+                    'Black currant (Черная Смородина)', 'Asian mix (Азиатский Микс)',
+                    'LE Rock\'n\'Rolla (Рок-н-Ролла LE)', 'Mumbai tea (Мумбай Чай)', 
+                    'LE Brandy motors (Бренди Моторс LE)', 'LE Bourbon rocks (Бурбон Рокс LE)', 
+                    'LE Agava boom (Агава Бум LE)'
+                ]
+            },
             'Nur': [
                 'Пина Колада', 'Роза Сосна', 'Русские Ягоды', 'Свежие Ягоды', 
                 'Фейхоа Малина', 'Хвоя Фейхоа', 'Черничный Маффин', 'Чернослив Ром Ягоды',
@@ -196,9 +263,9 @@ class HookahStaffApp {
         // Маппинг цен и весов для конкретных брендов (полные данные с OPTRF Store)
         this.brandPriceWeightMapping = {
             // Точные данные с OPTRF Store
-            'CHABACO': [
-                { price: 205, weight: 50 },  // 50г-205₽ (с OPTRF)
-                { price: 950, weight: 200 }  // 200г-950₽ (с OPTRF)
+            'CHABACCO': [
+                { price: 220, weight: 40 },  // 40г-220₽ (с oshisha.cc)
+                { price: 990, weight: 200 }  // 200г-990₽ (с oshisha.cc)
             ],
             'Nur': [
                 { price: 380, weight: 20 }   // 20г-380₽ (с OPTRF)
@@ -482,9 +549,53 @@ class HookahStaffApp {
             price: null, // Цена не устанавливается до выбора бренда
             weight: null, // Вес не устанавливается до выбора бренда
             orderDate: new Date().toISOString().split('T')[0],
-            tastes: []
+            tastes: [],
+            priceCategories: [] // Для хранения нескольких ценовых категорий
         });
         this.render();
+    }
+
+    // Добавить ценовую категорию к существующему бренду
+    addPriceCategory(brandIndex) {
+        const brand = this.multiBrands[brandIndex];
+        if (!brand.brandName) {
+            alert('Сначала выберите бренд');
+            return;
+        }
+        if (!brand.price || !brand.weight) {
+            alert('Сначала выберите цену и вес для текущей категории');
+            return;
+        }
+        
+        // Сохраняем текущие вкусы в категорию
+        if (brand.tastes.length > 0) {
+            brand.priceCategories.push({
+                price: brand.price,
+                weight: brand.weight,
+                tastes: [...brand.tastes]
+            });
+            
+            // Сбрасываем текущие поля для новой категории
+            brand.price = null;
+            brand.weight = null;
+            brand.tastes = [];
+            
+            this.render();
+        } else {
+            alert('Добавьте хотя бы один вкус в текущую категорию');
+        }
+    }
+
+    // Получить доступные вкусы для выбранного веса/цены
+    getAvailableTastes(brandName, weight) {
+        const brandData = this.brandTasteMapping[brandName];
+        if (!brandData || typeof brandData !== 'object') {
+            // Если структура не объект с весами, возвращаем все вкусы
+            return Array.isArray(brandData) ? brandData : this.tasteSuggestions;
+        }
+        
+        // Возвращаем вкусы для конкретного веса
+        return brandData[weight] || [];
     }
 
     removeBrand(index) {
@@ -657,34 +768,44 @@ class HookahStaffApp {
             return;
         }
 
-        // Валидация формы
-        if (this.multiBrands.length === 0) {
-            alert('Пожалуйста, добавьте хотя бы один бренд');
-            return;
+        // Подготовка данных с учетом сохраненных ценовых категорий
+        const brandsToSend = [];
+        
+        for (const brand of this.multiBrands) {
+            if (!brand.brandName || brand.brandName.trim() === '') {
+                alert('Пожалуйста, введите название бренда');
+                return;
+            }
+            
+            // Добавляем текущую категорию, если есть вкусы
+            if (brand.tastes.length > 0 && brand.price && brand.weight) {
+                brandsToSend.push({
+                    brandName: brand.brandName,
+                    price: brand.price,
+                    weight: brand.weight,
+                    orderDate: brand.orderDate,
+                    tastes: brand.tastes
+                });
+            }
+            
+            // Добавляем сохраненные ценовые категории
+            if (brand.priceCategories && brand.priceCategories.length > 0) {
+                for (const category of brand.priceCategories) {
+                    brandsToSend.push({
+                        brandName: brand.brandName,
+                        price: category.price,
+                        weight: category.weight,
+                        orderDate: brand.orderDate,
+                        tastes: category.tastes
+                    });
+                }
+            }
         }
 
-        for (let i = 0; i < this.multiBrands.length; i++) {
-            const brand = this.multiBrands[i];
-            
-            if (!brand.brandName || brand.brandName.trim() === '') {
-                alert(`Пожалуйста, введите название бренда для бренда ${i + 1}`);
-                return;
-            }
-            
-            if (!brand.price || brand.price <= 0) {
-                alert(`Пожалуйста, выберите цену для бренда "${brand.brandName}"`);
-                return;
-            }
-            
-            if (!brand.weight || brand.weight <= 0) {
-                alert(`Пожалуйста, выберите цену для бренда "${brand.brandName}" (вес установится автоматически)`);
-                return;
-            }
-
-            if (brand.tastes.length === 0) {
-                alert(`Пожалуйста, введите хотя бы один вкус для бренда "${brand.brandName}"`);
-                return;
-            }
+        // Валидация
+        if (brandsToSend.length === 0) {
+            alert('Добавьте хотя бы один бренд с вкусами');
+            return;
         }
 
         // Показываем индикатор загрузки
@@ -693,11 +814,11 @@ class HookahStaffApp {
         saveButton.textContent = 'Сохранение...';
         saveButton.disabled = true;
 
-        const result = await apiService.addMultiBrandTobaccos(this.currentDelivery.id, this.multiBrands);
+        const result = await apiService.addMultiBrandTobaccos(this.currentDelivery.id, brandsToSend);
         
         if (result.success) {
             // Сохраняем количество добавленных табаков перед очисткой
-            const addedCount = this.multiBrands.reduce((total, brand) => total + brand.tastes.length, 0);
+            const addedCount = brandsToSend.reduce((total, brand) => total + brand.tastes.length, 0);
             
             // Успешное сохранение
             await this.loadTobaccos();
@@ -755,6 +876,15 @@ class HookahStaffApp {
         // Добавляем вкус каждый раз при нажатии (убираем проверку на дубликаты)
         currentTastes.push(taste);
         this.updateBrandTastes(brandIndex, currentTastes.join(', '));
+    }
+
+    selectTasteSuggestionFromElement(element, brandIndex) {
+        const taste = element.getAttribute('data-taste');
+        if (taste) {
+            // Декодируем HTML-сущности обратно в обычный текст
+            const decodedTaste = taste.replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+            this.selectTasteSuggestion(brandIndex, decodedTaste);
+        }
     }
 
     selectWeightSuggestion(brandIndex, weight) {
