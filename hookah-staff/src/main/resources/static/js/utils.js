@@ -19,7 +19,12 @@ class Utils {
     // Функция для получения веса инвентаризации в граммах
     getInventoryWeightInGrams(tobacco) {
         const inventoryWeight = tobacco.inventoryWeight || 0;
-        const orderWeight = tobacco.weight || 0;
+        const orderWeight = tobacco.weight || 0; // weight может быть null для текущего привоза
+        
+        // Если weight не указан, возвращаем inventoryWeight как есть
+        if (!orderWeight || orderWeight === 0) {
+            return inventoryWeight;
+        }
         
         // Если inventoryWeight больше orderWeight, значит это процент
         if (inventoryWeight > orderWeight && inventoryWeight <= 100) {
@@ -33,10 +38,11 @@ class Utils {
 
     // Расчет процента использования
     calculateUsagePercentage(tobacco) {
-        const orderWeight = tobacco.weight || 0;
+        const orderWeight = tobacco.weight || 0; // weight может быть null для текущего привоза
         const inventoryWeightInGrams = this.getInventoryWeightInGrams(tobacco);
         
-        if (orderWeight === 0) return 0;
+        // Если weight не указан, возвращаем 0 (не можем рассчитать использование)
+        if (!orderWeight || orderWeight === 0) return 0;
         
         const usedWeight = orderWeight - inventoryWeightInGrams;
         const percentage = (usedWeight / orderWeight) * 100;

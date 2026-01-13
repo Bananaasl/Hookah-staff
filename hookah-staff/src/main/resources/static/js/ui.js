@@ -254,20 +254,21 @@ class UIRenderer {
                                 <label>Цена за пачку (₽):</label>
                                 <input
                                     type="number"
-                                    value="${brand.price}"
-                                    onchange="app.updateBrand(${index}, 'price', parseFloat(this.value) || 0)"
-                                    placeholder="1200"
+                                    value="${brand.price || ''}"
+                                    onchange="app.updateBrand(${index}, 'price', parseFloat(this.value) || null)"
+                                    placeholder="Выберите цену"
+                                    ${!brand.brandName ? 'disabled style="background-color: #f8f9fa; color: #6c757d;"' : ''}
                                 />
-                                ${this.renderSuggestions(app.priceSuggestions, 'price', index)}
+                                ${brand.brandName ? this.renderSuggestions(app.priceSuggestions, 'price', index) : '<small style="color: #6c757d; font-size: 0.8rem;">Сначала выберите бренд</small>'}
                             </div>
                             
                             <div class="form-group">
                                 <label>Вес пачки (г):</label>
                                 <input
                                     type="number"
-                                    value="${brand.weight}"
-                                    onchange="app.updateBrand(${index}, 'weight', parseInt(this.value) || 50)"
-                                    placeholder="50"
+                                    value="${brand.weight || ''}"
+                                    onchange="app.updateBrand(${index}, 'weight', parseInt(this.value) || null)"
+                                    placeholder="Выберите цену"
                                     readonly
                                     style="background-color: #f8f9fa; color: #6c757d;"
                                 />
@@ -298,7 +299,7 @@ class UIRenderer {
                                                 <div style="margin: 5px 0; padding: 5px; background: #f8f9fa; border-radius: 4px; border: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center;">
                                                     <div>
                                                         <strong>${brand.brandName || 'Бренд'}</strong> - ${taste.trim()} ${count > 1 ? `(${count} шт.)` : ''}
-                                                        <br><small>Крепость: ${utils.getFortressText(brand.fortress)}, Цена: ${brand.price || 0} ₽, Вес: ${brand.weight || 50} г</small>
+                                                        <br><small>Крепость: ${utils.getFortressText(brand.fortress)}, Цена: ${brand.price ? brand.price + ' ₽' : 'не выбрана'}, Вес: ${brand.weight ? brand.weight + ' г' : 'не выбран'}</small>
                                                     </div>
                                                     <button type="button" onclick="app.removeTasteSuggestion(${index}, '${taste}')" 
                                                             style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.7rem; cursor: pointer; margin-left: 10px;">
@@ -336,7 +337,7 @@ class UIRenderer {
                                                 <div style="margin: 5px 0; padding: 8px; background: white; border-radius: 4px; border: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center;">
                                                     <div>
                                                         <strong>${taste.trim()}</strong> ${count > 1 ? `(${count} шт.)` : ''}
-                                                        <br><small>Крепость: ${utils.getFortressText(brand.fortress)}, Цена: ${brand.price || 0} ₽, Вес: ${brand.weight || 50} г</small>
+                                                        <br><small>Крепость: ${utils.getFortressText(brand.fortress)}, Цена: ${brand.price ? brand.price + ' ₽' : 'не выбрана'}, Вес: ${brand.weight ? brand.weight + ' г' : 'не выбран'}</small>
                                                     </div>
                                                     <button type="button" onclick="app.removeTasteSuggestion(${brandIndex}, '${taste}')" 
                                                             style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.7rem; cursor: pointer; margin-left: 10px;">
@@ -383,7 +384,6 @@ class UIRenderer {
                             <th>Вкус</th>
                             <th>Крепость</th>
                             <th>Цена</th>
-                            <th>Вес</th>
                             <th>Дата заказа</th>
                             ${showInventoryFields ? `
                                 <th>Дата инвентаризации</th>
@@ -407,7 +407,6 @@ class UIRenderer {
                                 </span>
                             </td>
                             <td class="price">${tobacco.price || 0} ₽</td>
-                            <td>${tobacco.weight || 50} г</td>
                             <td>${tobacco.orderDate || 'Не указано'}</td>
                             ${showInventoryFields ? `
                                 <td>${tobacco.inventoryDate || 'Не указано'}</td>
@@ -416,7 +415,7 @@ class UIRenderer {
                                         type="number" 
                                         value="${utils.getInventoryWeightInGrams(tobacco)}" 
                                         min="0" 
-                                        max="${tobacco.weight || 50}"
+                                        max="1000"
                                         style="width: 100%; max-width: 80px; padding: 4px; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9rem;"
                                         onchange="app.updateInventoryWeight(${tobacco.id}, this.value)"
                                     /> г

@@ -480,8 +480,8 @@ class HookahStaffApp {
         this.multiBrands.push({
             brandName: '',
             fortress: 1,
-            price: 720, // Устанавливаем цену по умолчанию
-            weight: 100, // Устанавливаем вес по умолчанию (соответствует цене 720₽)
+            price: null, // Цена не устанавливается до выбора бренда
+            weight: null, // Вес не устанавливается до выбора бренда
             orderDate: new Date().toISOString().split('T')[0],
             inventoryDate: new Date().toISOString().split('T')[0],
             tastes: []
@@ -496,6 +496,14 @@ class HookahStaffApp {
 
     updateBrand(index, field, value) {
         if (this.multiBrands[index]) {
+            const oldBrandName = this.multiBrands[index].brandName;
+            
+            // Если меняется бренд, сбрасываем цену и вес
+            if (field === 'brandName' && oldBrandName && oldBrandName !== value) {
+                this.multiBrands[index].price = null;
+                this.multiBrands[index].weight = null;
+            }
+            
             this.multiBrands[index][field] = value;
             
             // Если изменилась цена, автоматически обновляем вес
@@ -665,12 +673,12 @@ class HookahStaffApp {
             }
             
             if (!brand.price || brand.price <= 0) {
-                alert(`Пожалуйста, введите корректную цену для бренда "${brand.brandName}"`);
+                alert(`Пожалуйста, выберите цену для бренда "${brand.brandName}"`);
                 return;
             }
             
             if (!brand.weight || brand.weight <= 0) {
-                alert(`Пожалуйста, введите корректный вес для бренда "${brand.brandName}"`);
+                alert(`Пожалуйста, выберите цену для бренда "${brand.brandName}" (вес установится автоматически)`);
                 return;
             }
 
@@ -733,9 +741,9 @@ class HookahStaffApp {
             if (!tobacco) return;
 
             const weightInGrams = parseInt(newWeight);
-            const maxWeight = tobacco.weight || 50;
+            const maxWeight = 1000; // Максимальный вес для валидации (weight больше не хранится в tobacco)
             
-            // Валидация: вес инвентаризации не может быть больше исходного веса
+            // Валидация: вес инвентаризации не может быть больше максимального
             if (weightInGrams > maxWeight) {
                 alert(`Вес инвентаризации не может быть больше ${maxWeight} г`);
                 return;
@@ -774,7 +782,16 @@ class HookahStaffApp {
 
     // Функции для работы с рекомендациями
     selectBrandSuggestion(brandIndex, brandName) {
-        this.updateBrand(brandIndex, 'brandName', brandName);
+        const currentBrand = this.multiBrands[brandIndex];
+        // Если бренд действительно меняется, сбрасываем цену и вес
+        if (currentBrand && currentBrand.brandName !== brandName) {
+            this.updateBrand(brandIndex, 'brandName', brandName);
+            // Сбрасываем цену и вес при смене бренда
+            this.updateBrand(brandIndex, 'price', null);
+            this.updateBrand(brandIndex, 'weight', null);
+        } else {
+            this.updateBrand(brandIndex, 'brandName', brandName);
+        }
     }
 
     selectTasteSuggestion(brandIndex, taste) {
@@ -888,7 +905,7 @@ class HookahStaffApp {
                                 type="number" 
                                 value="${utils.getInventoryWeightInGrams(tobacco)}" 
                                 min="0" 
-                                max="${tobacco.weight || 50}"
+                                max="1000"
                                 style="width: 100%; max-width: 80px; padding: 4px; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9rem;"
                                 onchange="app.updateInventoryWeight(${tobacco.id}, this.value)"
                             /> г

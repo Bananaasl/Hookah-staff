@@ -60,18 +60,37 @@ public class DeliveryService {
         // Получаем все табаки из текущего привоза
         List<DeliveryTobacco> deliveryTobaccos = deliveryTobaccoRepository.findByDeliveryId(deliveryId);
         
-        // Обновляем флаг первичности для всех табаков в привозе
+        // Получаем все завершенные привозы (кроме текущего)
+        List<Delivery> allFinalizedDeliveries = deliveryRepository.findFinalizedDeliveries();
+        
+        // Собираем все комбинации бренд+вкус из завершенных привозов
+        Set<String> finalizedBrandTasteKeys = new HashSet<>();
+        for (Delivery finalizedDelivery : allFinalizedDeliveries) {
+            if (finalizedDelivery.getId().equals(deliveryId)) {
+                continue; // Пропускаем текущий привоз
+            }
+            List<DeliveryTobacco> dts = deliveryTobaccoRepository.findByDeliveryId(finalizedDelivery.getId());
+            for (DeliveryTobacco dt : dts) {
+                Tobacco tobacco = dt.getTobacco();
+                String key = (tobacco.getBrand_name() != null ? tobacco.getBrand_name() : "") + "|" + 
+                            (tobacco.getTaste() != null ? tobacco.getTaste() : "");
+                finalizedBrandTasteKeys.add(key);
+            }
+        }
+        
+        // Обновляем флаг первичности для всех табаков в текущем привозе
         for (DeliveryTobacco dt : deliveryTobaccos) {
             Tobacco tobacco = dt.getTobacco();
+            String key = (tobacco.getBrand_name() != null ? tobacco.getBrand_name() : "") + "|" + 
+                        (tobacco.getTaste() != null ? tobacco.getTaste() : "");
             
-            // Проверяем, есть ли другие табаки с таким же брендом и вкусом
-            List<Tobacco> sameTypeTobaccos = tobaccoRepository.findByBrandNameAndTaste(
-                    tobacco.getBrand_name(),
-                    tobacco.getTaste()
-            );
-            
-            // Если есть больше одного табака с таким брендом и вкусом, устанавливаем флаг в false для всех
-            if (sameTypeTobaccos.size() > 1) {
+            // Если табак уже был в завершенных привозах, устанавливаем флаг в false
+            if (finalizedBrandTasteKeys.contains(key)) {
+                // Находим все табаки с таким брендом и вкусом и устанавливаем флаг в false
+                List<Tobacco> sameTypeTobaccos = tobaccoRepository.findByBrandNameAndTaste(
+                        tobacco.getBrand_name(),
+                        tobacco.getTaste()
+                );
                 for (Tobacco sameTobacco : sameTypeTobaccos) {
                     if (sameTobacco.getIsPrimaryAddition()) {
                         sameTobacco.setIsPrimaryAddition(false);
@@ -95,12 +114,18 @@ public class DeliveryService {
     public DeliveryDto convertToDto(Delivery delivery) {
         // Получаем табаки через DeliveryTobacco (для всех привозов)
         List<DeliveryTobacco> deliveryTobaccos = deliveryTobaccoRepository.findByDeliveryId(delivery.getId());
-        List<Tobacco> tobaccos = deliveryTobaccos.stream()
+        List<com.example.hookahstaff.dto.DeliveryTobaccoDto> tobaccos = deliveryTobaccos.stream()
                 .map(dt -> {
                     Tobacco tobacco = dt.getTobacco();
-                    // Инициализируем proxy, чтобы избежать lazy loading
+                    // Инициализируем все поля, чтобы избежать lazy loading
                     tobacco.getId();
-                    return tobacco;
+                    tobacco.getBrand_name();
+                    tobacco.getTaste();
+                    tobacco.getFortress();
+                    tobacco.getPrice();
+                    tobacco.getOrderDate();
+                    // Возвращаем DTO с весом из DeliveryTobacco
+                    return com.example.hookahstaff.dto.DeliveryTobaccoDto.fromTobaccoAndWeight(tobacco, dt.getWeight());
                 })
                 .collect(Collectors.toList());
         
@@ -114,10 +139,21 @@ public class DeliveryService {
         );
     }
 
-    public List<Tobacco> getTobaccosByDelivery(Long deliveryId) {
+    public List<com.example.hookahstaff.dto.DeliveryTobaccoDto> getTobaccosByDelivery(Long deliveryId) {
         List<DeliveryTobacco> deliveryTobaccos = deliveryTobaccoRepository.findByDeliveryId(deliveryId);
         return deliveryTobaccos.stream()
-                .map(DeliveryTobacco::getTobacco)
+                .map(dt -> {
+                    Tobacco tobacco = dt.getTobacco();
+                    // Инициализируем все поля, чтобы избежать lazy loading
+                    tobacco.getId();
+                    tobacco.getBrand_name();
+                    tobacco.getTaste();
+                    tobacco.getFortress();
+                    tobacco.getPrice();
+                    tobacco.getOrderDate();
+                    // Возвращаем DTO с весом из DeliveryTobacco
+                    return com.example.hookahstaff.dto.DeliveryTobaccoDto.fromTobaccoAndWeight(tobacco, dt.getWeight());
+                })
                 .collect(Collectors.toList());
     }
 
@@ -148,8 +184,8 @@ public class DeliveryService {
      * 1. Находит все уникальные табаки из текущего привоза
      * 2. Для каждого табака проверяет, был ли он в двух предыдущих привозах
      * 3. Если был хотя бы один раз - увеличивает актуальность на 1.0
-     * 4. Если не был - уменьшает актуальность на 0.5
-     * 5. Для всех остальных табаков, которых нет в трех последних привозах, уменьшает актуальность на 0.5
+     * 4. Если не был - уменьшает актуальность на 1.0
+     * 5. Для всех остальных табаков, которых нет в трех последних привозах, уменьшает актуальность на 1.0
      * 6. Актуальность ограничена диапазоном от 1.0 до 5.0</p>
      * 
      * @param finalizedDeliveryId идентификатор только что завершенного привоза
@@ -158,11 +194,17 @@ public class DeliveryService {
     private void updateRelevanceScoresNew(Long finalizedDeliveryId) {
         // Получаем табаки из завершенного привоза
         List<DeliveryTobacco> currentDeliveryTobaccos = deliveryTobaccoRepository.findByDeliveryId(finalizedDeliveryId);
-        Set<Long> currentTobaccoIds = currentDeliveryTobaccos.stream()
-                .map(dt -> dt.getTobacco().getId())
-                .collect(Collectors.toSet());
         
-        if (currentTobaccoIds.isEmpty()) {
+        // Собираем уникальные комбинации бренд+вкус из текущего привоза
+        Set<String> currentBrandTasteKeys = new HashSet<>();
+        for (DeliveryTobacco dt : currentDeliveryTobaccos) {
+            Tobacco tobacco = dt.getTobacco();
+            String key = (tobacco.getBrand_name() != null ? tobacco.getBrand_name() : "") + "|" + 
+                        (tobacco.getTaste() != null ? tobacco.getTaste() : "");
+            currentBrandTasteKeys.add(key);
+        }
+        
+        if (currentBrandTasteKeys.isEmpty()) {
             return;
         }
 
@@ -172,57 +214,61 @@ public class DeliveryService {
                 PageRequest.of(0, 2)
         );
 
-        // Собираем табаки из предыдущих привозов
-        Set<Long> previousTobaccoIds = new HashSet<>();
+        // Собираем уникальные комбинации бренд+вкус из двух предыдущих привозов
+        Set<String> previousBrandTasteKeys = new HashSet<>();
         for (Delivery delivery : previousDeliveries) {
             List<DeliveryTobacco> dts = deliveryTobaccoRepository.findByDeliveryId(delivery.getId());
-            previousTobaccoIds.addAll(dts.stream()
-                    .map(dt -> dt.getTobacco().getId())
-                    .collect(Collectors.toSet()));
+            for (DeliveryTobacco dt : dts) {
+                Tobacco tobacco = dt.getTobacco();
+                String key = (tobacco.getBrand_name() != null ? tobacco.getBrand_name() : "") + "|" + 
+                            (tobacco.getTaste() != null ? tobacco.getTaste() : "");
+                previousBrandTasteKeys.add(key);
+            }
         }
 
-        // Собираем все табаки из трех последних привозов (текущий + два предыдущих)
-        Set<Long> recentTobaccoIds = new HashSet<>();
-        recentTobaccoIds.addAll(currentTobaccoIds);
-        recentTobaccoIds.addAll(previousTobaccoIds);
-
-        // Обновляем актуальность для табаков из текущего привоза
-        for (Long tobaccoId : currentTobaccoIds) {
-            Tobacco tobacco = tobaccoRepository.findById(tobaccoId).orElse(null);
-            if (tobacco == null) continue;
-            
-            BigDecimal currentRelevance = tobacco.getRelevanceScore();
-            if (currentRelevance == null) {
-                currentRelevance = BigDecimal.valueOf(1.0);
+        // 1. Увеличиваем актуальность на 1 для табаков из текущего привоза, которые есть в двух последних привозах
+        for (String brandTasteKey : currentBrandTasteKeys) {
+            // Если табак был в предыдущих привозах - увеличиваем актуальность
+            if (previousBrandTasteKeys.contains(brandTasteKey)) {
+                String[] parts = brandTasteKey.split("\\|");
+                String brandName = parts.length > 0 ? parts[0] : "";
+                String taste = parts.length > 1 ? parts[1] : "";
+                
+                // Находим все табаки с таким брендом и вкусом
+                List<Tobacco> tobaccos = tobaccoRepository.findByBrandNameAndTaste(brandName, taste);
+                
+                for (Tobacco tobacco : tobaccos) {
+                    BigDecimal currentRelevance = tobacco.getRelevanceScore();
+                    if (currentRelevance == null) {
+                        currentRelevance = BigDecimal.valueOf(1.0);
+                    }
+                    
+                    // Увеличиваем на 1
+                    currentRelevance = currentRelevance.add(BigDecimal.valueOf(1.0));
+                    currentRelevance = limitRelevance(currentRelevance);
+                    
+                    tobacco.setRelevanceScore(currentRelevance);
+                    tobacco.setLastRelevanceUpdate(LocalDateTime.now());
+                    tobaccoRepository.save(tobacco);
+                }
             }
-            
-            // Если табак был в предыдущих привозах - увеличиваем на 1
-            if (previousTobaccoIds.contains(tobaccoId)) {
-                currentRelevance = currentRelevance.add(BigDecimal.valueOf(1.0));
-            } else {
-                // Если табак не был в предыдущих привозах - уменьшаем на 0.5
-                currentRelevance = currentRelevance.subtract(BigDecimal.valueOf(0.5));
-            }
-            
-            // Ограничиваем диапазоном от 1.0 до 5.0
-            currentRelevance = limitRelevance(currentRelevance);
-            
-            tobacco.setRelevanceScore(currentRelevance);
-            tobacco.setLastRelevanceUpdate(LocalDateTime.now());
-            tobaccoRepository.save(tobacco);
         }
 
-        // Уменьшаем актуальность для табаков, которых нет в трех последних привозах
+        // 2. Уменьшаем актуальность на 1 для всех табаков из tobacco, которых нет в текущем привозе
         List<Tobacco> allTobaccos = tobaccoRepository.findAll();
         for (Tobacco tobacco : allTobaccos) {
-            if (!recentTobaccoIds.contains(tobacco.getId())) {
+            String key = (tobacco.getBrand_name() != null ? tobacco.getBrand_name() : "") + "|" + 
+                        (tobacco.getTaste() != null ? tobacco.getTaste() : "");
+            
+            // Если табак не в текущем привозе - уменьшаем актуальность
+            if (!currentBrandTasteKeys.contains(key)) {
                 BigDecimal currentRelevance = tobacco.getRelevanceScore();
                 if (currentRelevance == null) {
                     currentRelevance = BigDecimal.valueOf(1.0);
                 }
                 
-                // Уменьшаем на 0.5
-                currentRelevance = currentRelevance.subtract(BigDecimal.valueOf(0.5));
+                // Уменьшаем на 1
+                currentRelevance = currentRelevance.subtract(BigDecimal.valueOf(1.0));
                 currentRelevance = limitRelevance(currentRelevance);
                 
                 tobacco.setRelevanceScore(currentRelevance);

@@ -2,7 +2,6 @@ package com.example.hookahstaff.rest.controller;
 
 import com.example.hookahstaff.dto.DeliveryDto;
 import com.example.hookahstaff.entity.Delivery;
-import com.example.hookahstaff.entity.Tobacco;
 import com.example.hookahstaff.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -59,8 +58,8 @@ public class DeliveryController {
     }
 
     @GetMapping("/{deliveryId}/tobaccos")
-    public ResponseEntity<List<Tobacco>> getTobaccosByDelivery(@PathVariable Long deliveryId) {
-        List<Tobacco> tobaccos = deliveryService.getTobaccosByDelivery(deliveryId);
+    public ResponseEntity<List<com.example.hookahstaff.dto.DeliveryTobaccoDto>> getTobaccosByDelivery(@PathVariable Long deliveryId) {
+        List<com.example.hookahstaff.dto.DeliveryTobaccoDto> tobaccos = deliveryService.getTobaccosByDelivery(deliveryId);
         return ResponseEntity.ok(tobaccos);
     }
 

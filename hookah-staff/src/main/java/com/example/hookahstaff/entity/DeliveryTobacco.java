@@ -39,6 +39,12 @@ public class DeliveryTobacco {
     private Integer quantity = 1;
 
     /**
+     * Вес пачки табака в граммах (для просмотра прошлых привозов)
+     */
+    @Column(name = "weight")
+    private Integer weight;
+
+    /**
      * Дата создания записи
      */
     @Column(name = "created_at", nullable = false)

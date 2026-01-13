@@ -1,7 +1,5 @@
 package com.example.hookahstaff.dto;
 
-import com.example.hookahstaff.entity.Tobacco;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,11 +9,11 @@ public class DeliveryDto {
     private String createdBy;
     private Boolean isFinalized;
     private LocalDateTime finalizedAt;
-    private List<Tobacco> tobaccos;
+    private List<DeliveryTobaccoDto> tobaccos; // Используем DeliveryTobaccoDto для включения weight
 
     public DeliveryDto() {}
 
-    public DeliveryDto(Long id, LocalDateTime deliveryDate, String createdBy, Boolean isFinalized, LocalDateTime finalizedAt, List<Tobacco> tobaccos) {
+    public DeliveryDto(Long id, LocalDateTime deliveryDate, String createdBy, Boolean isFinalized, LocalDateTime finalizedAt, List<DeliveryTobaccoDto> tobaccos) {
         this.id = id;
         this.deliveryDate = deliveryDate;
         this.createdBy = createdBy;
@@ -64,11 +62,11 @@ public class DeliveryDto {
         this.finalizedAt = finalizedAt;
     }
 
-    public List<Tobacco> getTobaccos() {
+    public List<DeliveryTobaccoDto> getTobaccos() {
         return tobaccos;
     }
 
-    public void setTobaccos(List<Tobacco> tobaccos) {
+    public void setTobaccos(List<DeliveryTobaccoDto> tobaccos) {
         this.tobaccos = tobaccos;
     }
 }

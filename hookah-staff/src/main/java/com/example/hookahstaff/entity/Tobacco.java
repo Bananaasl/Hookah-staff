@@ -1,6 +1,5 @@
 package com.example.hookahstaff.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -59,12 +58,6 @@ public class Tobacco {
      */
     @Column(name = "fortress")
     private Integer fortress;
-
-    /**
-     * Вес пачки табака в граммах
-     */
-    @Column(name = "weight")
-    private Integer weight;
 
     /**
      * Дата заказа табака
