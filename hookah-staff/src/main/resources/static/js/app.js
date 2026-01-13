@@ -13,7 +13,7 @@ class HookahStaffApp {
         this.selectedDelivery = null;
         
         // Данные для рекомендаций
-        this.brandSuggestions = ['CHABACCO', 'Nur', 'Kraken', 'Северный', 'Bonche', 'Burn', 'Deus', 'Muassel', 'Darkside', 'Dogma', 'JENT', 'Palitra', 'Satyr', 'Хулиган', 'Afzal', 'Duft', 'Must Have', 'NAШ', 'Sapphire Crown', 'Sebero', 'Serbetli', 'Spectrum', 'Starline', 'Сарма', 'Overdos', 'Darkside Sabotage', 'JENT CIGAR', 'Догма', 'BLISS', 'КОБРА', 'Сарма 360', 'SEBERO CLASSIC', 'SEBERO BLACK', 'NАШ', 'NАШ Cigar', 'Trofimoff', 'BlackBurn', 'Overdose', 'Mast Have', 'Star line', 'SEBERO'];
+        this.brandSuggestions = ['CHABACCO', 'Nur', 'Kraken', 'Северный', 'Bonche', 'Burn', 'Deus', 'Muassel', 'Darkside', 'Dogma', 'JENT', 'Palitra', 'Satyr', 'Хулиган', 'Afzal', 'Duft', 'Must Have', 'NAШ', 'Sapphire Crown', 'Sebero', 'Serbetli', 'Spectrum', 'Starline', 'Сарма', 'Overdos', 'Darkside Sabotage', 'JENT CIGAR', 'Догма', 'BLISS', 'КОБРА', 'Сарма 360', 'SEBERO CLASSIC', 'SEBERO BLACK', 'NАШ', 'NАШ Cigar', 'Trofimoff', 'Black Burn', 'Overdose', 'Mast Have', 'Star line', 'SEBERO'];
         // Общие рекомендации вкусов (для брендов без специфических вкусов)
         this.tasteSuggestions = ['Малина', 'Смородина', 'Супернова', 'Груша', 'Липа', 'Бергамот', 'Клубника', 'Апельсин', 'Мята', 'Лимон', 'Киви', 'Персик', 'Ананас', 'Кокос', 'Ваниль'];
         
@@ -90,6 +90,102 @@ class HookahStaffApp {
                     'LE Rock\'n\'Rolla (Рок-н-Ролла LE)', 'Mumbai tea (Мумбай Чай)', 
                     'LE Brandy motors (Бренди Моторс LE)', 'LE Bourbon rocks (Бурбон Рокс LE)', 
                     'LE Agava boom (Агава Бум LE)'
+                ]
+            },
+            // Данные с oshisha.cc/catalog/black-burn/
+            'Black Burn': {
+                25: [ // 25г - 220₽
+                    'Blueberry (Черника)', 'Bananini (Бананини)', 'White Grape (Белый Виноград)',
+                    'Gooseberry Shock (Крыжовник Шок)', 'Lime Shock (Лайм Шок)', 'Lemon Waffles (Лимонные Вафли)',
+                    'Salak (Салак)', 'Lulo (Луло)', 'Skittles (Скиттлс)', 'Pomelo (Помело)',
+                    'Bubble Gum (Жвачка)', 'Pineapple Yogurt (Ананасовый Йогурт)', 'Red Kiwi (Красный Киви)',
+                    'Red Energy (Красный Энергетик)', 'Grapefruit (Грейпфрут)', 'Blackcola (Блэккола)',
+                    'Red Curant (Красная Смородина)', 'Peach Yogurt (Персиковый Йогурт)', 'Raspberry Shock (Малина Шок)',
+                    'Nutella (Нутелла)', 'Feijoa jam (Варенье из Фейхоа)', 'On Chill (На чиле)',
+                    'On Relax (На расслабоне)', 'Iceberg (Айсберг)', 'Elka (Елка)', 'Basilik (Базилик)',
+                    'Watermelon (Арбуз)', 'Epic Yogurt (Эпик Йогурт)', 'Muesli (Мюсли)', 'Mirinda (Миринда)',
+                    'Juicy Smoothie (Сочный Смузи)', 'Etalon Melon (Эталонная Дыня)', 'Summer basket (Летняя Корзина)',
+                    'Siberian soda (Сибирская Газировка)', 'Blackberry lemonade (Ежевичный Лимонад)', 'TIK TAK (ТИК ТАК)',
+                    'Cheesecake (Чизкейк)', 'Ekzo mango (Экзо Манго)', 'Berry lemonade (Ягодный Лимонад)',
+                    'Malibu (Малибу)', 'Creme brule (Крем Брюле)', 'Strawberry coconut (Клубника Кокос)',
+                    'Elderberry shock (Бузина Шок)', 'Overdose (Овердоз)', 'SouSep (Соус Сеп)',
+                    'Pina colada (Пина Колада)', 'Pear lemonade (Грушевый Лимонад)', 'Ice baby (Ледяной Малыш)',
+                    'Real P.F. (Реал П.Ф.)', 'Cranberry shock (Клюква Шок)', 'Peachberry (Персикберри)',
+                    'Cane mint (Тростниковая Мята)', 'Sundaysun (Воскресное Солнце)', 'Melon halls (Дыня Холлс)',
+                    'Kiwi stoner (Киви Стоунер)', 'Cherry garden (Вишневый Сад)', 'Papaya v obed (Папайя в Обед)',
+                    'Chupa graper (Чупа Грейпер)', 'Shock, currant shock (Шок, Смородина Шок)', 'Pineapple (Ананас)',
+                    'Haribon (Харибон)', 'Famous apple (Знаменитое Яблоко)', 'Barberry shock (Барбарис Шок)',
+                    'Strawberry jam (Клубничное Варенье)', 'Something tropical (Что-то Тропическое)',
+                    'Something berry (Что-то Ягодное)', 'Rising star (Восходящая Звезда)', 'Red orange (Красный Апельсин)',
+                    'Raspberries (Малина)', 'Peach killer (Персик Киллер)', 'Green tea (Зеленый Чай)',
+                    'Garnet (Гранат)', 'Cherry shock (Вишня Шок)', 'Pudding (Пуддинг)',
+                    'Tropic Jack (Тропик Джек)', 'Asian lychee (Азиатский Личи)', 'Lemon sweets (Лимонные Конфеты)',
+                    'Lemon shock (Лимон Шок)', 'It\'s not black currant (Это не черная смородина)',
+                    'Something Icy (Что-то Ледяное)', 'Pistachio ice snow (Фисташковый Ледяной Снег)',
+                    'Something sweet (Что-то Сладкое)', 'Irish cream (Ирландские Сливки)',
+                    'Almond icecream (Миндальное Мороженое)', 'After 8 (После 8)'
+                ],
+                100: [ // 100г - 800₽
+                    'Blueberry (Черника)', 'Bananini (Бананини)', 'White Grape (Белый Виноград)',
+                    'Gooseberry Shock (Крыжовник Шок)', 'Lime Shock (Лайм Шок)', 'Lemon Waffles (Лимонные Вафли)',
+                    'Salak (Салак)', 'Lulo (Луло)', 'Skittles (Скиттлс)', 'Pomelo (Помело)',
+                    'Pineapple Yogurt (Ананасовый Йогурт)', 'Bubble Gum (Жвачка)', 'Red Kiwi (Красный Киви)',
+                    'Red Energy (Красный Энергетик)', 'Grapefruit (Грейпфрут)', 'Blackcola (Блэккола)',
+                    'Red currant (Красная Смородина)', 'Iceberg (Айсберг)', 'Feijoa Jam (Варенье из Фейхоа)',
+                    'Pudding (Пуддинг)', 'Peach Yogurt (Персиковый Йогурт)', 'Raspberry Shock (Малина Шок)',
+                    'On Chill (На чиле)', 'On Relax (На расслабоне)', 'Elka (Елка)', 'Basilik (Базилик)',
+                    'Watermelon (Арбуз)', 'Epic Yogurt (Эпик Йогурт)', 'Mirinda (Миринда)', 'Etalon Melon (Эталонная Дыня)',
+                    'Summer basket (Летняя Корзина)', 'Siberian soda (Сибирская Газировка)', 'Blackberry lemonade (Ежевичный Лимонад)',
+                    'TIK TAK (ТИК ТАК)', 'Cheesecake (Чизкейк)', 'Ekzo mango (Экзо Манго)', 'Berry lemonade (Ягодный Лимонад)',
+                    'Creme brule (Крем Брюле)', 'Malibu (Малибу)', 'Strawberry coconut (Клубника Кокос)',
+                    'Elderberry shock (Бузина Шок)', 'Overdose (Овердоз)', 'SouSep (Соус Сеп)',
+                    'Pina colada (Пина Колада)', 'Pear lemonade (Грушевый Лимонад)', 'Green tea (Зеленый Чай)',
+                    'Garnet (Гранат)', 'Famous apple (Знаменитое Яблоко)', 'Lemon sweets (Лимонные Конфеты)',
+                    'Black honey (Черный Мед)', 'Sundaysun (Воскресное Солнце)', 'Real P.F. (Реал П.Ф.)',
+                    'Cranberry shock (Клюква Шок)', 'Brownie (Брауни)', 'Peach killer (Персик Киллер)',
+                    'Pineapple (Ананас)', 'Lemon shock (Лимон Шок)', 'Something tropical (Что-то Тропическое)',
+                    'Apple shock (Яблоко Шок)', 'Red orange (Красный Апельсин)', 'Barberry shock (Барбарис Шок)',
+                    'Peachberry (Персикберри)', 'Something berry (Что-то Ягодное)', 'Rising star (Восходящая Звезда)',
+                    'Cane mint (Тростниковая Мята)', 'Ananas shock (Ананас Шок)', 'Haribon (Харибон)',
+                    'Raspberries (Малина)', 'Cherry shock (Вишня Шок)', 'Ice baby (Ледяной Малыш)',
+                    'Melon halls (Дыня Холлс)', 'Kiwi stoner (Киви Стоунер)', 'Papaya v obed (Папайя в Обед)',
+                    'Shock, currant shock (Шок, Смородина Шок)', 'Chupa graper (Чупа Грейпер)', 'Nutella (Нутелла)',
+                    'Muesli (Мюсли)', 'Juicy Smoothie (Сочный Смузи)', 'Tropic Jack (Тропик Джек)',
+                    'Something icy (Что-то Ледяное)', 'Irish cream (Ирландские Сливки)', 'Asian lychee (Азиатский Личи)',
+                    'After 8 (После 8)', 'Something sweet (Что-то Сладкое)', 'Pistachio ice snow (Фисташковый Ледяной Снег)',
+                    'It\'s not black currant (Это не черная смородина)', 'Almond icecream (Миндальное Мороженое)',
+                    'Strawberry jam (Клубничное Варенье)', 'Cherry garden (Вишневый Сад)'
+                ],
+                200: [ // 200г - 1550₽
+                    'Blueberry (Черника)', 'Bananini (Бананини)', 'White Grape (Белый Виноград)',
+                    'Gooseberry Shock (Крыжовник Шок)', 'Lime Shock (Лайм Шок)', 'Lemon Waffles (Лимонные Вафли)',
+                    'Lulo (Луло)', 'Salak (Салак)', 'Skittles (Скиттлс)', 'Pomelo (Помело)',
+                    'Pineapple Yogurt (Ананасовый Йогурт)', 'Bubble Gum (Жвачка)', 'Red Kiwi (Красный Киви)',
+                    'Red Energy (Красный Энергетик)', 'Grapefruit (Грейпфрут)', 'Red Currant (Красная Смородина)',
+                    'Blackcola (Блэккола)', 'Pudding (Пуддинг)', 'Peach Yogurt (Персиковый Йогурт)',
+                    'Raspberry Shock (Малина Шок)', 'Nutella (Нутелла)', 'Feijoa jam (Варенье из Фейхоа)',
+                    'Iceberg (Айсберг)', 'On Chill (На чиле)', 'On Relax (На расслабоне)', 'Elka (Елка)',
+                    'Basilik (Базилик)', 'Watermelon (Арбуз)', 'Epic Yogurt (Эпик Йогурт)', 'Mirinda (Миринда)',
+                    'Juicy Smoothie (Сочный Смузи)', 'Etalon Melon (Эталонная Дыня)', 'Summer basket (Летняя Корзина)',
+                    'Siberian soda (Сибирская Газировка)', 'Tropic Jack (Тропик Джек)', 'Blackberry lemonade (Ежевичный Лимонад)',
+                    'TIK TAK (ТИК ТАК)', 'Cheesecake (Чизкейк)', 'Ekzo mango (Экзо Манго)', 'Berry lemonade (Ягодный Лимонад)',
+                    'Malibu (Малибу)', 'Strawberry coconut (Клубника Кокос)', 'Elderberry shock (Бузина Шок)',
+                    'SouSep (Соус Сеп)', 'Pina colada (Пина Колада)', 'Pear lemonade (Грушевый Лимонад)',
+                    'Asian lychee (Азиатский Личи)', 'Overdose (Овердоз)', 'Real P.F. (Реал П.Ф.)',
+                    'Cranberry shock (Клюква Шок)', 'Green tea (Зеленый Чай)', 'Cane mint (Тростниковая Мята)',
+                    'Pistachio ice snow (Фисташковый Ледяной Снег)', 'Black honey (Черный Мед)', 'Kiwi stoner (Киви Стоунер)',
+                    'Garnet (Гранат)', 'Famous apple (Знаменитое Яблоко)', 'Cherry garden (Вишневый Сад)',
+                    'Strawberry jam (Клубничное Варенье)', 'Peachberry (Персикберри)', 'Rising star (Восходящая Звезда)',
+                    'Pineapple (Ананас)', 'Cherry shock (Вишня Шок)', 'Barberry shock (Барбарис Шок)',
+                    'Shock, currant shock (Шок, Смородина Шок)', 'Haribon (Харибон)', 'Apple shock (Яблоко Шок)',
+                    'Something berry (Что-то Ягодное)', 'Red orange (Красный Апельсин)', 'Raspberries (Малина)',
+                    'Papaya v obed (Папайя в Обед)', 'Ice baby (Ледяной Малыш)', 'Chupa graper (Чупа Грейпер)',
+                    'Peach killer (Персик Киллер)', 'Sundaysun (Воскресное Солнце)', 'Lemon sweets (Лимонные Конфеты)',
+                    'Brownie (Брауни)', 'Melon halls (Дыня Холлс)', 'Lemon shock (Лимон Шок)',
+                    'Something tropical (Что-то Тропическое)', 'Ananas shock (Ананас Шок)', 'Muesli (Мюсли)',
+                    'Creme brule (Крем Брюле)', 'Almond icecream (Миндальное Мороженое)', 'Something icy (Что-то Ледяное)',
+                    'Something sweet (Что-то Сладкое)', 'Irish cream (Ирландские Сливки)', 'After 8 (После 8)',
+                    'It\'s not black currant (Это не черная смородина)'
                 ]
             },
             'Nur': [
@@ -170,10 +266,6 @@ class HookahStaffApp {
                 'Red Currant (Вкуснейшая Смородина)', 'Sri Lanka (Элитарный Чай)', 
                 'Tangerine (Морокканский Мандарин)', 'The Rose (Яркая Цветочная Роза)', 
                 'Watermelon (Бахчевой Арбуз)', 'Wild Strawberry (Дикая Земляника)', 'Yellow Lemon (Лимон)'
-            ],
-            'BlackBurn': [
-                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
-                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
             ],
             'Overdose': [
                 'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
@@ -279,6 +371,11 @@ class HookahStaffApp {
             'Bonche': [
                 { price: 640, weight: 30 },  // 30г-640₽ (с OPTRF)
                 { price: 1900, weight: 120 } // 120г-1900₽ (с OPTRF)
+            ],
+            'Black Burn': [
+                { price: 220, weight: 25 },  // 25г-220₽ (с oshisha.cc)
+                { price: 800, weight: 100 },  // 100г-800₽ (с oshisha.cc)
+                { price: 1550, weight: 200 }  // 200г-1550₽ (с oshisha.cc)
             ],
             'Burn': [
                 { price: 200, weight: 25 },  // 25г-200₽ (с OPTRF)
@@ -417,10 +514,6 @@ class HookahStaffApp {
             ],
             'Trofimoff': [
                 { price: 900, weight: 125 }
-            ],
-            'BlackBurn': [
-                { price: 715, weight: 100 },
-                { price: 1400, weight: 200 }
             ],
             'Overdose': [
                 { price: 810, weight: 100 },
@@ -805,7 +898,7 @@ class HookahStaffApp {
         // Валидация
         if (brandsToSend.length === 0) {
             alert('Добавьте хотя бы один бренд с вкусами');
-            return;
+                return;
         }
 
         // Показываем индикатор загрузки
@@ -867,7 +960,7 @@ class HookahStaffApp {
             this.updateBrand(brandIndex, 'weight', null);
             this.updateBrandTastes(brandIndex, '');
         } else {
-            this.updateBrand(brandIndex, 'brandName', brandName);
+        this.updateBrand(brandIndex, 'brandName', brandName);
         }
     }
 
