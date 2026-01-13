@@ -29,15 +29,4 @@ public interface TobaccoRepository extends JpaRepository<Tobacco, Long> {
      */
     @Query("SELECT t FROM Tobacco t WHERE t.brand_name = :brandName AND t.taste = :taste")
     List<Tobacco> findByBrandNameAndTaste(String brandName, String taste);
-    
-    /**
-     * Найти уникальный табак по бренду, вкусу и цене
-     * 
-     * @param brandName название бренда
-     * @param taste вкус табака
-     * @param price цена
-     * @return табак с указанными параметрами или null
-     */
-    @Query("SELECT t FROM Tobacco t WHERE t.brand_name = :brandName AND t.taste = :taste AND t.price = :price")
-    Tobacco findByBrandNameAndTasteAndPrice(String brandName, String taste, java.math.BigDecimal price);
 }

@@ -7,7 +7,6 @@ import com.example.hookahstaff.repository.TobaccoRepository;
 import com.example.hookahstaff.repository.DeliveryRepository;
 import com.example.hookahstaff.repository.DeliveryTobaccoRepository;
 import com.example.hookahstaff.service.TobaccoService;
-import com.example.hookahstaff.dto.BulkTobaccoDto;
 import com.example.hookahstaff.dto.MultiBrandTobaccoDto;
 import com.example.hookahstaff.dto.BrandWithTastesDto;
 import lombok.RequiredArgsConstructor;
@@ -39,11 +38,6 @@ public class TobaccoServiceImpl implements TobaccoService {
     private final DeliveryTobaccoRepository deliveryTobaccoRepository;
 
     @Override
-    public List<Tobacco> getAllTobaccos() {
-        return tobaccoRepository.findAll();
-    }
-
-    @Override
     public List<Tobacco> getCurrentTobaccos() {
         // Получаем табаки для текущего незавершенного привоза
         Delivery currentDelivery = deliveryRepository.findCurrentDelivery().orElse(null);
@@ -58,51 +52,6 @@ public class TobaccoServiceImpl implements TobaccoService {
         }
         
         return result;
-    }
-
-    @Override
-    public Tobacco getTobaccoById(Long id) {
-        return tobaccoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tobacco not found with id: " + id));
-    }
-
-    @Override
-    @Transactional
-    public Tobacco createTobacco(Tobacco tobacco) {
-        // Получаем текущий незавершенный привоз
-        Delivery currentDelivery = deliveryRepository.findCurrentDelivery()
-                .orElseThrow(() -> new RuntimeException("Нет текущего незавершенного привоза"));
-        
-        // Сохраняем вес для DeliveryTobacco (получаем из DTO или используем null)
-        Integer weight = null; // Вес будет передан через DeliveryTobacco
-        
-        // Ищем или создаём табак только по бренду и вкусу (без учета цены и веса)
-        // Для оценки полки важны только бренд и вкус, цена и вес хранятся в DeliveryTobacco
-        List<Tobacco> existingTobaccos = tobaccoRepository.findByBrandNameAndTaste(
-                tobacco.getBrand_name(),
-                tobacco.getTaste()
-        );
-        Tobacco existingTobacco = existingTobaccos.isEmpty() ? null : existingTobaccos.get(0);
-        
-        if (existingTobacco == null) {
-            // Создаём новый табак (без веса)
-            tobacco.setInventoryWeight(null);
-            tobacco.setIsPrimaryAddition(true);
-            tobacco.setRelevanceScore(BigDecimal.valueOf(1.0));
-            tobacco = tobaccoRepository.save(tobacco);
-        } else {
-            tobacco = existingTobacco;
-        }
-        
-        // Создаём связь с привозом (вес будет установлен при массовом добавлении)
-        DeliveryTobacco deliveryTobacco = new DeliveryTobacco();
-        deliveryTobacco.setDelivery(currentDelivery);
-        deliveryTobacco.setTobacco(tobacco);
-        deliveryTobacco.setQuantity(1);
-        deliveryTobacco.setWeight(weight);
-        deliveryTobaccoRepository.save(deliveryTobacco);
-        
-        return tobacco;
     }
 
     @Override
@@ -131,56 +80,6 @@ public class TobaccoServiceImpl implements TobaccoService {
         }
         
         throw new RuntimeException("Tobacco not found in current delivery with id: " + id);
-    }
-
-    @Override
-    @Transactional
-    public List<Tobacco> createBulkTobaccos(BulkTobaccoDto bulkTobaccoDto) {
-        // Получаем текущий незавершенный привоз
-        Delivery currentDelivery = deliveryRepository.findCurrentDelivery()
-                .orElseThrow(() -> new RuntimeException("Нет текущего незавершенного привоза"));
-        
-        List<Tobacco> createdTobaccos = new ArrayList<>();
-        
-        for (String taste : bulkTobaccoDto.getTastes()) {
-            // Сохраняем вес для DeliveryTobacco
-            Integer weight = bulkTobaccoDto.getWeight();
-            
-            // Ищем или создаём табак только по бренду и вкусу (без учета цены и веса)
-            // Для оценки полки важны только бренд и вкус, цена и вес хранятся в DeliveryTobacco
-            List<Tobacco> existingTobaccos = tobaccoRepository.findByBrandNameAndTaste(
-                    bulkTobaccoDto.getBrand_name(),
-                    taste
-            );
-            Tobacco tobacco = existingTobaccos.isEmpty() ? null : existingTobaccos.get(0);
-            
-            if (tobacco == null) {
-                tobacco = new Tobacco();
-                tobacco.setBrand_name(bulkTobaccoDto.getBrand_name());
-                tobacco.setTaste(taste);
-                tobacco.setFortress(bulkTobaccoDto.getFortress());
-                // Вес не хранится в таблице tobacco, он хранится в DeliveryTobacco
-                tobacco.setPrice(bulkTobaccoDto.getPrice());
-                tobacco.setOrderDate(bulkTobaccoDto.getOrderDate());
-                tobacco.setInventoryDate(bulkTobaccoDto.getInventoryDate());
-                tobacco.setInventoryWeight(null);
-                tobacco.setIsPrimaryAddition(true);
-                tobacco.setRelevanceScore(BigDecimal.valueOf(1.0));
-                tobacco = tobaccoRepository.save(tobacco);
-            }
-            
-            // Создаём связь с привозом (с весом)
-            DeliveryTobacco deliveryTobacco = new DeliveryTobacco();
-            deliveryTobacco.setDelivery(currentDelivery);
-            deliveryTobacco.setTobacco(tobacco);
-            deliveryTobacco.setQuantity(1);
-            deliveryTobacco.setWeight(weight);
-            deliveryTobaccoRepository.save(deliveryTobacco);
-            
-            createdTobaccos.add(tobacco);
-        }
-        
-        return createdTobaccos;
     }
 
     @Override

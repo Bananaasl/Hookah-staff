@@ -2,7 +2,6 @@ package com.example.hookahstaff.rest.controller;
 
 import com.example.hookahstaff.entity.Tobacco;
 import com.example.hookahstaff.service.TobaccoService;
-import com.example.hookahstaff.dto.BulkTobaccoDto;
 import com.example.hookahstaff.dto.MultiBrandTobaccoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,8 @@ import static com.example.hookahstaff.rest.RestPaths.TOBACCO_PATH;
  * REST контроллер для работы с табаками
  * 
  * <p>Предоставляет HTTP API для управления табаками в кальянной.
- * Поддерживает CRUD операции и массовое создание табаков с разными вкусами.</p>
+ * Поддерживает массовое создание табаков нескольких брендов с разными вкусами,
+ * получение текущих табаков, оценку полки, обновление и удаление табаков.</p>
  * 
  * @author Hookah Staff Team
  * @version 1.0
@@ -32,17 +32,6 @@ public class TobaccoController {
      * Сервис для работы с табаками
      */
     private final TobaccoService tobaccoService;
-
-    /**
-     * Получить все табаки
-     * 
-     * @return список всех табаков
-     */
-    @GetMapping
-    public ResponseEntity<List<Tobacco>> getAllTobaccos() {
-        List<Tobacco> tobaccos = tobaccoService.getAllTobaccos();
-        return ResponseEntity.ok(tobaccos);
-    }
 
     /**
      * Получить текущие табаки (незавершенного привоза)
@@ -67,31 +56,7 @@ public class TobaccoController {
     }
 
     /**
-     * Получить табак по идентификатору
-     * 
-     * @param id идентификатор табака
-     * @return табак с указанным идентификатором
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<Tobacco> getTobaccoById(@PathVariable Long id) {
-        Tobacco tobacco = tobaccoService.getTobaccoById(id);
-        return ResponseEntity.ok(tobacco);
-    }
-
-    /**
-     * Создать новый табак
-     * 
-     * @param tobacco данные табака для создания
-     * @return созданный табак
-     */
-    @PostMapping
-    public ResponseEntity<Tobacco> createTobacco(@RequestBody Tobacco tobacco) {
-        Tobacco createdTobacco = tobaccoService.createTobacco(tobacco);
-        return ResponseEntity.ok(createdTobacco);
-    }
-
-    /**
-     * Обновить существующий табак
+     * Обновить существующий табак (используется для обновления веса инвентаризации)
      * 
      * @param id идентификатор табака для обновления
      * @param tobacco обновленные данные табака
@@ -114,18 +79,6 @@ public class TobaccoController {
     public ResponseEntity<Void> deleteTobacco(@PathVariable Long id) {
         tobaccoService.deleteTobacco(id);
         return ResponseEntity.ok().build();
-    }
-
-    /**
-     * Массовое создание табаков одного бренда с разными вкусами
-     * 
-     * @param bulkTobaccoDto DTO с данными для массового создания
-     * @return список созданных табаков
-     */
-    @PostMapping("/bulk")
-    public ResponseEntity<List<Tobacco>> createBulkTobaccos(@RequestBody BulkTobaccoDto bulkTobaccoDto) {
-        List<Tobacco> createdTobaccos = tobaccoService.createBulkTobaccos(bulkTobaccoDto);
-        return ResponseEntity.ok(createdTobaccos);
     }
 
     /**
