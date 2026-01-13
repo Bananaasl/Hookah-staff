@@ -204,20 +204,55 @@ class HookahStaffApp {
                 'Цитрусовый Фреш', 'Тропический Микс', 'Мятная Свежесть', 'Лесные Ягоды',
                 'Арктический Ветер', 'Северное Сияние'
             ],
-            'Bonche': [
-                'Base (Табачный)', 'Bergamot (Бергамот)', 'Blueberry (Черника)', 'Brownie (Брауни)', 
-                'Caramel (Карамель)', 'Cheesecake (Чизкейк)', 'Coconut (Кокос)', 'Coffee (Кофе)', 
-                'Cognac (Коньяк)', 'Cookie (Печенье)', 'Dark Chocolate (Темный шоколад)', 'Ginger (Имбирь)', 
-                'Honey (Мёд)', 'Lemon (Лимон)', 'Lemongrass (Лемонграсс)', 'Lychee (Личи)', 
-                'Marzipan (Марципан)', 'Melissa (Мелисса)', 'Olive (Оливки)', 'Orange (Апельсин)', 
-                'Passion Fruit (Маракуйя)', 'Peanut (Арахис)', 'Pineapple (Ананас)', 'Pomegranate (Гранат)', 
-                'Rum (Ром)', 'Salami (Салями)', 'Strawberry (Клубника)', 'Sweet Corn (Кукуруза)', 
-                'Vanilla (Ваниль)', 'Whiskey (Виски)', 'Wild Strawberry (Земляника)', 'Barberry (Барбарис)', 
-                'Basil (Базилик)', 'Cherry (Вишня)', 'Clove (Гвоздика)', 'Grapefruit (Грейпфрут)', 
-                'Hoob (Амаретто Грейпфрут Личи Алоэ)', 'Lavender (Лаванда)', 'Mango (Манго)', 
-                'New Year 2025 (Запеченый персик с карамелью и трюфелем)', 'Raspberry (Малина)', 'Red Wine (Красное Вино)',
-                'Kiwi', 'Smena', 'Текила Ананас Лайм'
-            ],
+            // Данные с oshisha.cc/catalog/bonche/
+            'Bonche': {
+                30: [ // 30г - 680₽
+                    'New Year 2026 (Новый Год 2026)', 'Irga (Ирга)', 'Singapore Sling (Сингапур Слинг)',
+                    'Mint Julep (Мятный Джулеп)', 'Gimlet (Джимлет)', 'Clover Club (Клевер Клаб)',
+                    'Pear (Груша)', 'Kiwi (Киви)', 'Sesame (Кунжут)', 'Black Currant (Черная Смородина)',
+                    'Prunes (Чернослив)', 'Red Wine (Красное Вино)', 'Peanut (Арахис)', 'Orange (Апельсин)',
+                    'Blueberry (Черника)', 'Brownie (Брауни)', 'Cognac (Коньяк)', 'Grapefruit (Грейпфрут)',
+                    'Caramel (Карамель)', 'Bergamot (Бергамот)', 'Wild Strawberry (Дикая Земляника)',
+                    'Coffee (Кофе)', 'Coconut (Кокос)', 'Mango (Манго)', 'Melissa (Мелисса)',
+                    'Lavender (Лаванда)', 'Marzipan (Марципан)', 'Whiskey (Виски)', 'Vanilla (Ваниль)',
+                    'Lemongrass (Лемонграсс)', 'Honey (Мёд)', 'Ginger (Имбирь)', 'Clove (Гвоздика)',
+                    'Basil (Базилик)', 'Sweet corn (Кукуруза)', 'Strawberry (Клубника)', 'Salami (Салями)',
+                    'Rum (Ром)', 'Raspberry (Малина)', 'Pomegranate (Гранат)', 'Pineapple (Ананас)',
+                    'Passion fruit (Маракуйя)', 'Olive (Оливки)', 'Lychee (Личи)', 'Lemon (Лимон)',
+                    'Dark chocolate (Темный шоколад)', 'Cookie (Печенье)', 'Cherry (Вишня)', 'Cheesecake (Чизкейк)',
+                    'Base (Табачный)', 'Barberry (Барбарис)', 'Smena (Смена)', 'New Year 2025 (Новый Год 2025)'
+                ],
+                60: [ // 60г - 1120₽
+                    'Vanilla (Ваниль)', 'Lavender (Лаванда)', 'Caramel (Карамель)', 'Black Currant (Черная Смородина)',
+                    'New Year 2026 (Новый Год 2026)', 'Singapore Sling (Сингапур Слинг)', 'Irga (Ирга)',
+                    'Mint Julep (Мятный Джулеп)', 'Gimlet (Джимлет)', 'Clover Club (Клевер Клаб)',
+                    'Pear (Груша)', 'Kiwi (Киви)', 'Sesame (Кунжут)', 'Prunes (Чернослив)',
+                    'Red Wine (Красное Вино)', 'Peanut (Арахис)', 'Orange (Апельсин)', 'Blueberry (Черника)',
+                    'Brownie (Брауни)', 'Cognac (Коньяк)', 'Grapefruit (Грейпфрут)', 'Wild Strawberry (Дикая Земляника)',
+                    'Coffee (Кофе)', 'Coconut (Кокос)', 'Whiskey (Виски)', 'Sweet corn (Кукуруза)',
+                    'Strawberry (Клубника)', 'Salami (Салями)', 'Rum (Ром)', 'Raspberry (Малина)',
+                    'Pomegranate (Гранат)', 'Pineapple (Ананас)', 'Passion fruit (Маракуйя)', 'Olive (Оливки)',
+                    'Marzipan (Марципан)', 'Mango (Манго)', 'Lychee (Личи)', 'Lemon (Лимон)',
+                    'Dark chocolate (Темный шоколад)', 'Cookie (Печенье)', 'Cherry (Вишня)', 'Cheesecake (Чизкейк)',
+                    'Base (Табачный)', 'Barberry (Барбарис)', 'New Year 2025 (Новый Год 2025)'
+                ],
+                120: [ // 120г - 1900₽
+                    'Singapore Sling (Сингапур Слинг)', 'New Year 2026 (Новый Год 2026)', 'Irga (Ирга)',
+                    'Mint Julep (Мятный Джулеп)', 'Gimlet (Джимлет)', 'Clover Club (Клевер Клаб)',
+                    'Pear (Груша)', 'Kiwi (Киви)', 'Sesame (Кунжут)', 'Black Currant (Черная Смородина)',
+                    'Prunes (Чернослив)', 'Red Wine (Красное Вино)', 'Peanut (Арахис)', 'Orange (Апельсин)',
+                    'Blueberry (Черника)', 'Brownie (Брауни)', 'Cognac (Коньяк)', 'Grapefruit (Грейпфрут)',
+                    'Caramel (Карамель)', 'Bergamot (Бергамот)', 'Vanilla (Ваниль)', 'Melissa (Мелисса)',
+                    'Lemongrass (Лемонграсс)', 'Lavender (Лаванда)', 'Honey (Мёд)', 'Ginger (Имбирь)',
+                    'Clove (Гвоздика)', 'Basil (Базилик)', 'Wild Strawberry (Дикая Земляника)', 'Coffee (Кофе)',
+                    'Coconut (Кокос)', 'Whiskey (Виски)', 'Sweet corn (Кукуруза)', 'Strawberry (Клубника)',
+                    'Salami (Салями)', 'Rum (Ром)', 'Raspberry (Малина)', 'Pomegranate (Гранат)',
+                    'Pineapple (Ананас)', 'Passion fruit (Маракуйя)', 'Olive (Оливки)', 'Marzipan (Марципан)',
+                    'Mango (Манго)', 'Lychee (Личи)', 'Lemon (Лимон)', 'Dark chocolate (Темный шоколад)',
+                    'Cookie (Печенье)', 'Cherry (Вишня)', 'Cheesecake (Чизкейк)', 'Base (Табачный)',
+                    'Barberry (Барбарис)', 'Smena (Смена)', 'New Year 2025 (Новый Год 2025)', 'Hoob (Hoob)'
+                ]
+            },
             'Burn': [
                 'Black White Grape (Белый Виноград)', 'Black Gooseberry Shock (Кислый Крыжовник)', 
                 'Wild Berries (Дикие Ягоды)', 'Tropical Mix (Тропический Микс)', 
@@ -314,10 +349,45 @@ class HookahStaffApp {
                 'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
                 'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
             ],
-            'BLISS': [
-                'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
-                'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
-            ],
+            // Данные с oshisha.cc/catalog/bliss/
+            'BLISS': {
+                40: [ // 40г - 310₽
+                    'Cream (Сливочный Крем)', 'Cola (Кола)', 'Coconut (Кокос)',
+                    'Strawberry Mille-feuille (Клубничный милфей)', 'Belgian Waffles (Бельгийские Вафли)',
+                    'Kiwi (Киви)', 'Mango Chamomile (Манго ромашка)', 'Basil (Базилик)',
+                    'Sour Elderberry (Кислая бузина)', 'Lime (Лайм)', 'Sour Currant (Кислая смородина)',
+                    'Red Grape (Красный виноград)', 'Peach Yogurt (Персик Йогурт)', 'Watermelon Gum (Арбузная жвачка)',
+                    'Conifer (Хвоя)', 'Super Ice (Super Ice (холодок))', 'Lemon (Лимон)',
+                    'Strawberry (Клубника)', 'Raspberry Cola (Малиновая Кола)', 'Limoncello (Лимончелло)',
+                    'Mango (Манго)', 'Berry Smoothie (Ягодный смузи)', 'Blueberry Sorbet (Черничный сорбет)',
+                    'Tropical Smoothie (Тропический смузи)', 'Raspberry (Малина)', 'Melon (Дыня)',
+                    'Pink shot (Pink shot (Грейпфрут, клубника, малина))', 'Orange (Апельсин)'
+                ],
+                100: [ // 100г - 745₽
+                    'Cola (Кола)', 'Coconut (Кокос)', 'Strawberry Mille-feuille (Клубничный милфей)',
+                    'Belgian Waffles (Бельгийские Вафли)', 'Mango Chamomile (Манго ромашка)', 'Kiwi (Киви)',
+                    'Basil (Базилик)', 'Sour Elderberry (Кислая бузина)', 'Lime (Лайм)',
+                    'Red Grape (Красный виноград)', 'Sour Currant (Кислая смородина)',
+                    'Pink shot (Pink shot (Грейпфрут, клубника, малина))', 'Peach Yogurt (Персик Йогурт)',
+                    'Conifer (Хвоя)', 'Watermelon Gum (Арбузная жвачка)', 'Orange (Апельсин)',
+                    'Super Ice (Super Ice (холодок))', 'Strawberry (Клубника)', 'Lemon (Лимон)',
+                    'Raspberry Cola (Малиновая Кола)', 'Limoncello (Лимончелло)', 'Berry Smoothie (Ягодный смузи)',
+                    'Blueberry Sorbet (Черничный сорбет)', 'Raspberry (Малина)', 'Mango (Манго)',
+                    'Melon (Дыня)', 'Cream (Сливочный Крем)', 'Tropical Smoothie (Тропический смузи)'
+                ],
+                250: [ // 250г - 1550₽
+                    'Cream (Сливочный Крем)', 'Cola (Кола)', 'Strawberry Mille-feuille (Клубничный милфей)',
+                    'Belgian Waffles (Бельгийские Вафли)', 'Mango Chamomile (Манго ромашка)', 'Kiwi (Киви)',
+                    'Basil (Базилик)', 'Sour Elderberry (Кислая бузина)', 'Lime (Лайм)',
+                    'Sour Currant (Кислая смородина)', 'Pink shot (Pink shot (Грейпфрут, клубника, малина))',
+                    'Peach Yogurt (Персик Йогурт)', 'Conifer (Хвоя)', 'Watermelon Gum (Арбузная жвачка)',
+                    'Super Ice (Super Ice (холодок))', 'Strawberry (Клубника)', 'Lemon (Лимон)',
+                    'Raspberry Cola (Малиновая Кола)', 'Limoncello (Лимончелло)', 'Berry Smoothie (Ягодный смузи)',
+                    'Blueberry Sorbet (Черничный сорбет)', 'Raspberry (Малина)', 'Mango (Манго)',
+                    'Melon (Дыня)', 'Red Grape (Красный виноград)', 'Coconut (Кокос)',
+                    'Orange (Апельсин)', 'Tropical Smoothie (Тропический смузи)'
+                ]
+            },
             'КОБРА': [
                 'Grape', 'Strawberry', 'Mint', 'Apple', 'Melon', 'Citrus', 'Berry Mix',
                 'Tropical Mix', 'Peach', 'Pineapple', 'Orange', 'Lemon'
@@ -369,8 +439,9 @@ class HookahStaffApp {
                 { price: 4025, weight: 250 }  // 250г-4025₽ (табак с OPTRF)
             ],
             'Bonche': [
-                { price: 640, weight: 30 },  // 30г-640₽ (с OPTRF)
-                { price: 1900, weight: 120 } // 120г-1900₽ (с OPTRF)
+                { price: 680, weight: 30 },  // 30г-680₽ (с oshisha.cc)
+                { price: 1120, weight: 60 }, // 60г-1120₽ (с oshisha.cc)
+                { price: 1900, weight: 120 }  // 120г-1900₽ (с oshisha.cc)
             ],
             'Black Burn': [
                 { price: 220, weight: 25 },  // 25г-220₽ (с oshisha.cc)
@@ -483,8 +554,9 @@ class HookahStaffApp {
                 { price: 1400, weight: 200 }
             ],
             'BLISS': [
-                { price: 700, weight: 100 },
-                { price: 1350, weight: 200 }
+                { price: 310, weight: 40 },  // 40г-310₽ (с oshisha.cc)
+                { price: 745, weight: 100 }, // 100г-745₽ (с oshisha.cc)
+                { price: 1550, weight: 250 }  // 250г-1550₽ (с oshisha.cc)
             ],
             'КОБРА': [
                 { price: 750, weight: 100 },
