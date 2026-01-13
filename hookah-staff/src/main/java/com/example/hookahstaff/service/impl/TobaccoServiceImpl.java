@@ -114,12 +114,9 @@ public class TobaccoServiceImpl implements TobaccoService {
                     tobacco = new Tobacco();
                     tobacco.setBrand_name(brandDto.getBrandName());
                     tobacco.setTaste(taste);
-                    tobacco.setFortress(brandDto.getFortress());
                     // Вес не хранится в таблице tobacco, он хранится в DeliveryTobacco
                     tobacco.setPrice(brandDto.getPrice());
                     tobacco.setOrderDate(brandDto.getOrderDate());
-                    tobacco.setInventoryDate(brandDto.getInventoryDate());
-                    tobacco.setInventoryWeight(null);
                     tobacco.setIsPrimaryAddition(true);
                     tobacco.setRelevanceScore(BigDecimal.valueOf(1.0));
                     tobacco = tobaccoRepository.save(tobacco);

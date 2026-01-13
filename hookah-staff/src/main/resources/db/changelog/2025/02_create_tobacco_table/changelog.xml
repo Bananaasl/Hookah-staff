@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="create-tobacco-table" author="hookah-staff">
+        <createTable tableName="tobacco">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="price" type="DECIMAL(10,2)"/>
+            <column name="brand_name" type="VARCHAR(255)"/>
+            <column name="order_date" type="DATE"/>
+            <column name="taste" type="VARCHAR(255)"/>
+            <column name="is_primary_addition" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="relevance_score" type="DECIMAL(3,1)" defaultValueNumeric="1.0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_relevance_update" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-tobacco-indexes" author="hookah-staff">
+        <createIndex indexName="idx_tobacco_brand_taste" tableName="tobacco">
+            <column name="brand_name"/>
+            <column name="taste"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

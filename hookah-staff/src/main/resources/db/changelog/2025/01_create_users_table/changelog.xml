@@ -19,45 +19,11 @@
             <column name="role" type="VARCHAR(20)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_at" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
+            <column name="created_at" type="TIMESTAMP"/>
             <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-
-    <changeSet id="create-deliveries-table" author="hookah-staff">
-        <createTable tableName="deliveries">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="delivery_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by" type="VARCHAR(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="is_finalized" type="BOOLEAN" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-            <column name="finalized_at" type="TIMESTAMP"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="add-delivery-id-to-tobacco" author="hookah-staff">
-        <addColumn tableName="tobacco">
-            <column name="delivery_id" type="BIGINT"/>
-        </addColumn>
-        
-        <addForeignKeyConstraint
-                baseTableName="tobacco"
-                baseColumnNames="delivery_id"
-                constraintName="fk_tobacco_delivery"
-                referencedTableName="deliveries"
-                referencedColumnNames="id"
-                onDelete="SET NULL"/>
     </changeSet>
 
     <changeSet id="insert-default-users" author="hookah-staff">
@@ -71,6 +37,3 @@
     </changeSet>
 
 </databaseChangeLog>
-
-
-

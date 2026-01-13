@@ -239,18 +239,6 @@ class UIRenderer {
                             </div>
                             
                             <div class="form-group">
-                                <label>Крепость: ${brand.fortress}/5</label>
-                                <input
-                                    type="range"
-                                    min="1"
-                                    max="5"
-                                    value="${brand.fortress}"
-                                    onchange="app.updateBrand(${index}, 'fortress', parseInt(this.value))"
-                                />
-                                <span class="fortress-text">${utils.getFortressText(brand.fortress)}</span>
-                            </div>
-                            
-                            <div class="form-group">
                                 <label>Цена за пачку (₽):</label>
                                 <input
                                     type="number"
@@ -299,7 +287,7 @@ class UIRenderer {
                                                 <div style="margin: 5px 0; padding: 5px; background: #f8f9fa; border-radius: 4px; border: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center;">
                                                     <div>
                                                         <strong>${brand.brandName || 'Бренд'}</strong> - ${taste.trim()} ${count > 1 ? `(${count} шт.)` : ''}
-                                                        <br><small>Крепость: ${utils.getFortressText(brand.fortress)}, Цена: ${brand.price ? brand.price + ' ₽' : 'не выбрана'}, Вес: ${brand.weight ? brand.weight + ' г' : 'не выбран'}</small>
+                                                        <br><small>Цена: ${brand.price ? brand.price + ' ₽' : 'не выбрана'}, Вес: ${brand.weight ? brand.weight + ' г' : 'не выбран'}</small>
                                                     </div>
                                                     <button type="button" onclick="app.removeTasteSuggestion(${index}, '${taste}')" 
                                                             style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.7rem; cursor: pointer; margin-left: 10px;">
@@ -337,7 +325,7 @@ class UIRenderer {
                                                 <div style="margin: 5px 0; padding: 8px; background: white; border-radius: 4px; border: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center;">
                                                     <div>
                                                         <strong>${taste.trim()}</strong> ${count > 1 ? `(${count} шт.)` : ''}
-                                                        <br><small>Крепость: ${utils.getFortressText(brand.fortress)}, Цена: ${brand.price ? brand.price + ' ₽' : 'не выбрана'}, Вес: ${brand.weight ? brand.weight + ' г' : 'не выбран'}</small>
+                                                        <br><small>Цена: ${brand.price ? brand.price + ' ₽' : 'не выбрана'}, Вес: ${brand.weight ? brand.weight + ' г' : 'не выбран'}</small>
                                                     </div>
                                                     <button type="button" onclick="app.removeTasteSuggestion(${brandIndex}, '${taste}')" 
                                                             style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.7rem; cursor: pointer; margin-left: 10px;">
@@ -372,9 +360,6 @@ class UIRenderer {
             `;
         }
 
-        // Поля инвентаризации больше не показываются
-        const showInventoryFields = false;
-
         return `
             <div class="table-container">
                 <table class="table">
@@ -382,58 +367,25 @@ class UIRenderer {
                         <tr>
                             <th>Бренд</th>
                             <th>Вкус</th>
-                            <th>Крепость</th>
                             <th>Цена</th>
                             <th>Дата заказа</th>
-                            ${showInventoryFields ? `
-                                <th>Дата инвентаризации</th>
-                                <th>Вес на инвентаризации</th>
-                                <th>Использование</th>
-                            ` : ''}
                             <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
-                    ${app.tobaccos.map(tobacco => {
-                        const usagePercentage = utils.calculateUsagePercentage(tobacco);
-                        const usageColor = utils.getUsageColor(usagePercentage);
-                        return `
+                    ${app.tobaccos.map(tobacco => `
                         <tr>
                             <td>${tobacco.brand_name || 'Не указано'}</td>
                             <td>${tobacco.taste || 'Не указано'}</td>
-                            <td>
-                                <span class="fortress-badge ${utils.getFortressClass(tobacco.fortress)}">
-                                    ${utils.getFortressText(tobacco.fortress)} (${tobacco.fortress}/5)
-                                </span>
-                            </td>
                             <td class="price">${tobacco.price || 0} ₽</td>
                             <td>${tobacco.orderDate || 'Не указано'}</td>
-                            ${showInventoryFields ? `
-                                <td>${tobacco.inventoryDate || 'Не указано'}</td>
-                                <td>
-                                    <input 
-                                        type="number" 
-                                        value="${utils.getInventoryWeightInGrams(tobacco)}" 
-                                        min="0" 
-                                        max="1000"
-                                        style="width: 100%; max-width: 80px; padding: 4px; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9rem;"
-                                        onchange="app.updateInventoryWeight(${tobacco.id}, this.value)"
-                                    /> г
-                                </td>
-                                <td>
-                                    <span style="color: ${usageColor}; font-weight: bold;">
-                                        ${usagePercentage}%
-                                    </span>
-                                </td>
-                            ` : ''}
                             <td>
                                 <button class="delete-button" onclick="app.handleDeleteTobacco(${tobacco.id})">
                                     Удалить
                                 </button>
                             </td>
                         </tr>
-                    `;
-                    }).join('')}
+                    `).join('')}
                     </tbody>
                 </table>
             </div>
@@ -485,7 +437,6 @@ class UIRenderer {
                         <tr>
                             <th>Бренд</th>
                             <th>Вкус</th>
-                            <th>Крепость</th>
                             <th>Цена</th>
                             <th>Вес</th>
                             <th>Дата заказа</th>
@@ -496,11 +447,6 @@ class UIRenderer {
                         <tr>
                             <td>${tobacco.brand_name || 'Не указано'}</td>
                             <td>${tobacco.taste || 'Не указано'}</td>
-                            <td>
-                                <span class="fortress-badge ${utils.getFortressClass(tobacco.fortress)}">
-                                    ${utils.getFortressText(tobacco.fortress)} (${tobacco.fortress}/5)
-                                </span>
-                            </td>
                             <td class="price">${tobacco.price || 0} ₽</td>
                             <td>${tobacco.weight || 50} г</td>
                             <td>${tobacco.orderDate || 'Не указано'}</td>

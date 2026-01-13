@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 /**
  * Сущность табака для кальянной
  * 
- * <p>Представляет собой табак с информацией о бренде, вкусе, крепости,
- * цене, весе и датах заказа и инвентаризации.</p>
+ * <p>Представляет собой табак с информацией о бренде, вкусе,
+ * цене и дате заказа.</p>
  * 
  * @author Hookah Staff Team
  * @version 1.0
@@ -51,31 +51,10 @@ public class Tobacco {
     private String brand_name;
 
     /**
-     * Крепость табака от 1 до 5
-     * 1-2: Легкий
-     * 3-4: Средний  
-     * 5: Крепкий
-     */
-    @Column(name = "fortress")
-    private Integer fortress;
-
-    /**
      * Дата заказа табака
      */
     @Column(name = "order_date")
     private LocalDate orderDate;
-
-    /**
-     * Дата последней инвентаризации
-     */
-    @Column(name = "inventory_date")
-    private LocalDate inventoryDate;
-
-    /**
-     * Текущий вес табака на момент инвентаризации в граммах
-     */
-    @Column(name = "inventory_weight")
-    private Integer inventoryWeight;
 
     /**
      * Вкус табака

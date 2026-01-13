@@ -21,12 +21,9 @@ public class DeliveryTobaccoDto {
     private Long id;
     private String brand_name;
     private String taste;
-    private Integer fortress;
     private BigDecimal price;
     private Integer weight; // Вес из DeliveryTobacco
     private LocalDate orderDate;
-    private LocalDate inventoryDate;
-    private Integer inventoryWeight;
     private Boolean isPrimaryAddition;
     private BigDecimal relevanceScore;
 
@@ -35,12 +32,9 @@ public class DeliveryTobaccoDto {
         dto.setId(tobacco.getId());
         dto.setBrand_name(tobacco.getBrand_name());
         dto.setTaste(tobacco.getTaste());
-        dto.setFortress(tobacco.getFortress());
         dto.setPrice(tobacco.getPrice());
         dto.setWeight(weight); // Вес из DeliveryTobacco
         dto.setOrderDate(tobacco.getOrderDate());
-        dto.setInventoryDate(tobacco.getInventoryDate());
-        dto.setInventoryWeight(tobacco.getInventoryWeight());
         dto.setIsPrimaryAddition(tobacco.getIsPrimaryAddition());
         dto.setRelevanceScore(tobacco.getRelevanceScore());
         return dto;

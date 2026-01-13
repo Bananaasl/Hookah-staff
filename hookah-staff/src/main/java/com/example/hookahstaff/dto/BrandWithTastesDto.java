@@ -31,11 +31,6 @@ public class BrandWithTastesDto {
     private String brandName;
     
     /**
-     * Крепость табака от 1 до 5
-     */
-    private Integer fortress;
-    
-    /**
      * Цена за пачку табака в рублях
      */
     private BigDecimal price;
@@ -49,11 +44,6 @@ public class BrandWithTastesDto {
      * Дата заказа табака
      */
     private LocalDate orderDate;
-    
-    /**
-     * Дата инвентаризации
-     */
-    private LocalDate inventoryDate;
     
     /**
      * Список вкусов для данного бренда

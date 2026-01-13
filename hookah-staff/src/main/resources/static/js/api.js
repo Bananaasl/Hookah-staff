@@ -196,11 +196,9 @@ class ApiService {
                     deliveryId: deliveryId,
                     brands: brands.map(brand => ({
                         brandName: brand.brandName.trim(),
-                        fortress: brand.fortress,
                         price: brand.price,
                         weight: brand.weight,
                         orderDate: brand.orderDate,
-                        inventoryDate: brand.inventoryDate,
                         tastes: brand.tastes
                     }))
                 })
@@ -236,27 +234,6 @@ class ApiService {
         }
     }
 
-    // Обновление веса инвентаризации
-    async updateInventoryWeight(tobaccoId, tobaccoData) {
-        try {
-            const response = await fetch(`${this.API_BASE_URL}/${tobaccoId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(tobaccoData)
-            });
-
-            if (response.ok) {
-                return { success: true };
-            } else {
-                return { success: false, error: 'Ошибка при обновлении веса инвентаризации' };
-            }
-        } catch (error) {
-            console.error('Ошибка при обновлении веса инвентаризации:', error);
-            return { success: false, error: 'Ошибка при обновлении веса инвентаризации' };
-        }
-    }
 }
 
 // Создаем глобальный экземпляр API сервиса

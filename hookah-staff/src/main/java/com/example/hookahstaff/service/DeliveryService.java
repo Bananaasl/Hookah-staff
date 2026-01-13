@@ -121,7 +121,6 @@ public class DeliveryService {
                     tobacco.getId();
                     tobacco.getBrand_name();
                     tobacco.getTaste();
-                    tobacco.getFortress();
                     tobacco.getPrice();
                     tobacco.getOrderDate();
                     // Возвращаем DTO с весом из DeliveryTobacco
@@ -148,7 +147,6 @@ public class DeliveryService {
                     tobacco.getId();
                     tobacco.getBrand_name();
                     tobacco.getTaste();
-                    tobacco.getFortress();
                     tobacco.getPrice();
                     tobacco.getOrderDate();
                     // Возвращаем DTO с весом из DeliveryTobacco

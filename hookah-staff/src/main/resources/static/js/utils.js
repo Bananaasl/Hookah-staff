@@ -2,61 +2,6 @@
 class Utils {
     constructor() {}
 
-    // Получение CSS класса для крепости
-    getFortressClass(fortress) {
-        if (fortress <= 2) return 'fortress-light';
-        if (fortress <= 4) return 'fortress-medium';
-        return 'fortress-strong';
-    }
-
-    // Получение текстового описания крепости
-    getFortressText(fortress) {
-        if (fortress <= 2) return 'Легкий';
-        if (fortress <= 4) return 'Средний';
-        return 'Крепкий';
-    }
-
-    // Функция для получения веса инвентаризации в граммах
-    getInventoryWeightInGrams(tobacco) {
-        const inventoryWeight = tobacco.inventoryWeight || 0;
-        const orderWeight = tobacco.weight || 0; // weight может быть null для текущего привоза
-        
-        // Если weight не указан, возвращаем inventoryWeight как есть
-        if (!orderWeight || orderWeight === 0) {
-            return inventoryWeight;
-        }
-        
-        // Если inventoryWeight больше orderWeight, значит это процент
-        if (inventoryWeight > orderWeight && inventoryWeight <= 100) {
-            // Это процент, конвертируем в граммы
-            return Math.round((inventoryWeight / 100) * orderWeight);
-        }
-        
-        // Иначе это уже граммы
-        return inventoryWeight;
-    }
-
-    // Расчет процента использования
-    calculateUsagePercentage(tobacco) {
-        const orderWeight = tobacco.weight || 0; // weight может быть null для текущего привоза
-        const inventoryWeightInGrams = this.getInventoryWeightInGrams(tobacco);
-        
-        // Если weight не указан, возвращаем 0 (не можем рассчитать использование)
-        if (!orderWeight || orderWeight === 0) return 0;
-        
-        const usedWeight = orderWeight - inventoryWeightInGrams;
-        const percentage = (usedWeight / orderWeight) * 100;
-        
-        return Math.max(0, Math.min(100, Math.round(percentage)));
-    }
-
-    // Получение цвета для процента использования
-    getUsageColor(percentage) {
-        if (percentage <= 30) return '#28a745'; // Зеленый - мало использован
-        if (percentage <= 70) return '#ffc107'; // Желтый - средне использован
-        return '#dc3545'; // Красный - много использован
-    }
-
     // Форматирование даты
     formatDate(dateString) {
         if (!dateString) return 'Не указано';

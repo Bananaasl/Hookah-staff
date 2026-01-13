@@ -7,11 +7,9 @@
         <dbms type="postgresql"/>
     </preConditions>
 
-    <include relativeToChangelogFile="true" file="2025/tobacco_table/changelog.xml"/>
-    <include relativeToChangelogFile="true" file="2025/auth_and_delivery_tables/changelog.xml"/>
-    <include relativeToChangelogFile="true" file="2025/add_is_primary_addition_and_relevance_score/changelog.xml"/>
-    <include relativeToChangelogFile="true" file="2025/migrate_to_new_structure/changelog.xml"/>
-    <include relativeToChangelogFile="true" file="2025/move_weight_to_delivery_tobacco/changelog.xml"/>
-    <include relativeToChangelogFile="true" file="2025/merge_duplicate_tobaccos/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/01_create_users_table/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/02_create_tobacco_table/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/03_create_deliveries_table/changelog.xml"/>
+    <include relativeToChangelogFile="true" file="2025/04_create_delivery_tobacco_table/changelog.xml"/>
 
 </databaseChangeLog>

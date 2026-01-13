@@ -479,11 +479,9 @@ class HookahStaffApp {
     addNewBrand() {
         this.multiBrands.push({
             brandName: '',
-            fortress: 1,
             price: null, // Цена не устанавливается до выбора бренда
             weight: null, // Вес не устанавливается до выбора бренда
             orderDate: new Date().toISOString().split('T')[0],
-            inventoryDate: new Date().toISOString().split('T')[0],
             tastes: []
         });
         this.render();
@@ -498,10 +496,11 @@ class HookahStaffApp {
         if (this.multiBrands[index]) {
             const oldBrandName = this.multiBrands[index].brandName;
             
-            // Если меняется бренд, сбрасываем цену и вес
+            // Если меняется бренд, сбрасываем цену, вес и вкусы
             if (field === 'brandName' && oldBrandName && oldBrandName !== value) {
                 this.multiBrands[index].price = null;
                 this.multiBrands[index].weight = null;
+                this.multiBrands[index].tastes = [];
             }
             
             this.multiBrands[index][field] = value;
@@ -735,60 +734,17 @@ class HookahStaffApp {
         }
     }
 
-    async updateInventoryWeight(tobaccoId, newWeight) {
-        try {
-            const tobacco = this.tobaccos.find(t => t.id === tobaccoId);
-            if (!tobacco) return;
-
-            const weightInGrams = parseInt(newWeight);
-            const maxWeight = 1000; // Максимальный вес для валидации (weight больше не хранится в tobacco)
-            
-            // Валидация: вес инвентаризации не может быть больше максимального
-            if (weightInGrams > maxWeight) {
-                alert(`Вес инвентаризации не может быть больше ${maxWeight} г`);
-                return;
-            }
-            
-            if (weightInGrams < 0) {
-                alert('Вес инвентаризации не может быть отрицательным');
-                return;
-            }
-
-            const updatedTobacco = {
-                ...tobacco,
-                inventoryWeight: weightInGrams,
-                inventoryDate: new Date().toISOString().split('T')[0]
-            };
-
-            const result = await apiService.updateInventoryWeight(tobaccoId, updatedTobacco);
-            
-            if (result.success) {
-                // Обновляем локальные данные
-                tobacco.inventoryWeight = weightInGrams;
-                tobacco.inventoryDate = new Date().toISOString().split('T')[0];
-                
-                // Обновляем только строку таблицы
-                this.updateTableRow(tobaccoId);
-                
-                this.showNotification('Вес инвентаризации обновлен!', 'success');
-            } else {
-                this.showNotification(result.error, 'error');
-            }
-        } catch (error) {
-            console.error('Ошибка при обновлении веса инвентаризации:', error);
-            this.showNotification('Ошибка при обновлении веса инвентаризации', 'error');
-        }
-    }
 
     // Функции для работы с рекомендациями
     selectBrandSuggestion(brandIndex, brandName) {
         const currentBrand = this.multiBrands[brandIndex];
-        // Если бренд действительно меняется, сбрасываем цену и вес
+        // Если бренд действительно меняется, сбрасываем цену, вес и вкусы
         if (currentBrand && currentBrand.brandName !== brandName) {
             this.updateBrand(brandIndex, 'brandName', brandName);
-            // Сбрасываем цену и вес при смене бренда
+            // Сбрасываем цену, вес и вкусы при смене бренда
             this.updateBrand(brandIndex, 'price', null);
             this.updateBrand(brandIndex, 'weight', null);
+            this.updateBrandTastes(brandIndex, '');
         } else {
             this.updateBrand(brandIndex, 'brandName', brandName);
         }
@@ -881,49 +837,6 @@ class HookahStaffApp {
             
             ${this.showDeliveryModal ? uiRenderer.renderDeliveryModal(this) : ''}
         `;
-    }
-
-    updateTableRow(tobaccoId) {
-        const tobacco = this.tobaccos.find(t => t.id === tobaccoId);
-        if (!tobacco) return;
-
-        const usagePercentage = utils.calculateUsagePercentage(tobacco);
-        const usageColor = utils.getUsageColor(usagePercentage);
-
-        // Находим строку таблицы и обновляем колонки
-        const table = document.querySelector('.table tbody');
-        if (table) {
-            const rows = table.querySelectorAll('tr');
-            rows.forEach(row => {
-                const deleteButton = row.querySelector('.delete-button');
-                if (deleteButton && deleteButton.onclick.toString().includes(tobaccoId)) {
-                    // Обновляем колонку "Вес на инвентаризации" (индекс 7)
-                    const inventoryWeightCell = row.cells[7];
-                    if (inventoryWeightCell) {
-                        inventoryWeightCell.innerHTML = `
-                            <input 
-                                type="number" 
-                                value="${utils.getInventoryWeightInGrams(tobacco)}" 
-                                min="0" 
-                                max="1000"
-                                style="width: 100%; max-width: 80px; padding: 4px; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9rem;"
-                                onchange="app.updateInventoryWeight(${tobacco.id}, this.value)"
-                            /> г
-                        `;
-                    }
-                    
-                    // Обновляем колонку "Использование" (индекс 8)
-                    const usageCell = row.cells[8];
-                    if (usageCell) {
-                        usageCell.innerHTML = `
-                            <span style="color: ${usageColor}; font-weight: bold;">
-                                ${usagePercentage}%
-                            </span>
-                        `;
-                    }
-                }
-            });
-        }
     }
 
     updateTable() {
