@@ -4,6 +4,9 @@ class HookahStaffApp {
         this.tobaccos = [];
         this.multiBrands = []; // Список брендов с вкусами для множественного добавления
         this.showMultiBrandForm = false;
+        this.showOcrForm = false;
+        this.ocrPreview = null;
+        this.ocrParsedData = []; // Распарсенные данные с автоматически подставленными ценами
         this.currentUser = null;
         this.currentDelivery = null;
         this.finalizedDeliveries = [];
@@ -700,10 +703,20 @@ class HookahStaffApp {
     toggleMultiBrandForm() {
         this.showMultiBrandForm = !this.showMultiBrandForm;
         if (this.showMultiBrandForm) {
+            this.showOcrForm = false; // Закрываем OCR форму
             // Инициализируем с одним брендом, если список пуст
             if (this.multiBrands.length === 0) {
                 this.addNewBrand();
             }
+        }
+        this.render();
+    }
+
+    toggleOcrForm() {
+        this.showOcrForm = !this.showOcrForm;
+        if (this.showOcrForm) {
+            this.showMultiBrandForm = false; // Закрываем форму множественного добавления
+            this.ocrPreview = null; // Сбрасываем превью
         }
         this.render();
     }
@@ -902,6 +915,13 @@ class HookahStaffApp {
 
         const result = await apiService.cancelDelivery(this.currentDelivery.id);
         if (result.success) {
+            // Закрываем формы и очищаем данные
+            this.showMultiBrandForm = false;
+            this.showOcrForm = false;
+            this.multiBrands = [];
+            this.ocrPreview = null;
+            this.ocrParsedData = [];
+            
             this.showNotification('Привоз успешно отменен!', 'success');
             await this.loadData();
         } else {
@@ -1003,6 +1023,235 @@ class HookahStaffApp {
         // Восстанавливаем кнопку
         saveButton.textContent = originalText;
         saveButton.disabled = false;
+    }
+
+    async handleOcrRecognize() {
+        const invoicePhotoInput = document.getElementById('invoicePhoto');
+        
+        if (!invoicePhotoInput.files || invoicePhotoInput.files.length === 0) {
+            this.showNotification('Пожалуйста, загрузите фото накладной', 'error');
+            return;
+        }
+        
+        const invoicePhoto = invoicePhotoInput.files[0];
+        
+        // Показываем индикатор загрузки
+        this.showNotification('Обработка накладной... Это может занять некоторое время', 'info');
+        
+        try {
+            const result = await apiService.parseInvoicePhoto(invoicePhoto);
+            
+            if (result.success && result.data.recognizedTobaccos) {
+                this.ocrPreview = result.data.recognizedTobaccos;
+                
+                // Парсим результаты и автоматически подставляем цены
+                this.ocrParsedData = this.parseInvoicePositionsAndSetPrices(this.ocrPreview);
+                
+                this.showNotification(`Распознано ${this.ocrParsedData.length} позиций! Проверьте данные перед добавлением.`, 'success');
+                this.render();
+            } else {
+                this.showNotification('Ошибка при распознавании: ' + (result.error || 'Неизвестная ошибка'), 'error');
+            }
+        } catch (error) {
+            this.showNotification('Ошибка при обработке накладной: ' + error.message, 'error');
+        }
+    }
+    
+    /**
+     * Парсит позиции из накладной и автоматически подставляет цены из brandPriceWeightMapping
+     * Формат: "БРЕНД - Вкус вес количество"
+     */
+    parseInvoicePositionsAndSetPrices(recognizedPositions) {
+        const parsed = [];
+        
+        for (const positionStr of recognizedPositions) {
+            // Парсим строку формата "БРЕНД - Вкус вес количество"
+            const parts = positionStr.split(' - ');
+            let brand = '';
+            let taste = '';
+            let weight = null;
+            let quantity = 1; // По умолчанию 1 пачка
+            let price = null;
+            
+            if (parts.length >= 2) {
+                brand = parts[0].trim();
+                const rest = parts[1].trim();
+                
+                // Извлекаем вес (число + г/гр)
+                const weightMatch = rest.match(/(\d+)\s*(?:г|гр|g)/i);
+                if (weightMatch) {
+                    weight = parseInt(weightMatch[1]);
+                }
+                
+                // Извлекаем количество (число + шт/пачек)
+                const quantityMatch = rest.match(/(\d+)\s*(?:шт|пачек?|pcs)/i);
+                if (quantityMatch) {
+                    quantity = parseInt(quantityMatch[1]);
+                }
+                
+                // Убираем вес и количество из строки вкуса
+                let tasteStr = rest.replace(/\d+\s*(?:г|гр|g)/gi, '')
+                                   .replace(/\d+\s*(?:шт|пачек?|pcs)/gi, '')
+                                   .trim();
+                taste = tasteStr;
+            } else {
+                // Если нет разделителя " - ", пробуем найти бренд в начале
+                const words = positionStr.split(/\s+/);
+                if (words.length > 0) {
+                    brand = words[0];
+                    const rest = words.slice(1).join(' ');
+                    const weightMatch = rest.match(/(\d+)\s*(?:г|гр|g)/i);
+                    if (weightMatch) {
+                        weight = parseInt(weightMatch[1]);
+                    }
+                    const quantityMatch = rest.match(/(\d+)\s*(?:шт|пачек?|pcs)/i);
+                    if (quantityMatch) {
+                        quantity = parseInt(quantityMatch[1]);
+                    }
+                    taste = rest.replace(/\d+\s*(?:г|гр|g)/gi, '')
+                                .replace(/\d+\s*(?:шт|пачек?|pcs)/gi, '')
+                                .trim();
+                }
+            }
+            
+            // Автоматически подставляем цену из brandPriceWeightMapping
+            if (brand && weight) {
+                const brandMapping = this.brandPriceWeightMapping[brand];
+                if (brandMapping) {
+                    // Ищем точное совпадение веса
+                    const priceEntry = brandMapping.find(entry => entry.weight === weight);
+                    if (priceEntry) {
+                        price = priceEntry.price;
+                    } else {
+                        // Ищем ближайший вес
+                        const sorted = brandMapping.sort((a, b) => Math.abs(a.weight - weight) - Math.abs(b.weight - weight));
+                        if (sorted.length > 0) {
+                            price = sorted[0].price;
+                        }
+                    }
+                }
+            }
+            
+            parsed.push({
+                brand: brand,
+                taste: taste,
+                weight: weight,
+                quantity: quantity,
+                price: price,
+                originalText: positionStr
+            });
+        }
+        
+        return parsed;
+    }
+
+    updateOcrTobacco(index, field, value) {
+        if (this.ocrParsedData && this.ocrParsedData[index]) {
+            this.ocrParsedData[index][field] = value;
+            
+            // Если изменился бренд или вес, автоматически обновляем цену
+            if (field === 'brand' || field === 'weight') {
+                const tobacco = this.ocrParsedData[index];
+                if (tobacco.brand && tobacco.weight) {
+                    const brandMapping = this.brandPriceWeightMapping[tobacco.brand];
+                    if (brandMapping) {
+                        const priceEntry = brandMapping.find(entry => entry.weight === tobacco.weight);
+                        if (priceEntry) {
+                            tobacco.price = priceEntry.price;
+                        } else {
+                            // Ищем ближайший вес
+                            const sorted = brandMapping.sort((a, b) => Math.abs(a.weight - tobacco.weight) - Math.abs(b.weight - tobacco.weight));
+                            if (sorted.length > 0) {
+                                tobacco.price = sorted[0].price;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            this.render();
+        }
+    }
+
+    async handleOcrAddTobaccos() {
+        if (!this.ocrParsedData || this.ocrParsedData.length === 0) {
+            this.showNotification('Нет данных для добавления. Сначала распознайте табаки.', 'error');
+            return;
+        }
+        
+        // Валидация данных
+        for (let i = 0; i < this.ocrParsedData.length; i++) {
+            const tobacco = this.ocrParsedData[i];
+            if (!tobacco.brand || !tobacco.taste || !tobacco.weight || !tobacco.price) {
+                this.showNotification(`Заполните все поля для табака ${i + 1}`, 'error');
+                return;
+            }
+        }
+        
+        // Если нет текущего привоза, создаем его
+        if (!this.currentDelivery) {
+            const createResult = await apiService.createNewDelivery(this.currentUser.username);
+            if (createResult.success) {
+                this.currentDelivery = createResult.data;
+            } else {
+                this.showNotification('Ошибка создания привоза: ' + createResult.error, 'error');
+                return;
+            }
+        }
+        
+        // Группируем табаки по бренду, цене и весу
+        // Учитываем количество пачек - добавляем вкус quantity раз
+        const brandsMap = new Map();
+        
+        for (const tobacco of this.ocrParsedData) {
+            const key = `${tobacco.brand}_${tobacco.price}_${tobacco.weight}`;
+            if (!brandsMap.has(key)) {
+                brandsMap.set(key, {
+                    brandName: tobacco.brand,
+                    price: tobacco.price,
+                    weight: tobacco.weight,
+                    orderDate: new Date().toISOString().split('T')[0],
+                    tastes: []
+                });
+            }
+            // Добавляем вкус quantity раз (для каждой пачки)
+            const quantity = tobacco.quantity || 1;
+            for (let i = 0; i < quantity; i++) {
+                brandsMap.get(key).tastes.push(tobacco.taste);
+            }
+        }
+        
+        const brandsToSend = Array.from(brandsMap.values());
+        
+        // Показываем индикатор загрузки
+        this.showNotification('Добавление табаков в привоз...', 'info');
+        
+        try {
+            const result = await apiService.addMultiBrandTobaccos(this.currentDelivery.id, brandsToSend);
+            
+            if (result.success) {
+                // Сохраняем количество перед очисткой
+                const addedCount = this.ocrParsedData.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                
+                // Обновляем данные
+                await this.loadTobaccos();
+                await this.loadCurrentDelivery();
+                
+                // Закрываем форму и очищаем данные
+                this.showOcrForm = false;
+                this.ocrPreview = null;
+                this.ocrParsedData = [];
+                const invoicePhotoInput = document.getElementById('invoicePhoto');
+                if (invoicePhotoInput) invoicePhotoInput.value = '';
+                
+                this.render();
+                this.showNotification(`Успешно добавлено ${addedCount} табаков в привоз!`, 'success');
+            } else {
+                this.showNotification('Ошибка при добавлении табаков: ' + result.error, 'error');
+            }
+        } catch (error) {
+            this.showNotification('Ошибка при обработке: ' + error.message, 'error');
+        }
     }
 
     async handleDeleteTobacco(id) {
@@ -1107,7 +1356,7 @@ class HookahStaffApp {
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M16 17v-3H9v-4h7V7l5 5-5 5zM14 2a2 2 0 0 1 2 2v2h-2V4H5v16h9v-2h2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9z"/>
                                 </svg>
-                                Выйти
+                                <span>Выйти</span>
                             </button>
                         </div>
                     </div>
@@ -1125,9 +1374,11 @@ class HookahStaffApp {
                     </button>
                 </div>
 
-                ${this.activeTab === 'current' ? uiRenderer.renderCurrentTab(this) : 
-                  this.activeTab === 'history' ? uiRenderer.renderHistoryTab(this) :
-                  uiRenderer.renderShelfRatingTab(this)}
+                <div class="tab-content">
+                    ${this.activeTab === 'current' ? uiRenderer.renderCurrentTab(this) : 
+                      this.activeTab === 'history' ? uiRenderer.renderHistoryTab(this) :
+                      uiRenderer.renderShelfRatingTab(this)}
+                </div>
             </div>
             
             ${this.showDeliveryModal ? uiRenderer.renderDeliveryModal(this) : ''}

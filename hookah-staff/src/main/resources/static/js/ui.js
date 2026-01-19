@@ -42,7 +42,7 @@ class UIRenderer {
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/>
                                 </svg>
-                                Войти в систему
+                                <span>Войти в систему</span>
                             </button>
                         </div>
                         
@@ -89,6 +89,7 @@ class UIRenderer {
             ${this.renderHookahMasterControls(app)}
 
             ${app.showMultiBrandForm ? this.renderMultiBrandForm(app) : ''}
+            ${app.showOcrForm ? this.renderOcrForm(app) : ''}
 
             <div class="tobacco-list">
                 <div class="tobacco-table">
@@ -188,18 +189,26 @@ class UIRenderer {
         return `
             <div class="delivery-controls" style="margin-bottom: 30px; text-align: center;">
                 ${!app.currentDelivery ? `
-                    <button class="add-button" onclick="app.createNewDeliveryWithForm()">
-                        Создать новый привоз
-                    </button>
+                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <button class="add-button" onclick="app.createNewDeliveryWithForm()">
+                            Создать новый привоз
+                        </button>
+                        <button class="add-button" onclick="app.toggleOcrForm()">
+                            📷 Загрузить фото
+                        </button>
+                    </div>
                 ` : `
                     <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                         <button class="add-button" onclick="app.toggleMultiBrandForm()">
                             ${app.showMultiBrandForm ? 'Отмена' : 'Добавить табаки'}
                         </button>
-                        <button class="add-button" onclick="app.finalizeDelivery()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                        <button class="add-button" onclick="app.toggleOcrForm()">
+                            📷 Загрузить фото
+                        </button>
+                        <button class="add-button" onclick="app.finalizeDelivery()">
                             Зафиксировать привоз
                         </button>
-                        <button class="add-button" onclick="app.cancelDelivery()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                        <button class="add-button" onclick="app.cancelDelivery()">
                             Отменить привоз
                         </button>
                     </div>
@@ -216,12 +225,12 @@ class UIRenderer {
                 <h3>Добавить табаки</h3>
                 <div class="brands-container">
                     ${app.multiBrands.map((brand, index) => `
-                        <div class="brand-form" style="border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #f8f9fa;">
-                            <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 15px;">
-                                <h4 style="margin: 0; color: #495057;">Бренд ${index + 1}</h4>
+                        <div class="brand-form">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h4>Бренд ${index + 1}</h4>
                                 ${app.multiBrands.length > 1 ? `
                                     <button type="button" onclick="app.removeBrand(${index})" 
-                                            style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">
+                                            class="action-button danger" style="padding: 6px 14px; font-size: 0.85rem;">
                                         Удалить бренд
                                     </button>
                                 ` : ''}
@@ -245,9 +254,9 @@ class UIRenderer {
                                     value="${brand.price || ''}"
                                     onchange="app.updateBrand(${index}, 'price', parseFloat(this.value) || null)"
                                     placeholder="Выберите цену"
-                                    ${!brand.brandName ? 'disabled style="background-color: #f8f9fa; color: #6c757d;"' : ''}
+                                    ${!brand.brandName ? 'disabled' : ''}
                                 />
-                                ${brand.brandName ? this.renderSuggestions(app.priceSuggestions, 'price', index) : '<small style="color: #6c757d; font-size: 0.8rem;">Сначала выберите бренд</small>'}
+                                ${brand.brandName ? this.renderSuggestions(app.priceSuggestions, 'price', index) : '<small>Сначала выберите бренд</small>'}
                             </div>
                             
                             <div class="form-group">
@@ -258,9 +267,9 @@ class UIRenderer {
                                     onchange="app.updateBrand(${index}, 'weight', parseInt(this.value) || null)"
                                     placeholder="Выберите цену"
                                     readonly
-                                    style="background-color: #f8f9fa; color: #6c757d;"
+                                    style="opacity: 0.7; cursor: not-allowed;"
                                 />
-                                <small style="color: #6c757d; font-size: 0.8rem;">Вес автоматически устанавливается при выборе цены</small>
+                                <small>Вес автоматически устанавливается при выборе цены</small>
                             </div>
                             
                             <div class="form-group">
@@ -269,9 +278,8 @@ class UIRenderer {
                                     rows="3"
                                     placeholder="Малина, Смородина, Клубника"
                                     onchange="app.updateBrandTastes(${index}, this.value)"
-                                    style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; resize: vertical;"
                                 >${brand.tastes.join(', ')}</textarea>
-                                <small style="color: #6c757d; font-size: 0.8rem; display: block; margin-top: 5px;">
+                                <small>
                                     💡 Можно нажимать на один вкус несколько раз для добавления нескольких пачек
                                 </small>
                                 ${(() => {
@@ -287,24 +295,24 @@ class UIRenderer {
                             
                             <div class="form-group">
                                 <label>Предварительный просмотр:</label>
-                                <div style="background: #ffffff; padding: 10px; border-radius: 6px; border: 1px solid #e9ecef;">
+                                <div class="preview-container">
                                     ${brand.tastes.length > 0 ? 
                                         (() => {
                                             const tasteCounts = app.getTasteCounts(brand.tastes);
                                             return Object.entries(tasteCounts).map(([taste, count]) => `
-                                                <div style="margin: 5px 0; padding: 5px; background: #f8f9fa; border-radius: 4px; border: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center;">
-                                                    <div>
+                                                <div class="preview-item">
+                                                    <div class="preview-item-content">
                                                         <strong>${brand.brandName || 'Бренд'}</strong> - ${taste.trim()} ${count > 1 ? `(${count} шт.)` : ''}
-                                                        <br><small>Цена: ${brand.price ? brand.price + ' ₽' : 'не выбрана'}, Вес: ${brand.weight ? brand.weight + ' г' : 'не выбран'}</small>
+                                                        <small>Цена: ${brand.price ? brand.price + ' ₽' : 'не выбрана'}, Вес: ${brand.weight ? brand.weight + ' г' : 'не выбран'}</small>
                                                     </div>
                                                     <button type="button" onclick="app.removeTasteSuggestion(${index}, '${taste}')" 
-                                                            style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.7rem; cursor: pointer; margin-left: 10px;">
+                                                            class="preview-remove-btn">
                                                         ×
                                                     </button>
                                                 </div>
                                             `).join('');
                                         })() : 
-                                        '<div style="color: #6c757d; font-style: italic;">Введите вкусы для предварительного просмотра</div>'
+                                        '<div style="color: #94a3b8; font-style: italic;">Введите вкусы для предварительного просмотра</div>'
                                     }
                                 </div>
                             </div>
@@ -312,11 +320,11 @@ class UIRenderer {
                             ${brand.priceCategories && brand.priceCategories.length > 0 ? `
                                 <div class="form-group">
                                     <label>Сохраненные ценовые категории:</label>
-                                    <div style="background: #e7f3ff; padding: 10px; border-radius: 6px; border: 1px solid #b3d9ff;">
+                                    <div class="preview-container">
                                         ${brand.priceCategories.map((cat, catIndex) => `
-                                            <div style="margin-bottom: 10px; padding: 8px; background: white; border-radius: 4px; border: 1px solid #b3d9ff;">
+                                            <div class="price-category-card">
                                                 <strong>Категория ${catIndex + 1}:</strong> ${cat.price}₽ / ${cat.weight}г (${cat.tastes.length} вкусов)
-                                                <div style="margin-top: 5px; font-size: 0.85rem; color: #495057;">
+                                                <div class="price-category-tastes">
                                                     ${cat.tastes.join(', ')}
                                                 </div>
                                             </div>
@@ -327,10 +335,10 @@ class UIRenderer {
                             
                             <div style="margin-top: 15px;">
                                 <button type="button" onclick="app.addPriceCategory(${index})" 
-                                        style="background: #17a2b8; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 0.9rem;">
+                                        class="action-button secondary" style="padding: 8px 16px; font-size: 0.9rem;">
                                     + Добавить другую цену/вес для этого бренда
                                 </button>
-                                <small style="color: #6c757d; font-size: 0.75rem; display: block; margin-top: 5px;">
+                                <small>
                                     Позволяет добавить вкусы по другой цене для того же бренда
                                 </small>
                             </div>
@@ -340,29 +348,29 @@ class UIRenderer {
                 
                 <div style="margin-bottom: 20px;">
                     <button type="button" onclick="app.addNewBrand()" 
-                            style="background: #28a745; color: white; border: none; border-radius: 6px; padding: 10px 20px; cursor: pointer;">
+                            class="action-button success">
                         + Добавить еще один бренд
                     </button>
                 </div>
                 
-                <div class="form-group">
-                    <label>Общий предварительный просмотр:</label>
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #e9ecef; max-height: 300px; overflow-y: auto;">
+                <div class="form-group preview-section">
+                    <label class="preview-section-label">Общий предварительный просмотр:</label>
+                    <div class="preview-container" style="max-height: 400px;">
                         ${app.multiBrands.some(brand => brand.tastes.length > 0) ? 
                             app.multiBrands.map((brand, brandIndex) => 
                                 brand.tastes.length > 0 ? `
                                     <div style="margin-bottom: 15px;">
-                                        <h5 style="margin: 0 0 10px 0; color: #495057;">${brand.brandName || `Бренд ${brandIndex + 1}`}</h5>
+                                        <h5 style="margin: 0 0 10px 0; color: #cbd5e1; font-weight: 600;">${brand.brandName || `Бренд ${brandIndex + 1}`}</h5>
                                         ${(() => {
                                             const tasteCounts = app.getTasteCounts(brand.tastes);
                                             return Object.entries(tasteCounts).map(([taste, count]) => `
-                                                <div style="margin: 5px 0; padding: 8px; background: white; border-radius: 4px; border: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center;">
-                                                    <div>
+                                                <div class="preview-item">
+                                                    <div class="preview-item-content">
                                                         <strong>${taste.trim()}</strong> ${count > 1 ? `(${count} шт.)` : ''}
-                                                        <br><small>Цена: ${brand.price ? brand.price + ' ₽' : 'не выбрана'}, Вес: ${brand.weight ? brand.weight + ' г' : 'не выбран'}</small>
+                                                        <small>Цена: ${brand.price ? brand.price + ' ₽' : 'не выбрана'}, Вес: ${brand.weight ? brand.weight + ' г' : 'не выбран'}</small>
                                                     </div>
                                                     <button type="button" onclick="app.removeTasteSuggestion(${brandIndex}, '${taste}')" 
-                                                            style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.7rem; cursor: pointer; margin-left: 10px;">
+                                                            class="preview-remove-btn">
                                                         ×
                                                     </button>
                                                 </div>
@@ -371,7 +379,7 @@ class UIRenderer {
                                     </div>
                                 ` : ''
                             ).join('') : 
-                            '<div style="color: #6c757d; font-style: italic;">Добавьте бренды и вкусы для предварительного просмотра</div>'
+                            '<div style="color: #94a3b8; font-style: italic;">Добавьте бренды и вкусы для предварительного просмотра</div>'
                         }
                     </div>
                 </div>
@@ -379,6 +387,118 @@ class UIRenderer {
                 <button class="save-button" onclick="app.handleMultiBrandAddTobaccos()">
                     Добавить ${app.multiBrands.reduce((total, brand) => total + brand.tastes.length, 0)} табаков в привоз
                 </button>
+            </div>
+        `;
+    }
+
+    // Рендеринг формы загрузки фото с OCR
+    renderOcrForm(app) {
+        return `
+            <div class="add-form">
+                <h3>📷 Добавить табаки через фото накладной</h3>
+                <p style="color: #6c757d; margin-bottom: 20px;">
+                    Загрузите фото накладной. В накладной должна быть информация по каждой позиции: 
+                    название бренда, вкус, вес и количество пачек. Система автоматически распознает текст, 
+                    подставит цены и сформирует привоз.
+                </p>
+                
+                <div class="form-group">
+                    <label>Фото накладной:</label>
+                    <input 
+                        type="file" 
+                        id="invoicePhoto" 
+                        accept="image/*" 
+                        class="form-input"
+                        style="padding: 8px;"
+                    />
+                    <small style="color: #6c757d; font-size: 0.8rem;">
+                        Загрузите фото накладной. В накладной должна быть информация по каждой позиции: 
+                        название бренда, вкус, вес и количество пачек. Цены будут автоматически подставлены 
+                        из системы на основе бренда и веса.
+                    </small>
+                </div>
+
+                ${app.ocrParsedData && app.ocrParsedData.length > 0 ? `
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>Распознанные табаки (проверьте и отредактируйте при необходимости):</label>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #e9ecef; max-height: 400px; overflow-y: auto;">
+                            ${app.ocrParsedData.map((tobacco, index) => `
+                                <div style="margin: 10px 0; padding: 15px; background: white; border-radius: 6px; border: 1px solid #dee2e6;">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 10px; align-items: center;">
+                                        <div>
+                                            <label style="font-size: 0.8rem; color: #6c757d;">Бренд:</label>
+                                            <input 
+                                                type="text" 
+                                                value="${tobacco.brand || ''}" 
+                                                onchange="app.updateOcrTobacco(${index}, 'brand', this.value)"
+                                                style="width: 100%; padding: 6px; border: 1px solid #ced4da; border-radius: 4px;"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label style="font-size: 0.8rem; color: #6c757d;">Вкус:</label>
+                                            <input 
+                                                type="text" 
+                                                value="${tobacco.taste || ''}" 
+                                                onchange="app.updateOcrTobacco(${index}, 'taste', this.value)"
+                                                style="width: 100%; padding: 6px; border: 1px solid #ced4da; border-radius: 4px;"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label style="font-size: 0.8rem; color: #6c757d;">Вес (г):</label>
+                                            <input 
+                                                type="number" 
+                                                value="${tobacco.weight || ''}" 
+                                                onchange="app.updateOcrTobacco(${index}, 'weight', parseInt(this.value) || null)"
+                                                style="width: 100%; padding: 6px; border: 1px solid #ced4da; border-radius: 4px;"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label style="font-size: 0.8rem; color: #6c757d;">Количество (шт):</label>
+                                            <input 
+                                                type="number" 
+                                                value="${tobacco.quantity || 1}" 
+                                                onchange="app.updateOcrTobacco(${index}, 'quantity', parseInt(this.value) || 1)"
+                                                min="1"
+                                                style="width: 100%; padding: 6px; border: 1px solid #ced4da; border-radius: 4px;"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label style="font-size: 0.8rem; color: #6c757d;">Цена (₽):</label>
+                                            <input 
+                                                type="number" 
+                                                value="${tobacco.price || ''}" 
+                                                onchange="app.updateOcrTobacco(${index}, 'price', parseFloat(this.value) || null)"
+                                                style="width: 100%; padding: 6px; border: 1px solid #ced4da; border-radius: 4px;"
+                                            />
+                                        </div>
+                                    </div>
+                                    <small style="color: #6c757d; font-size: 0.7rem; display: block; margin-top: 5px;">
+                                        Распознано: ${tobacco.originalText}
+                                    </small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button 
+                        class="save-button" 
+                        onclick="app.handleOcrRecognize()"
+                        style="flex: 1;"
+                    >
+                        🔍 Распознать табаки
+                    </button>
+                    ${app.ocrParsedData && app.ocrParsedData.length > 0 ? `
+                        <button 
+                            class="save-button" 
+                            onclick="app.handleOcrAddTobaccos()"
+                            style="flex: 1;"
+                        >
+                            ✅ Добавить ${app.ocrParsedData.length} табаков в привоз
+                        </button>
+                    ` : ''}
+                </div>
             </div>
         `;
     }

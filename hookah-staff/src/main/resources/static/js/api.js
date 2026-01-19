@@ -234,6 +234,99 @@ class ApiService {
         }
     }
 
+    // OCR: Парсинг накладной
+    async parseInvoicePhoto(invoicePhoto) {
+        try {
+            const formData = new FormData();
+            formData.append('invoicePhoto', invoicePhoto);
+            
+            const response = await fetch(`${this.DELIVERY_API_URL}/ocr/parse-invoice`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                return { success: true, data };
+            } else {
+                const errorText = await response.text();
+                return { success: false, error: errorText };
+            }
+        } catch (error) {
+            console.error('Ошибка при парсинге накладной:', error);
+            return { success: false, error: 'Ошибка при парсинге накладной' };
+        }
+    }
+
+    // OCR: Распознавание табаков с фото
+    async recognizeTobaccosFromPhotos(deliveryId, invoicePhoto, tobaccoPhotos) {
+        try {
+            const formData = new FormData();
+            
+            // Накладная теперь опциональна
+            if (invoicePhoto) {
+                formData.append('invoicePhoto', invoicePhoto);
+            }
+            
+            if (deliveryId) {
+                formData.append('deliveryId', deliveryId);
+            }
+            
+            tobaccoPhotos.forEach((photo, index) => {
+                formData.append('tobaccoPhotos', photo);
+            });
+
+            const response = await fetch(`${this.DELIVERY_API_URL}/ocr/recognize`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return { success: true, data };
+            } else {
+                const errorText = await response.text();
+                return { success: false, error: errorText };
+            }
+        } catch (error) {
+            console.error('Ошибка при распознавании фото:', error);
+            return { success: false, error: 'Ошибка при распознавании фото' };
+        }
+    }
+
+    // OCR: Распознавание и автоматическое добавление табаков
+    async addTobaccosFromOcr(deliveryId, createdBy, invoicePhoto, tobaccoPhotos) {
+        try {
+            const formData = new FormData();
+            formData.append('invoicePhoto', invoicePhoto);
+            formData.append('createdBy', createdBy);
+            
+            if (deliveryId) {
+                formData.append('deliveryId', deliveryId);
+            }
+            
+            tobaccoPhotos.forEach((photo) => {
+                formData.append('tobaccoPhotos', photo);
+            });
+
+            const response = await fetch(`${this.DELIVERY_API_URL}/ocr/add-tobaccos`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return { success: true, data };
+            } else {
+                const errorText = await response.text();
+                return { success: false, error: errorText };
+            }
+        } catch (error) {
+            console.error('Ошибка при добавлении табаков через OCR:', error);
+            return { success: false, error: 'Ошибка при добавлении табаков через OCR' };
+        }
+    }
+
 }
 
 // Создаем глобальный экземпляр API сервиса
